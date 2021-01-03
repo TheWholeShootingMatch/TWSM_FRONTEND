@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import MainPage from "../components/main/MainPage";
+import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
 
 
 function Router() {
@@ -11,6 +12,7 @@ function Router() {
             <Route exact path="/">
                 <MainPage />
             </Route>
+            <Route path="/TctWorkflow"><TctWorkflow/></Route>
             </Switch>
         </>
         </BrowserRouter>
