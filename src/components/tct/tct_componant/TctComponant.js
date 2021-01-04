@@ -1,43 +1,31 @@
 import React, {useEffect} from "react";
 
-function TctComponant(contents) {
+function SideMenu() {
   return (
-    <div>
-      {sidemenu()}
-      <div class="tct_wrapper">
-        {header()}
-        {contents}
-      </div>
-    </div>
-  );
-}
-
-function sidemenu() {
-  return (
-    <div class="tct_sidemenu">
-        <div class="logo_area">
+    <div className="tct_sidemenu">
+        <div className="logo_area">
         </div>
-        <nav class="menu_area">
+        <nav className="menu_area">
             <ul>
-                <li class="menu">model</li>
-                <li class="menu">photographer</li>
-                <li class="menu">whiteboard</li>
-                <li class="menu">workflow</li>
+                <li className="menu">model</li>
+                <li className="menu">photographer</li>
+                <li className="menu">whiteboard</li>
+                <li className="menu">workflow</li>
             </ul>
         </nav>
-        <div class="back_btn"><a></a></div>
+        <div className="back_btn"><a></a></div>
     </div>
   );
 }
 
-function header() {
+function Header() {
   return (
-    <header class="tct_header">
-        <div class="project_title"><input placeholder="project#1" /></div>
-        <div class="connected_users">
-            <span class="user_icon"></span>
-            <span class="user_icon"></span>
-            <span class="invite_btn">
+    <header className="tct_header">
+        <div className="project_title"><input placeholder="project#1" /></div>
+        <div className="connected_users">
+            <span className="user_icon"></span>
+            <span className="user_icon"></span>
+            <span className="invite_btn">
                 <details>
                     <summary>plus</summary>
                     <div>user list</div>
@@ -45,6 +33,18 @@ function header() {
             </span>
         </div>
     </header>
+  );
+}
+
+function TctComponant({children}) {
+  return (
+    <>
+      <SideMenu />
+      <div className="tct_wrapper">
+        <Header />
+        {children}
+      </div>
+    </>
   );
 }
 
