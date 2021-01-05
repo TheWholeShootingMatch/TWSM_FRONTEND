@@ -20,7 +20,7 @@ function ProjectForm(){
             <h3>description</h3>
             <input />
         </div>
-        <div class="collaboration">
+        <div className="collaboration">
             <h3>collaboration</h3>
             <details>
             <summary>members</summary>
