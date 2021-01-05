@@ -1,5 +1,5 @@
 import React from "react";
-import Route from "./routes/Route.js";
+import Route from "./routes/Routes.js";
 
 function Root() {
   return <Route></Route>;
