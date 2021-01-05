@@ -12,15 +12,15 @@ function MyProject(){
 function Myprojects(){
     return(
         <>
-        <div class="contents_upper_flex">
+        <div className="contents_upper_flex">
             <div>search</div>
             <a>new</a>
             {/* 누르면 create-project 페이지로 이동 */}
         </div>
-        <div class="project_area">
+        <div className="project_area">
             <div>
-                <div class="box_long">project detail</div>
-                <div class="box_long">project detail</div>
+                <div className="box_long">project detail</div>
+                <div className="box_long">project detail</div>
             </div>
         </div>
         </>
