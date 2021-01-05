@@ -1,0 +1,68 @@
+.whole_wrapper{
+    display: flex;
+    height: 100vh;
+}
+
+/*TCT side menu*/
+.tct_sidemenu{
+    border: 1px solid red;
+    width: 200px;
+
+    .logo_area{
+        border: 1px solid black;
+        height: 10%;
+    }
+    
+    .menu_area{
+        border: 1px solid black;   
+        height: 70%;
+
+        ul{
+            padding: 10px;
+            li{
+                list-style: none;
+            }
+        }
+    }
+    
+    .back_btn{
+        border: 1px solid black;      
+    }
+
+}
+
+/*TCT wrapper*/
+.tct_wrapper{
+    border: 1px solid red;
+    width: 100%;
+}
+
+/*TCT header*/
+.tct_header{
+    border: 1px solid black;
+    display: flex;
+    height: 56px;
+    .project_title{
+        border: 1px solid black;
+        width: 300px;
+    }
+
+    .connected_users{
+        border: 1px solid black;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+
+        .user_icon{
+            border: 1px solid black;
+        }
+
+        .invite_btn{
+            border: 1px solid black;
+            details{
+                width: 100px;
+
+            }
+        }
+    }
+}
