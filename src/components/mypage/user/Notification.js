@@ -11,15 +11,15 @@ function Notification(){
 
 function NotificationTable(){
     return(
-        <tbody class="notifications">
-            <tr class="message">
-                <td class="check_msg">true</td>
-                <td class="name">kim</td>
-                <td class="title">msg title</td>
-                <td class="date">2020/11/11</td>
+        <tbody className="notifications">
+            <tr className="message">
+                <td className="check_msg">true</td>
+                <td className="name">kim</td>
+                <td className="title">msg title</td>
+                <td className="date">2020/11/11</td>
             </tr>
-            <tr class="message"></tr>
-            <tr class="message"></tr>
+            <tr className="message"></tr>
+            <tr className="message"></tr>
         </tbody>
     )
 }
