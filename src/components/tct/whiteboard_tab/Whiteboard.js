@@ -53,17 +53,17 @@ function WhiteBoardContents(){
 
 function WhiteBoardSlides(){
     return(
-    <div class="whiteboard_slides">
-        <div class="slide" id="current_slide">
+    <div className="whiteboard_slides">
+        <div className="slide" id="current_slide">
             슬라이드3 (현재 슬라이드)
         </div>
-        <div class="slide">
+        <div className="slide">
             슬라이드2
         </div>
-        <div class="slide">
+        <div className="slide">
             슬라이드3
         </div>
-        <div class="slide add_slide_btn">
+        <div className="slide add_slide_btn">
             슬라이드 더하기
         </div>
     </div>
