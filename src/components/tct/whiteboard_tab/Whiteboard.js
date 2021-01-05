@@ -1,5 +1,6 @@
 import React from "react";
 import TctComponant from "../tct_componant/TctComponant";
+import "./Whiteboard.scss";
 
 function WhiteBoard(){
     return(
@@ -62,7 +63,7 @@ function WhiteBoardSlides(){
         <div class="slide">
             슬라이드3
         </div>
-        <div class="add_slide_btn">
+        <div class="slide add_slide_btn">
             슬라이드 더하기
         </div>
     </div>
