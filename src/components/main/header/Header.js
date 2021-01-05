@@ -3,8 +3,8 @@ import React from "react";
 function Header() {
     return(
         <header>
-            <div class="logo"></div>
-            <nav class="header_nav">
+            <div className="logo"></div>
+            <nav className="header_nav">
                 <ul>
                     <li>model</li>
                     <li>photographer</li>
