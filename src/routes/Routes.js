@@ -9,6 +9,8 @@ import Notification from "../components/mypage/user/Notification";
 import MyProject from "../components/mypage/user/MyProject";
 import CreateProject from "../components/mypage/user/CreateProject";
 import RequestedProject from "../components/mypage/manager/Requested";
+import Login from "../components/login/login";
+import Signup from "../components/signup/signup";
 
 /* Header 있는 페이지와 없는 페이지 구분 필요 */
 /* 유저 형태(관리자/일반유저)에 따라서 mypage 경로 변경해야 함
