@@ -28,6 +28,8 @@ function Routes() {
                 <Route path="/manager-page/requested-project"><RequestedProject/></Route>
                 <Route path="/whiteboard"><WhiteBoard/></Route>
                 <Route path="/TctWorkflow"><TctWorkflow/></Route>
+                <Route path="/login"><Login/></Route>
+                <Route path="/signup"><Signup/></Route>
         </Switch>
         </>
         </BrowserRouter>
