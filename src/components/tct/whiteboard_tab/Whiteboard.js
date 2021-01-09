@@ -1,6 +1,16 @@
-import React from "react";
+import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
-import "./Whiteboard.scss";
+import Canvas from "./tools/Canvas";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+
+import "./styles/Whiteboard.scss";
+import "./styles/WhiteBoardHeader.scss";
+
+const ydoc = new Y.Doc();
+const type = ydoc.getArray("drawing");
+
+// const websocketProvider = new WebsocketProvider('localhost:3000', 'drawing', ydoc);
 
 function WhiteBoard(){
     return(
@@ -10,16 +20,29 @@ function WhiteBoard(){
     )
 }
 
+function WhiteBoardArea(){
 
-function WhiteBoardHeader(){
+    const [toolType, setType] = useState("");
+    console.log(toolType);
+
+    return (
+        <div className="whiteboard_area">
+            <WhiteBoardHeader setType={setType}/>
+            <WhiteBoardContents toolType={toolType}/>
+            <WhiteBoardSlides/>
+        </div>
+    )
+}
+
+function WhiteBoardHeader({setType}){
     return(
         <div className="whiteboard_header">
             <div className="tools">
                 <ul>
-                    <li id="figure">figure</li>
-                    <li id="text">text</li>
-                    <li id="image">image</li>
-                    <li id="drawing">drawing</li>
+                    <li id="figure" onClick={() => setType("figure")}>figure</li>
+                    <li id="text" onClick={() => setType("text")}>text</li>
+                    <li id="image" onClick={() => setType("image")}>image</li>
+                    <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
                 </ul>
             </div>
             <div className="history_btn"><button>history</button></div>
@@ -27,11 +50,13 @@ function WhiteBoardHeader(){
     )
 }
 
-function WhiteBoardContents(){
+function WhiteBoardContents({toolType}){
+
     return(
     <div className="whiteboard_contents">
         {/* <!-- 현재 화이트보드 슬라이드 --> */}
         <div className="current_whiteboard">
+            <Canvas toolType={toolType}/>
         </div>
          {/* <!-- default style : display hidden --> */}
          <div className="hitory_area">
@@ -67,17 +92,6 @@ function WhiteBoardSlides(){
             슬라이드 더하기
         </div>
     </div>
-    )
-}
-
-function WhiteBoardArea(){
-
-    return (
-        <div className="whiteboard_area">
-            <WhiteBoardHeader/>
-            <WhiteBoardContents/>
-            <WhiteBoardSlides/>
-        </div>
     )
 }
 
