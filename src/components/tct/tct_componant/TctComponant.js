@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import { Link, useHistory } from "react-router-dom";
 import "./TctComponant.scss";
 
 function SideMenu() {
@@ -9,10 +10,10 @@ function SideMenu() {
         </div>
         <nav className="menu_area">
             <ul>
-                <li className="menu">model</li>
-                <li className="menu">photographer</li>
-                <li className="menu">whiteboard</li>
-                <li className="menu">workflow</li>
+                <li className="menu"><Link to="">model</Link></li>
+                <li className="menu"><Link to="">photographer</Link></li>
+                <li className="menu"><Link to="/WhiteBoard">whiteboard</Link></li>
+                <li className="menu"><Link to="/TctWorkflow">workflow</Link></li>
             </ul>
         </nav>
         <div className="back_btn"><a></a></div>
