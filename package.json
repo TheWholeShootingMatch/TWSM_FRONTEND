@@ -40,5 +40,8 @@
     ]
   },
   "proxy": "http://localhost:3001",
-  "devDependencies": {}
+  "devDependencies": {
+    "y-websocket": "^1.3.9",
+    "yjs": "^13.4.9"
+  }
 }
