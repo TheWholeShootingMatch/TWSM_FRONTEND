@@ -1,7 +1,8 @@
-import React, {useEffect} from "react";
-import { useState } from "react"
+import React, {useEffect, useState} from "react";
+import axios from "axios";
 import TctComponant from "../tct_componant/TctComponant";
 import "./TctWorkflow.scss"
+
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -28,7 +29,39 @@ function Category({value,name}){
 }
 
 function NewNote() {
-  const [open, setOpen] = React.useState(false);
+  const [inputs, setInputs] = useState();
+
+  const onChange = (e) => {
+    const { value, name } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    alert(inputs.category + inputs.new_title);
+    e.preventDefault();
+  }
+
+  return (
+    <form className="new_note" onSubmit={handleSubmit}>
+      <div className="new_header">
+        <input type="text" name="new_title" placeholder="NoTitle" onChange={onChange}/>
+        <select name="category" onChange={onChange}>
+          {categorylist.map(element => <Category value={element.value} name={element.name} />)}
+        </select>
+      </div>
+
+      <input type="text" name="new_text" placeholder="Leave a message" onChange={onChange}/>
+
+      <button type="submit">save</button>
+    </form>
+  );
+}
+
+function AddBtn() {
+  const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -38,10 +71,6 @@ function NewNote() {
     setOpen(false);
   };
 
-  const handleSubmit = () => {
-    alert("woo");
-  }
-
   return (
     <>
       <button onClick={handleOpen}>add</button>
@@ -49,18 +78,7 @@ function NewNote() {
         open={open}
         onClose={handleClose}
       >
-        <form className="new_note" onSubmit={handleSubmit}>
-          <div className="new_header">
-            <input type="text" name="new_title" placeholder="NoTitle" />
-            <select name="category">
-              {categorylist.map(element => <Category value={element.value} name={element.name} />)}
-            </select>
-          </div>
-
-          <input type="text" name="new_text" placeholder="Leave a message" />
-
-          <button type="submit">save</button>
-        </form>
+        <NewNote />
       </Modal>
     </>
   );
@@ -135,7 +153,7 @@ function Contents() {
         <select name="category">
           {categorylist.map(element => <Category value={element.value} name={element.name} />)}
         </select>
-        <NewNote />
+        <AddBtn />
       </div>
 
       <div className="note_list">
