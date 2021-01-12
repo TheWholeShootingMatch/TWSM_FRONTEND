@@ -12,9 +12,10 @@ function Canvas({toolType}){
         canvas.height = 283 * 2;
 
         const context = canvas.getContext("2d");
-        context.lineCap = "round";
+        context.lineJoin = context.lineCap = "round";
         context.strokeStyle = "black";
-        context.lineWidth = "1";
+        context.shadowBlur = 2
+        context.lineWidth = 2;
         contextRef.current = context;
     },[])
 
