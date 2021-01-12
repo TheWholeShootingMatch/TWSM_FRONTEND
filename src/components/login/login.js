@@ -18,22 +18,22 @@ function Login(){
 
   useEffect(() => {
     const response = async() => {
-      const reslut = await axios({
+      await axios({
         method: 'get',
         withCredentials : true,
-        url : '/api/login'
-      });
-      console.log('login page');
+        url : '/api/users/login'
+      })
+      .then((res) => console.log(res));
     };
     response();
   },[]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/login', inputs, {
+    axios.post('/api/users/login', inputs, {
       withCredentials: true,
-    });
-    console.log('login page');
+    }).then((res) => {alert(res.data)})
+    .catch((err) => console.log(err));
   };
 
     return(

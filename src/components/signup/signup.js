@@ -21,22 +21,22 @@ function Signup(){
 
   useEffect(() => {
     const response = async() => {
-      const reslut = await axios({
+      await axios({
         method: 'get',
         withCredentials : true,
-        url : '/api/signup'
-      });
-      console.log('signup page');
+        url : '/api/users/signup'
+      })
+      .then((res) => console.log(res));
     };
     response();
   },[]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/signup', inputs, {
+    axios.post('/api/users/signup', inputs, {
       withCredentials: true,
-    });
-    console.log('signup page');
+    }).then((res) => {alert(res.data)})
+    .catch((err) => console.log(err));
   };
 
     return(
