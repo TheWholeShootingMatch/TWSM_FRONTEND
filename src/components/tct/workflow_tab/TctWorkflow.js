@@ -31,7 +31,7 @@ function Category({value,name}){
 function NewNote() {
   const [inputs, setInputs] = useState();
 
-  const onChange = (e) => {
+  const handleChange = (e) => {
     const { value, name } = e.target;
     setInputs({
       ...inputs,
@@ -42,18 +42,22 @@ function NewNote() {
   const handleSubmit = (e) => {
     alert(inputs.category + inputs.new_title);
     e.preventDefault();
-  }
+    axios
+      .post('/api/note', inputs)
+      .then (res => { alert("The file is successfully uploaded"); })
+      .catch(err => { console.error(err); });
+  };
 
   return (
     <form className="new_note" onSubmit={handleSubmit}>
       <div className="new_header">
-        <input type="text" name="new_title" placeholder="NoTitle" onChange={onChange}/>
-        <select name="category" onChange={onChange}>
+        <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
+        <select name="category" onChange={handleChange}>
           {categorylist.map(element => <Category value={element.value} name={element.name} />)}
         </select>
       </div>
 
-      <input type="text" name="new_text" placeholder="Leave a message" onChange={onChange}/>
+      <input type="text" name="new_text" placeholder="Leave a message" onChange={handleChange}/>
 
       <button type="submit">save</button>
     </form>
@@ -75,8 +79,8 @@ function AddBtn() {
     <>
       <button onClick={handleOpen}>add</button>
       <Modal
-        open={open}
-        onClose={handleClose}
+      open={open}
+      onClose={handleClose}
       >
         <NewNote />
       </Modal>
