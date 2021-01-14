@@ -2,6 +2,10 @@ import React, {useEffect, useRef, useState} from "react";
 import * as shared from './SharedTypes';
 import * as Y from 'yjs'
 
+export const deleteAllDrawing = () => {
+    shared.drawingContent.delete(0, shared.drawingContent.length);
+} 
+
 function Canvas({toolType}){
 
     const canvasRef = useRef(null);
@@ -10,6 +14,7 @@ function Canvas({toolType}){
     let sharedLine = null;
 
     useEffect(() => {
+        console.log("here");
         const canvas = canvasRef.current;
         canvas.width = 566 * 2;
         canvas.height = 283 * 2;
@@ -20,6 +25,15 @@ function Canvas({toolType}){
         context.lineWidth = "1";
         contextRef.current = context;
     },[])
+
+    // const clickToolEvent = (event) => {
+    //     if(toolType === "drawing"){
+    //         startDrawing(event);
+    //     }
+    //     else if(toolType === "trash"){
+    //         deleteAllDrawing();
+    //     }
+    // }
 
     const calculateCoordinate = (event) => {
         const canvasRect = canvasRef.current.getBoundingClientRect();
@@ -45,7 +59,7 @@ function Canvas({toolType}){
     }
 
     const moveDraw = (event) => {
-        if(isDrawing){
+        if(isDrawing && toolType === "drawing"){
             if(sharedLine !== null){
                 const coordinate = calculateCoordinate(event);
                 sharedLine.push([coordinate]);
@@ -56,9 +70,10 @@ function Canvas({toolType}){
     const finishDrawing = () => {
         sharedLine= null;
     }
-
+    
     shared.drawingContent.observe(function(event) {
-        const context = canvasRef.current.getContext("2d");
+        const canvas = contextRef.current.canvas;
+        const context = canvas.getContext('2d');
         const yDrawingContent = shared.drawingContent;
         const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
 
@@ -98,7 +113,6 @@ function Canvas({toolType}){
         }
 
         yDrawingContent.observeDeep(requestDrawAnimationFrame);
-        // sharedLine.unregisterYDraw = () => yDrawingContent.unobserveDeep(requestDrawAnimationFrame);
         requestDrawAnimationFrame();
     });
 

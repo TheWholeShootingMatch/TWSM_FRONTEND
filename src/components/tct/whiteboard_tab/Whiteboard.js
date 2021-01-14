@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
-import Canvas from "./tools/Canvas";
+import Canvas, {deleteAllDrawing} from "./tools/Canvas";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -43,6 +43,7 @@ function WhiteBoardHeader({setType}){
                     <li id="text" onClick={() => setType("text")}>text</li>
                     <li id="image" onClick={() => setType("image")}>image</li>
                     <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
+                    <li id="trash" onClick={() => deleteAllDrawing()}>trash</li>
                 </ul>
             </div>
             <div className="history_btn"><button>history</button></div>
