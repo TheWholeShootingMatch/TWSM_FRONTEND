@@ -10,7 +10,7 @@ function SideMenu() {
         </div>
         <nav className="menu_area">
             <ul>
-                <li className="menu"><Link to="">model</Link></li>
+                <li className="menu"><Link to="/Model">model</Link></li>
                 <li className="menu"><Link to="">photographer</Link></li>
                 <li className="menu"><Link to="/WhiteBoard">whiteboard</Link></li>
                 <li className="menu"><Link to="/TctWorkflow">workflow</Link></li>
