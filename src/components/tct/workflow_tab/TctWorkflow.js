@@ -8,27 +8,27 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Modal from '@material-ui/core/Modal';
 
-//임의로 리스트를 만들어 놨지만 실제론 db에서 카테고리 테이블을 가져오게 해놓을 예정
-const categorylist = [
-  {
-    value: "",
-    name:"category"
-  },
-  {
-    value: "p",
-    name:"Personnel"
-  },
-  {
-    value: "w",
-    name:"WhiteBoard"
+function useFetch(url) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  async function fetchUrl() {
+    const response = await fetch(url);
+    const json = await response.json();
+    setData(json);
+    setLoading(false);
   }
-];
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+  return [data, loading];
+}
 
 function Category({value,name}){
   return (<option value={value}>{name}</option>);
 }
 
 function NewNote() {
+  const [categorylist, setCategorylist] = useFetch('/api/category');
   const [inputs, setInputs] = useState();
 
   const handleChange = (e) => {
@@ -40,11 +40,10 @@ function NewNote() {
   };
 
   const handleSubmit = (e) => {
-    alert(inputs.category + inputs.new_title);
     e.preventDefault();
     axios
       .post('/api/note', inputs)
-      .then (res => { alert("The file is successfully uploaded"); })
+      .then (res => { window.location.reload(true); })
       .catch(err => { console.error(err); });
   };
 
@@ -53,7 +52,7 @@ function NewNote() {
       <div className="new_header">
         <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
         <select name="category" onChange={handleChange}>
-          {categorylist.map((element, index) => <Category key={index} value={element.value} name={element.name} />)}
+          {categorylist.map((element, index) => <Category value={element._id} name={element.category} key={index}/>)}
         </select>
       </div>
 
@@ -88,23 +87,6 @@ function AddBtn() {
   );
 }
 
-const sample_note_list = [{
-  category_tag : "Personnel",
-  title : "모델 한 명 추가",
-  date : "2020.11.20",
-  commemt_num : 2,
-  comment_list : [
-    {
-      name : "가나다",
-      comment_text : "확인."
-    },
-    {
-      name : "마바사",
-      comment_text : "확인."
-    }
-  ]
-}];
-
 function Comment(props) {
   return (
     <div className="comment">
@@ -126,20 +108,17 @@ function NoteArea(props) {
         >
           <div className="note_title">
             <p className="category_tag">{props.category_tag}</p>
-            <p>{props.title}</p>
+            <h3>{props.title}</h3>
           </div>
 
           <div className="note_detail">
-            <p>{props.date}</p>
+            <p>{props.writer}</p>
+            <p>{props.logdate}</p>
             <p>댓글 {props.commemt_num}개</p>
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          {(props.comment_list).map((element, index) => <Comment
-            key={index}
-            name={element.name}
-            comment_text={element.comment_text}
-          />)}
+
           <form >
             <input type="text" name="comment" />
             <button type="submit">send</button>
@@ -151,25 +130,28 @@ function NoteArea(props) {
 }
 
 function Contents() {
+  const [noteList, setNoteList] = useFetch('/api/note');
+  const [categorylist, setCategorylist] = useFetch('/api/category');
+
   return (
     <div className="tct_contents">
 
       <div className="category_area">
         <select name="category">
-          {categorylist.map((element, index) => <Category key={index} value={element.value} name={element.name} />)}
+          {categorylist.map((element, index) => <Category key={index} value={element._id} name={element.category} />)}
         </select>
         <AddBtn />
       </div>
 
       <div className="note_list">
-        {sample_note_list.map((sample_note, index)=> <NoteArea
+        {noteList.map(({ Cnum, title, logdate, id }, index) => <NoteArea
           key={index}
-          category_tag={sample_note.category_tag}
-          title = {sample_note.title}
-          date = {sample_note.date}
-          commemt_num = {sample_note.commemt_num}
-          comment_list = {sample_note.comment_list}
-          fold = {sample_note.fold}
+          category_tag={Cnum}
+          title = {title}
+          writer = {id}
+          logdate = {logdate}
+          commemt_num = {2}
+          // comment_list = {sample_note.comment_list}
         />)}
       </div>
     </div>
