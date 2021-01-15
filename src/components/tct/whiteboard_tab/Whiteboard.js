@@ -23,7 +23,6 @@ function WhiteBoard(){
 function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
-    console.log(toolType);
 
     return (
         <div className="whiteboard_area">
@@ -43,7 +42,10 @@ function WhiteBoardHeader({setType}){
                     <li id="text" onClick={() => setType("text")}>text</li>
                     <li id="image" onClick={() => setType("image")}>image</li>
                     <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
-                    <li id="trash" onClick={() => deleteAllDrawing()}>trash</li>
+                    <li id="trash" onClick={() => {
+                        setType("trash");
+                        deleteAllDrawing();
+                    }}>trash</li>
                 </ul>
             </div>
             <div className="history_btn"><button>history</button></div>
