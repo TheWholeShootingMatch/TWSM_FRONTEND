@@ -53,7 +53,7 @@ function NewNote() {
       <div className="new_header">
         <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
         <select name="category" onChange={handleChange}>
-          {categorylist.map(element => <Category value={element.value} name={element.name} />)}
+          {categorylist.map((element, index) => <Category key={index} value={element.value} name={element.name} />)}
         </select>
       </div>
 
@@ -135,7 +135,8 @@ function NoteArea(props) {
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          {(props.comment_list).map(element => <Comment
+          {(props.comment_list).map((element, index) => <Comment
+            key={index}
             name={element.name}
             comment_text={element.comment_text}
           />)}
@@ -155,13 +156,14 @@ function Contents() {
 
       <div className="category_area">
         <select name="category">
-          {categorylist.map(element => <Category value={element.value} name={element.name} />)}
+          {categorylist.map((element, index) => <Category key={index} value={element.value} name={element.name} />)}
         </select>
         <AddBtn />
       </div>
 
       <div className="note_list">
-        {sample_note_list.map (sample_note=> <NoteArea
+        {sample_note_list.map((sample_note, index)=> <NoteArea
+          key={index}
           category_tag={sample_note.category_tag}
           title = {sample_note.title}
           date = {sample_note.date}
