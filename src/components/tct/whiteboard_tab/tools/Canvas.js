@@ -24,16 +24,8 @@ function Canvas({toolType}){
         context.strokeStyle = "black";
         context.lineWidth = "1";
         contextRef.current = context;
+        onStateChange();
     },[])
-
-    // const clickToolEvent = (event) => {
-    //     if(toolType === "drawing"){
-    //         startDrawing(event);
-    //     }
-    //     else if(toolType === "trash"){
-    //         deleteAllDrawing();
-    //     }
-    // }
 
     const calculateCoordinate = (event) => {
         const canvasRect = canvasRef.current.getBoundingClientRect();
@@ -42,8 +34,9 @@ function Canvas({toolType}){
             y: (event.clientY - canvasRect.top) / canvasRect.height
         }
     }
-      
+
     const startDrawing = (event) => {
+        console.log("start drawing");
         if(toolType !== "drawing"){
             // setIsDrawing(false);
             return;
@@ -59,6 +52,7 @@ function Canvas({toolType}){
     }
 
     const moveDraw = (event) => {
+        console.log("move drawing");
         if(isDrawing && toolType === "drawing"){
             if(sharedLine !== null){
                 const coordinate = calculateCoordinate(event);
@@ -68,35 +62,41 @@ function Canvas({toolType}){
     }
 
     const finishDrawing = () => {
+        console.log("finish drawing");
         sharedLine= null;
     }
-    
-    shared.drawingContent.observe(function(event) {
+
+    shared.drawingContent.observe(function (event) {
+        onStateChange();
+    })
+
+    const onStateChange = () => {
+        
         const canvas = contextRef.current.canvas;
         const context = canvas.getContext('2d');
         const yDrawingContent = shared.drawingContent;
         const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
 
         const draw = () => {
-            
-            context.clearRect(0,0, context.canvas.width, context.canvas.height);
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
             const width = context.canvas.width;
             const height = context.canvas.height;
 
             yDrawingContent.forEach(drawElement => {
+                console.log("on state draw");
                 if (drawElement.get('type') === 'path') {
-                    const coordinate =drawElement.get('coordinate');
+                    const coordinate = drawElement.get('coordinate');
                     //   const color = drawElement.get('color');
                     const path = drawElement.get('path');
-    
-                    if(path){
+
+                    if (path) {
                         context.beginPath();
                         context.moveTo(coordinate.x * width, coordinate.y * height);
                         let lastPoint = coordinate;
                         path.forEach(c => {
                             const pointBetween = {
-                                x : (c.x + lastPoint.x)/2,
-                                y : (c.y + lastPoint.y)/2
+                                x: (c.x + lastPoint.x) / 2,
+                                y: (c.y + lastPoint.y) / 2
                             }
                             context.quadraticCurveTo(lastPoint.x * width, lastPoint.y * height, pointBetween.x * width, pointBetween.y * height);
                             lastPoint = c;
@@ -105,16 +105,14 @@ function Canvas({toolType}){
                         context.stroke();
                     }
                 }
-            });            
+            });
         }
-        
         const requestDrawAnimationFrame = () => {
             requestAnimationFrame(draw);
         }
-
         yDrawingContent.observeDeep(requestDrawAnimationFrame);
         requestDrawAnimationFrame();
-    });
+    }
 
     return(
         <canvas ref={canvasRef}
