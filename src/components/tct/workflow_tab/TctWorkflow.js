@@ -1,27 +1,13 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import TctComponant from "../tct_componant/TctComponant";
+import { useFetch } from "../../common/useFetch"
 import "./TctWorkflow.scss"
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Modal from '@material-ui/core/Modal';
-
-function useFetch(url) {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  async function fetchUrl() {
-    const response = await fetch(url);
-    const json = await response.json();
-    setData(json);
-    setLoading(false);
-  }
-  useEffect(() => {
-    fetchUrl();
-  }, []);
-  return [data, loading];
-}
 
 function Category({value,name}){
   return (<option value={value}>{name}</option>);
