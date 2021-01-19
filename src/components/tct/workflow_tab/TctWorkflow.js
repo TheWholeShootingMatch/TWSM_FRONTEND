@@ -19,7 +19,7 @@ function CategotyMapping() {
   return (
     <>
       {categorylist.map((element, index) =>
-        <Category value={element.TCTnum} name={element.category} key={index}/>)
+        <Category value={element._id} name={element.category} key={index}/>)
       }
     </>
   );
@@ -68,7 +68,8 @@ function AddBtn() {
         <form className="new_note" onSubmit={handleSubmit}>
           <div className="new_header">
             <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
-            <select name="category" onChange={handleChange}>
+            <select name="Cnum" onChange={handleChange}>
+              <Category value={""} name={"select"} />
               <CategotyMapping />
             </select>
           </div>
