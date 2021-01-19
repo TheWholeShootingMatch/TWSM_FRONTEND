@@ -1,6 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
-import Canvas, {deleteAllDrawing} from "./tools/Canvas";
+import Canvas from "./tools/Canvas";
+import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -23,37 +24,62 @@ function WhiteBoard(){
 function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
+    const historyArea = useRef(null);
+
+    const onClickHistoy = () => {
+        const displayState = historyArea.current.style.display;
+        if (displayState === "block") {
+            historyArea.current.style.display = "none";
+        }
+        else {
+            historyArea.current.style.display = "block";
+        }
+    }
 
     return (
         <div className="whiteboard_area">
-            <WhiteBoardHeader setType={setType}/>
-            <WhiteBoardContents toolType={toolType}/>
+            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
+            <WhiteBoardContents toolType={toolType} historyArea={historyArea} />
             <WhiteBoardSlides/>
         </div>
     )
 }
 
-function WhiteBoardHeader({setType}){
+function WhiteBoardHeader({ setType, onClickHistoy }) {
+    
     return(
         <div className="whiteboard_header">
             <div className="tools">
                 <ul>
+                    <li id="select">select</li>
                     <li id="figure" onClick={() => setType("figure")}>figure</li>
                     <li id="text" onClick={() => setType("text")}>text</li>
                     <li id="image" onClick={() => setType("image")}>image</li>
                     <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
+                    <li id="undo" onClick={() => {
+                        setType("undo");
+                        undoDrawing();
+                    }}>undo</li>
+                    <li id="redo" onClick={() => {
+                        setType("redo");
+                        redoDrawing();
+                    }}>redo</li>
                     <li id="trash" onClick={() => {
                         setType("trash");
                         deleteAllDrawing();
                     }}>trash</li>
                 </ul>
             </div>
-            <div className="history_btn"><button>history</button></div>
+            <div className="history_btn">
+                <button onClick={onClickHistoy}>history</button>
+            </div>
         </div>
     )
 }
 
-function WhiteBoardContents({toolType}){
+function WhiteBoardContents({ toolType, historyArea }) {
+    
+    const versions = showVersionList();
 
     return(
     <div className="whiteboard_contents">
@@ -62,10 +88,12 @@ function WhiteBoardContents({toolType}){
             <Canvas toolType={toolType}/>
         </div>
          {/* <!-- default style : display hidden --> */}
-         <div className="hitory_area">
+         <div className="history_area" ref={historyArea}>
              <ul className="history_list">
-                 <li className="version_info">
-                     <section>date</section>
+                    <li className="version_info">
+                        {versions.map((version, index) => (
+                            <section>{new Date(version.date).toLocaleDateString()}</section>
+                        ))}
                      <section>
                         <ul>
                             <li>username</li>
