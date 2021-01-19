@@ -18,12 +18,39 @@ const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastS
 
 const suffix = '-v3'
 
-export const versionDoc = new Y.Doc()
+export const versionDoc = new Y.Doc();
 // this websocket provider doesn't connect
 export const versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website-version' + suffix, versionDoc, { connect: false })
 versionWebsocketProvider.connectBc() // only connect via broadcastchannel
 export const versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
-export const versionType = versionDoc.getArray('versions')
+export const versionType = versionDoc.getArray('versions');
+export const versionList = versionDoc.getArray('versionList');
+
+
+export const getListVersion = () => {
+  const versions = versionDoc.getArray('versionList');
+  return versions;
+}
+
+export const addVersion = () => {
+  const prevVersion = versionType.length === 0 ? null : versionType.get(versionType.length - 1);
+  const prevSnapshot = prevVersion === null ? Y.emptySnapshot : Y.decodeSnapshot(prevVersion.snapshot);
+  const snapshot = Y.snapshot(versionDoc);
+  if (prevVersion != null) {
+    // account for the action of adding a version to ydoc
+    prevSnapshot.sv.set(prevVersion.clientID, prevSnapshot.sv.get(prevVersion.clientID) + 1);
+  }
+  if (!Y.equalSnapshots(prevSnapshot, snapshot)) {
+    versionList.push([{
+      date: new Date(),
+      snapshot: Y.encodeSnapshot(snapshot),
+      clientID: versionDoc.clientID
+    }])
+  }
+
+  console.log(versionList);
+}
+
 
 export const doc = new Y.Doc({ gcFilter })
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
@@ -35,7 +62,8 @@ export const indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suf
 export const prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
 
 versionIndexeddbPersistence.on('synced', () => {
-  lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot
+  
+  lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
   versionType.observe(() => {
     if (versionType.length > 0) {
       const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
@@ -76,6 +104,7 @@ versionIndexeddbPersistence.whenSynced.then(() => {
  * @type {Y.Array<Y.Map<Y.Array|String|object>>}
  */
 export const drawingContent = doc.getArray('drawing')
+export const whiteboardUndoManager = new Y.UndoManager(drawingContent);
 
 let undoManager = null
 
