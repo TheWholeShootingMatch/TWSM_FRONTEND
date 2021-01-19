@@ -2,10 +2,6 @@ import React, {useEffect, useRef, useState} from "react";
 import * as shared from './SharedTypes';
 import * as Y from 'yjs'
 
-export const deleteAllDrawing = () => {
-    shared.drawingContent.delete(0, shared.drawingContent.length);
-} 
-
 function Canvas({toolType}){
 
     const canvasRef = useRef(null);
@@ -63,6 +59,7 @@ function Canvas({toolType}){
 
     const finishDrawing = () => {
         console.log("finish drawing");
+        shared.addVersion();
         sharedLine= null;
     }
 
