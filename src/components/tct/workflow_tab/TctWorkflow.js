@@ -9,17 +9,12 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Modal from '@material-ui/core/Modal';
 
-// category in modal & contents
-function Category({value,name}){
-  return (<option value={value}>{name}</option>);
-}
-
-function CategotyMapping() {
+function Category() {
   const [categorylist, setCategorylist] = useFetch('/api/category');
   return (
     <>
       {categorylist.map((element, index) =>
-        <Category value={element._id} name={element.category} key={index}/>)
+        <option value={element._id} key={index}>{element.category}</option>)
       }
     </>
   );
@@ -69,8 +64,8 @@ function AddBtn() {
           <div className="new_header">
             <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
             <select name="Cnum" onChange={handleChange}>
-              <Category value={""} name={"select"} />
-              <CategotyMapping />
+              <option value={""}>select</option>
+              <Category />
             </select>
           </div>
 
@@ -129,8 +124,9 @@ function NoteArea(props) {
       <Accordion id = {props._id}>
         <AccordionSummary>
           <div className="note_title">
-            <p className="category_tag">{props.category_tag}</p>
+            <p className="category_tag">{props.category}</p>
             <h3>{props.title}</h3>
+            <p>{props.contents}</p>
           </div>
 
           <div className="note_detail">
@@ -163,19 +159,21 @@ function Contents() {
 
       <div className="category_area">
         <select name="category">
-          <CategotyMapping />
+          <option value={""}>select</option>
+          <Category />
         </select>
         <AddBtn />
       </div>
 
       <div className="note_list">
-        {noteList.map(({ Cnum, title, logdate, id, _id }, index) => <NoteArea
+        {noteList.map(({ title,logdate,id,_id,category,contents }, index) => <NoteArea
           key={index}
-          category_tag={Cnum}
           title = {title}
-          writer = {id}
           logdate = {logdate}
+          writer = {id}
           _id = {_id}
+          category = {category}
+          contents = {contents}
         />)}
       </div>
     </div>
