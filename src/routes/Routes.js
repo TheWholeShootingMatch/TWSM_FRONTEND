@@ -1,17 +1,22 @@
 import React from "react";
 import { BrowserRouter, Route, Switch, Router} from "react-router-dom";
+
 import MainPage from "../components/main/MainPage";
+import Header from "../components/main/header/Header";
+import Login from "../components/login/login";
+import Signup from "../components/signup/signup";
+
+import Model from "../components/model/model";
+
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
 import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
-import Header from "../components/main/header/Header";
+import TctModel from "../components/tct/model_tab/Model";
+
 import Overview from "../components/mypage/common/Overview";
 import Notification from "../components/mypage/user/Notification";
 import MyProject from "../components/mypage/user/MyProject";
 import CreateProject from "../components/mypage/user/CreateProject";
 import RequestedProject from "../components/mypage/manager/Requested";
-import Login from "../components/login/login";
-import Signup from "../components/signup/signup";
-import Model from "../components/tct/model_tab/Model";
 
 /* Header 있는 페이지와 없는 페이지 구분 필요 */
 /* 유저 형태(관리자/일반유저)에 따라서 mypage 경로 변경해야 함
@@ -31,6 +36,7 @@ function Routes() {
                 <Route path="/manager-page/requested-project"><RequestedProject/></Route>
                 <Route path="/whiteboard"><WhiteBoard/></Route>
                 <Route path="/TctWorkflow"><TctWorkflow /></Route>
+                <Route path="/TctModel"><TctModel/></Route>
                 <Route path="/Model"><Model/></Route>
                 <Route path="/login"><Login/></Route>
                 <Route path="/signup"><Signup/></Route>
