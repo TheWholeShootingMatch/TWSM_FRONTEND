@@ -11,6 +11,7 @@ import Modal from '@material-ui/core/Modal';
 
 function Category() {
   const [categorylist, setCategorylist] = useFetch('/api/category');
+  console.log(categorylist);
   return (
     <>
       {categorylist.map((element, index) =>
