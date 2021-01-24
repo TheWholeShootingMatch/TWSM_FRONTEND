@@ -10,8 +10,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Modal from '@material-ui/core/Modal';
 
 function Category() {
-  const [categorylist, setCategorylist] = useFetch('./api/category');
-  console.log(categorylist);
+  const [categorylist, setCategorylist] = useFetch('/api/category');
   return (
     <>
       {categorylist.map((element, index) =>
@@ -93,7 +92,7 @@ function NoteArea(props) {
   const param = {
     method: "POST",
     headers: {
-            'Content-Type': './application/json',
+            'Content-Type': 'application/json',
     },
     body: JSON.stringify({ Lnum : props._id })
   }
