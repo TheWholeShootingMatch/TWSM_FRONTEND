@@ -8,7 +8,6 @@ function useFetch(url, param) {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     }}, param);
-  console.log(option);
   async function fetchUrl() {
     const response = await fetch(url, option);
     const json = await response.json();

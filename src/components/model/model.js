@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useFetch } from "../common/useFetch"
 function Getting() {
-  const [photolists, setPhotoLists] = useFetch('/api/photo');
-  console.log(photolists);
+  const [photolists, setPhotoLists] = useState();
+
+  axios
+  .get('./api/photo')
+  .then((response) => { console.log(JSON.stringify(response.data)) });
+
+
   return (
     <>
-      {photolists.map((element, index) =>
-        <p>{element.link}</p>
-      )}
+
     </>
   );
 }
