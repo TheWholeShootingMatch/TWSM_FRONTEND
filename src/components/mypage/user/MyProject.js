@@ -3,9 +3,9 @@ import UserMyPage from "../common/MyPage";
 import { Link } from "react-router-dom";
 
 
-function MyProject(){
+function MyProject({isLogin}){
     return(
-        <UserMyPage user="user" header="My Project">
+        <UserMyPage user="user" header="My Project" isLogin={isLogin}>
             <Myprojects/>
         </UserMyPage>
     )
