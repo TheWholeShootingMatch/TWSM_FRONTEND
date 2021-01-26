@@ -2,14 +2,33 @@ import React, {useEffect, useState} from "react";
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
 
-function Login(){
+export function Logout({setIsLogin}) {
+  useEffect(() => {
+    const response = async() => {
+      await axios({
+        method: 'get',
+        withCredentials : true,
+        url : '/api/users/logout'
+      }).then((res) => {
+        if (res.data === true) {
+          setIsLogin(false);
+          alert("logout");
+        }
+      });
+    };
+    response();
+  }, []);
+  return <Redirect to={{pathname: "/"}}/>
+}
+
+export function Login({setIsLogin, isLogin}){
 
   const [inputs, setInputs] = useState({
     id: '',
     password: ''
   });
 
-  const [isLogin, setIsLogin] = useState(false); //true -> redirect to mainpage   //더 좋은 방법은 모르겠엄..
+  // const [isLogin, setIsLogin] = useState(false); //true -> redirect to mainpage   //더 좋은 방법은 모르겠엄..
 
   const onChange = (e) => {
     const { value, name } = e.target;
@@ -77,5 +96,3 @@ function Login(){
       );
     }
 }
-
-export default Login;
