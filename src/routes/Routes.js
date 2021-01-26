@@ -3,31 +3,23 @@ import axios from "axios";
 import { BrowserRouter, Route, Switch, Router} from "react-router-dom";
 
 import MainPage from "../components/main/MainPage";
-import Header from "../components/main/header/Header";
-import Login from "../components/login/login";
-import Signup from "../components/signup/signup";
+// import Header from "../components/main/header/Header";
 
 import Model from "../components/model/model";
 
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
 import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
-import TctModel from "../components/tct/model_tab/Model";
+// import TctModel from "../components/tct/model_tab/Model";
 
 import Overview from "../components/mypage/common/Overview";
 import Notification from "../components/mypage/user/Notification";
 import MyProject from "../components/mypage/user/MyProject";
 import CreateProject from "../components/mypage/user/CreateProject";
-<<<<<<< HEAD
+
 import RequestedMessage from "../components/mypage/manager/RequestedMessage";
-// import Login from "../components/login/login";
 import Signup from "../components/signup/signup";
-import Model from "../components/tct/model_tab/Model";
 import RequestedProject from "../components/mypage/user/RequestedProject";
 import {Logout, Login} from "../components/login/login";
-
-=======
-import RequestedProject from "../components/mypage/manager/Requested";
->>>>>>> 6f1ac5f6307028240e9c0b8ca4e5953fb84ef814
 
 /* Header 있는 페이지와 없는 페이지 구분 필요 */
 /* 유저 형태(관리자/일반유저)에 따라서 mypage 경로 변경해야 함
