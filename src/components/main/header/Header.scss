@@ -1,0 +1,16 @@
+.main_header{
+    padding: 16px;
+    border: 1px solid black;
+}
+
+.header_nav{
+    display: flex;
+    flex-direction: row-reverse;
+        ul{
+            display: flex;
+            li{
+                margin: 0 8px;
+            }
+        }
+
+}
