@@ -16,6 +16,7 @@ export const redoDrawing = () => {
 }
 
 export const showVersionList = () => {
-    const versions = shared.getListVersion();
+    const versions = shared.versionList;
+    console.log(versions);
     return versions;
 }

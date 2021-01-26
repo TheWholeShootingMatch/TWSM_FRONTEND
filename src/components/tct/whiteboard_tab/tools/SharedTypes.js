@@ -42,24 +42,26 @@ export const addVersion = () => {
   }
   if (!Y.equalSnapshots(prevSnapshot, snapshot)) {
     versionList.push([{
-      date: new Date(),
+      date: new Date().getTime(),
       snapshot: Y.encodeSnapshot(snapshot),
       clientID: versionDoc.clientID
     }])
   }
-
-  console.log(versionList);
 }
 
-
-export const doc = new Y.Doc({ gcFilter })
+export let doc = new Y.Doc({ gcFilter })
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
 export const webrtcProvider = new WebrtcProvider('yjs-website' + suffix, doc)
 export const awareness = webrtcProvider.awareness // websocketProvider.awareness
 
-export const indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
+export let indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
 
 export const prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
+
+export const renderVersion = (version, prevVersion) => {
+  const currentSnapshot = Y.decodeSnapshot(version.snapshot);
+  lastSnapshot = prevVersion === null ? Y.emptySnapshot : Y.decodeSnapshot(prevVersion);
+}
 
 versionIndexeddbPersistence.on('synced', () => {
   

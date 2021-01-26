@@ -1,6 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
+import {renderVersion} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
@@ -78,9 +79,17 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
 }
 
 function WhiteBoardContents({ toolType, historyArea }) {
-    
-    const versions = showVersionList();
 
+    const [versions, setVersion] = useState([]);
+
+    useEffect(() => {
+        setVersion(showVersionList());
+    }, []);
+
+    // versions.forEach((version, index) => {
+    //  console.log(new Date(version.date).toLocaleString());
+    // })
+    
     return(
     <div className="whiteboard_contents">
         {/* <!-- 현재 화이트보드 슬라이드 --> */}
@@ -92,7 +101,7 @@ function WhiteBoardContents({ toolType, historyArea }) {
              <ul className="history_list">
                     <li className="version_info">
                         {versions.map((version, index) => (
-                            <section>{new Date(version.date).toLocaleDateString()}</section>
+                            <section onClick={() => renderVersion(version, index > 0 ? versions.get(index-1).snapshot : null)}>{new Date(version.date).toLocaleString()}</section>
                         ))}
                      <section>
                         <ul>
