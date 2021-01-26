@@ -1,5 +1,7 @@
 import React from "react";
-import UserMyPage from "../common/MyPage"
+import UserMyPage from "../common/MyPage";
+import { Link } from "react-router-dom";
+
 
 function MyProject(){
     return(
@@ -14,7 +16,7 @@ function Myprojects(){
         <>
         <div className="contents_upper_flex">
             <div>search</div>
-            <a>new</a>
+            <Link to="/mypage/create-project">new</Link>
             {/* 누르면 create-project 페이지로 이동 */}
         </div>
         <div className="project_area">
