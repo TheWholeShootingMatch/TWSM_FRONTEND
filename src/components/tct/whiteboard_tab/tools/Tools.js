@@ -2,8 +2,8 @@ import * as shared from './SharedTypes';
 
 /* delete all (trash action) */
 export const deleteAllDrawing = () => {
-    shared.drawingContent.delete(0, shared.drawingContent.length);
-} 
+    shared.drawingContent.get().delete(0, shared.drawingContent.get().length);
+}
 
 /* undo drawing (undo action) */
 export const undoDrawing = () => {

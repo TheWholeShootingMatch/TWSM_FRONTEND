@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import {renderVersion} from './tools/SharedTypes';
+import {renderVersion, slideNum} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
@@ -28,15 +28,15 @@ function WhiteBoardArea(){
     const historyArea = useRef(null);
     const [slides, setSlides] = useState([
       {
-        id: 1,
+        id: "1",
         name: "first"
       },
       {
-        id: 2,
+        id: "2",
         name: "second"
       }
     ]);
-    const [activeSlide, setActiveSlide] = useState(1);
+    const [activeSlide, setActiveSlide] = useState("1");
     const nextSlide = useRef(3);
 
     const onClickHistoy = () => {
@@ -51,7 +51,7 @@ function WhiteBoardArea(){
 
     return (
         <div className="whiteboard_area">
-            <WhiteBoardSlides slides={slides} setSliides={setSlides} activeSlide={activeSlide} setActiveSlide={setActiveSlide}/>
+            <WhiteBoardSlides slides={slides} setSlides={setSlides} activeSlide={activeSlide} setActiveSlide={setActiveSlide} nextSlide={nextSlide}/>
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
             <WhiteBoardContents toolType={toolType} historyArea={historyArea} activeSlide={activeSlide}/>
         </div>
@@ -130,22 +130,28 @@ function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
 
 function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextSlide}){
   const clickSlide = (id) => {
-    console.log(id);
     setActiveSlide(id);
   }
 
   const addSlide = (e) => {
     const slide = {
-      id: nextSlide.current,
+      id: nextSlide.current.toString(),
       name: "new tab"
     };
-    setSlides(slides.concat(slide));
+    setSlides([...slides, slide]);
     nextSlide.current += 1;
   }
 
   const deliteSlide = (id) => {
-    setSlides(slides.filter(slide => slide.id !== id)); //id 번호 바꿔주기 추가해야함
-    nextSlide.current -= 1;
+    setSlides(slides.filter(slide => slide.id !== id));
+  }
+
+  const onChange = (e) => {
+    setSlides(
+      slides.map(slide =>
+        slide.id === e.target.name ? { ...slide, name: e.target.value } : slide
+      )
+    );
   }
 
   return(
@@ -157,7 +163,7 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextS
           : (slideClass = 'slide');
         return (
           <div className={slideClass} key={index}>
-              <div onClick={() => clickSlide(slide.id)}> {slide.name} </div>
+              <div onClick={() => clickSlide(slide.id)}> <input placeholder={slide.name} name={slide.id} onChange={onChange}/></div>
               <button onClick={() => deliteSlide(slide.id)}>X</button>
           </div>
         );

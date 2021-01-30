@@ -123,7 +123,6 @@ export const drawingContent = {
   },
   set(value) {
     this.drawingContent = doc.getArray(value);
-    console.log(this.drawingContent);
   }
 }
 
