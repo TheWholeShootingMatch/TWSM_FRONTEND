@@ -26,6 +26,18 @@ function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
     const historyArea = useRef(null);
+    const [slides, setSlides] = useState([
+      {
+        id: 1,
+        name: "first"
+      },
+      {
+        id: 2,
+        name: "second"
+      }
+    ]);
+    const [activeSlide, setActiveSlide] = useState(1);
+    const nextSlide = useRef(3);
 
     const onClickHistoy = () => {
         const displayState = historyArea.current.style.display;
@@ -39,15 +51,15 @@ function WhiteBoardArea(){
 
     return (
         <div className="whiteboard_area">
+            <WhiteBoardSlides slides={slides} setSliides={setSlides} activeSlide={activeSlide} setActiveSlide={setActiveSlide}/>
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
-            <WhiteBoardContents toolType={toolType} historyArea={historyArea} />
-            <WhiteBoardSlides/>
+            <WhiteBoardContents toolType={toolType} historyArea={historyArea} activeSlide={activeSlide}/>
         </div>
     )
 }
 
 function WhiteBoardHeader({ setType, onClickHistoy }) {
-    
+
     return(
         <div className="whiteboard_header">
             <div className="tools">
@@ -78,7 +90,7 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
     )
 }
 
-function WhiteBoardContents({ toolType, historyArea }) {
+function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
 
     const [versions, setVersion] = useState([]);
 
@@ -89,12 +101,12 @@ function WhiteBoardContents({ toolType, historyArea }) {
     // versions.forEach((version, index) => {
     //  console.log(new Date(version.date).toLocaleString());
     // })
-    
+
     return(
     <div className="whiteboard_contents">
         {/* <!-- 현재 화이트보드 슬라이드 --> */}
         <div className="current_whiteboard">
-            <Canvas toolType={toolType}/>
+            <Canvas toolType={toolType} activeSlide={activeSlide}/>
         </div>
          {/* <!-- default style : display hidden --> */}
          <div className="history_area" ref={historyArea}>
@@ -116,23 +128,45 @@ function WhiteBoardContents({ toolType, historyArea }) {
     )
 }
 
-function WhiteBoardSlides(){
-    return(
-    <div className="whiteboard_slides">
-        <div className="slide" id="current_slide">
-            슬라이드3 (현재 슬라이드)
-        </div>
-        <div className="slide">
-            슬라이드2
-        </div>
-        <div className="slide">
-            슬라이드3
-        </div>
-        <div className="slide add_slide_btn">
-            슬라이드 더하기
-        </div>
-    </div>
-    )
+function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextSlide}){
+  const clickSlide = (id) => {
+    console.log(id);
+    setActiveSlide(id);
+  }
+
+  const addSlide = (e) => {
+    const slide = {
+      id: nextSlide.current,
+      name: "new tab"
+    };
+    setSlides(slides.concat(slide));
+    nextSlide.current += 1;
+  }
+
+  const deliteSlide = (id) => {
+    setSlides(slides.filter(slide => slide.id !== id)); //id 번호 바꿔주기 추가해야함
+    nextSlide.current -= 1;
+  }
+
+  return(
+  <div className="whiteboard_slides">
+      {slides.map((slide, index) => {
+        var slideClass;
+        slide.id === activeSlide
+          ? (slideClass = 'current_slide slide')
+          : (slideClass = 'slide');
+        return (
+          <div className={slideClass} key={index}>
+              <div onClick={() => clickSlide(slide.id)}> {slide.name} </div>
+              <button onClick={() => deliteSlide(slide.id)}>X</button>
+          </div>
+        );
+      })}
+      <div className="slide add_slide_btn" onClick={() => addSlide()}>
+          슬라이드 더하기
+      </div>
+  </div>
+  )
 }
 
 export default WhiteBoard;

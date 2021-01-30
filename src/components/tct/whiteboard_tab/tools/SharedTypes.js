@@ -64,7 +64,7 @@ export const renderVersion = (version, prevVersion) => {
 }
 
 versionIndexeddbPersistence.on('synced', () => {
-  
+
   lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
   versionType.observe(() => {
     if (versionType.length > 0) {
@@ -105,8 +105,29 @@ versionIndexeddbPersistence.whenSynced.then(() => {
  *
  * @type {Y.Array<Y.Map<Y.Array|String|object>>}
  */
-export const drawingContent = doc.getArray('drawing')
-export const whiteboardUndoManager = new Y.UndoManager(drawingContent);
+
+export const slideNum = {
+  get() {
+    return this.active;
+  },
+  set(value) {
+    this.active = value;
+    drawingContent.set(value);
+  }
+}
+
+export const drawingContent = {
+  drawingContent: doc.getArray(slideNum.get()),
+  get() {
+    return this.drawingContent;
+  },
+  set(value) {
+    this.drawingContent = doc.getArray(value);
+    console.log(this.drawingContent);
+  }
+}
+
+export const whiteboardUndoManager = new Y.UndoManager(drawingContent.get());
 
 let undoManager = null
 
