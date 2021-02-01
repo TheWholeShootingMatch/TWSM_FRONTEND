@@ -14,8 +14,8 @@ function Category() {
   return (
     <>
       {categorylist.map((element, index) =>
-        <option value={element._id} key={index}>{element.category}</option>)
-      }
+        <option value={element._id} key={index}>{element.category}</option>
+      )}
     </>
   );
 }
@@ -56,10 +56,7 @@ function AddBtn() {
   return (
     <>
       <button onClick={handleOpen}>add</button>
-      <Modal
-      open={open}
-      onClose={handleClose}
-      >
+      <Modal open={open} onClose={handleClose}>
         <form className="new_note" onSubmit={handleSubmit}>
           <div className="new_header">
             <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
@@ -183,11 +180,9 @@ function Contents() {
 // wrap
 function TctWorkflow() {
   return (
-    <>
-      <TctComponant>
-        <Contents />
-      </TctComponant>
-    </>
+    <TctComponant>
+      <Contents />
+    </TctComponant>
   );
 }
 
