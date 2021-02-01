@@ -28,7 +28,7 @@ function MakeSelct(props) {
 
 function SideNav() {
   return (
-    <div class="side_nav">
+    <div className="side_nav">
       {sample.map(({name, option}, index) => <MakeSelct
         key={index}
         name = {name}

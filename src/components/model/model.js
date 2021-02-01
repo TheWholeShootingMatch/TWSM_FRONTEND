@@ -1,18 +1,15 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { useFetch } from "../common/useFetch"
-import axios from "axios";
-import Header from "../common/header";
-import SideNav from "../common/sidenav"
 import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+
 import './model.scss';
 
-import Modal from '@material-ui/core/Modal';
+import Header from "../common/header";
+import SideNav from "../common/sidenav"
+import Like from "./like_btn";
 
-function Like(){
-  return (
-    <button class="like_btn">♥</button>
-  );
-}
+import Modal from '@material-ui/core/Modal';
 
 const ModalContext = createContext({
   bool: false,
@@ -37,7 +34,7 @@ function GetModel() {
   return (
     <>
       {modellist.map((elem, index) =>
-        <div class="model" key={index}>
+        <div className="model" key={index}>
           <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
           <Like />
         </div>
@@ -47,10 +44,6 @@ function GetModel() {
 }
 
 function Compcard() {
-  //for modal
-  const open = useContext(ModalContext);
-  const { toggle } = useContext(ModalContext);
-
   //for info
   const model = useContext(ModelContext);
   const [info, setInfo] = useState([]);
@@ -73,32 +66,38 @@ function Compcard() {
     fetchUrl();
   }, [model.id]);
 
+  //for modal
+  const open = useContext(ModalContext);
+  const { toggle } = useContext(ModalContext);
+
   return (
     <Modal open={open.bool} onClose={toggle}>
-    <div class="Compcard">
-      <div class="model_info">
-        <div class="model_img">
+    <div className="Compcard">
+      <div className="model_info">
+        <div className="model_img">
           <img src={info.profile_img} alt={info.Name}/>
         </div>
-        <div class="model_name">
+        <div className="model_name">
           <h2>{info.Name}</h2>
         </div>
-        <div class="model_contect">
+        <div className="model_contect">
           <p>E-mail : {info.email}</p>
           <p>Instagram : {info.instagram}</p>
         </div>
-        <div class="model_size">
+        <div className="model_size">
           <p>Height : {info.height}</p>
           <p>Age : {info.Age}</p>
           <p>Size : {info.Busto}-{info.Busto}-{info.Busto}</p>
         </div>
-        <div class="model_career">
+        <div className="model_career">
           <p>{info.career}</p>
         </div>
       </div>
-      <button class="back_btn"></button>
+      <button className="back_btn"></button>
       <Like />
-      <Link to="/model/Model_Detail">View More</Link>
+      <Link to={`/model/Model_Detail/${model.id}`}>
+        View More
+      </Link>
     </div>
     </Modal>
   );
@@ -135,25 +134,25 @@ function Main() {
 
   return (
     <main>
-      <ModalContext.Provider value={bool}>
       <ModelContext.Provider value={id}>
+      <ModalContext.Provider value={bool}>
         <Compcard />
 
-        <div class="sorting_bar">
+        <div className="sorting_bar">
           <p>sort as </p>
           <select name="sort">
-            <option value="popular" selected>popular</option>
+            <option value="popular" defaultValue>popular</option>
             <option value="latest">lastest</option>
           </select>
         </div>
 
         <Link to="/model/New_Model">Registration</Link>
 
-        <div class="model_list">
+        <div className="model_list">
           <GetModel />
         </div>
-      </ModelContext.Provider>
       </ModalContext.Provider>
+      </ModelContext.Provider>
     </main>
   );
 }
