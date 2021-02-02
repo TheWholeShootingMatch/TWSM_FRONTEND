@@ -3,9 +3,9 @@ import { Link, useHistory } from "react-router-dom";
 function header() {
   return (
     <header>
-        <div class="logo">
+        <div className="logo">
         </div>
-        <nav class="header_nav">
+        <nav className="header_nav">
             <ul>
                 <li><Link to="/model/Model">model</Link></li>
                 <li>photographer</li>
