@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Redirect } from 'react-router-dom';
 import axios from "axios";
 
-export function Logout({setIsLogin}) {
+export function Logout({setIsLogin, setUserType}) {
   useEffect(() => {
     const response = async() => {
       await axios({
@@ -12,16 +12,17 @@ export function Logout({setIsLogin}) {
       }).then((res) => {
         if (res.data === true) {
           setIsLogin(false);
-          alert("logout");
+          setUserType();
         }
       });
     };
     response();
   }, []);
+  alert("logout");
   return <Redirect to={{pathname: "/"}}/>
 }
 
-export function Login({setIsLogin, isLogin}){
+export function Login({setUserType, setIsLogin, isLogin}){
 
   const [inputs, setInputs] = useState({
     id: '',
@@ -45,9 +46,12 @@ export function Login({setIsLogin, isLogin}){
         withCredentials : true,
         url : '/api/users/login'
       }).then((res) => {
-        if(res.data === true ) { //login 기록이 있을 시 redirect("/")
+        if(res.data === true) { //login 기록이 있을 시 redirect("/")
           alert('already logined');
           setIsLogin(true);
+        }
+        else {
+          setIsLogin(false);
         }
       });
     };
@@ -65,6 +69,12 @@ export function Login({setIsLogin, isLogin}){
         setIsLogin(false);
       }
       else {  //login 성공
+        if (res.data.id === "manager") {
+          setUserType("manager");
+        }
+        else {
+          setUserType("general");
+        }
         setIsLogin(true);
       }
     });
