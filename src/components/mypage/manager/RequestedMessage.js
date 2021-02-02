@@ -3,11 +3,11 @@ import ManagerPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 import axios from "axios";
 
-function RequestedMessage() {
+function RequestedMessage({isLogin, userType}) {
     const [requestedMessage] = useFetch('/api/tct');
 
     return(
-        <ManagerPage user="manager" header="Requested project">
+        <ManagerPage header="Requested project" user={userType} isLogin={isLogin}>
             <tbody className="requested_projects">
                 {requestedMessage.map((message, index) => <RequestedProject key={index} message={message}/>)}
             </tbody>
