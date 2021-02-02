@@ -14,7 +14,7 @@ function Header({ isLogin }) {
                     <li>model</li>
                     <li>photographer</li>
                     <li>collaborate</li>
-                    <li>{isLogin ? <Link to="/mypage/user">my page</Link> : <Link to="/login">my page</Link>}</li>
+                    <li>{isLogin ? <Link to="/mypage">my page</Link> : <Link to="/login">my page</Link>}</li>
                     <li>{isLogin ? <Link to="/logout">logout</Link> : <Link to="/login">login</Link>}</li> 
                 </ul>
             </nav>
