@@ -61,7 +61,6 @@ function Canvas({toolType, activeSlide}){
 
     const finishDrawing = () => {
         console.log("finish drawing");
-        shared.addVersion();
         sharedLine= null;
     }
 

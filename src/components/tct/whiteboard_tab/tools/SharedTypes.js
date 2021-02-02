@@ -3,6 +3,8 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
+import { LeveldbPersistence } from 'y-leveldb'
+import { lighten } from '@material-ui/core'
 
 // const websocketUrl = 'wss://demos.yjs.dev'
 const websocketUrl = 'http://localhost:3000'
@@ -18,35 +20,39 @@ const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastS
 
 const suffix = '-v3'
 
-export const versionDoc = new Y.Doc();
+export let versionDoc = new Y.Doc();
 // this websocket provider doesn't connect
 export const versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website-version' + suffix, versionDoc, { connect: false })
 versionWebsocketProvider.connectBc() // only connect via broadcastchannel
-export const versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
-export const versionType = versionDoc.getArray('versions');
-export const versionList = versionDoc.getArray('versionList');
+export let versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
+export let versionType = versionDoc.getArray('versions');
 
+const persistence = new LeveldbPersistence('./storage-location');
 
-export const getListVersion = () => {
-  const versions = versionDoc.getArray('versionList');
-  return versions;
+export const addVersion = (commitName) => {
+  console.log(commitName);
+  persistence.storeUpdate(commitName, Y.encodeStateAsUpdate(versionDoc));
+  console.log(persistence.getYDoc(commitName));
 }
 
-export const addVersion = () => {
-  const prevVersion = versionType.length === 0 ? null : versionType.get(versionType.length - 1);
-  const prevSnapshot = prevVersion === null ? Y.emptySnapshot : Y.decodeSnapshot(prevVersion.snapshot);
-  const snapshot = Y.snapshot(versionDoc);
-  if (prevVersion != null) {
-    // account for the action of adding a version to ydoc
-    prevSnapshot.sv.set(prevVersion.clientID, prevSnapshot.sv.get(prevVersion.clientID) + 1);
-  }
-  if (!Y.equalSnapshots(prevSnapshot, snapshot)) {
-    versionList.push([{
-      date: new Date().getTime(),
-      snapshot: Y.encodeSnapshot(snapshot),
-      clientID: versionDoc.clientID
-    }])
-  }
+export const renderVersion = async (commitName) => {
+  versionDoc = await persistence.getYDoc(commitName);
+  versionType = versionDoc.getArray('versions');
+  console.log(versionType);
+  console.log(await persistence.getAllDocNames());
+  versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc);
+  versionIndexeddbPersistence.on('synced', () => {
+    lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
+    versionType.observe(() => {
+    if (versionType.length > 0) {
+        const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
+        undoManager.clear()
+        Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
+        lastSnapshot = nextSnapshot
+        storeState(indexeddbPersistence)
+      }
+    })
+  })
 }
 
 export let doc = new Y.Doc({ gcFilter })
@@ -57,11 +63,6 @@ export const awareness = webrtcProvider.awareness // websocketProvider.awareness
 export let indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
 
 export const prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
-
-export const renderVersion = (version, prevVersion) => {
-  const currentSnapshot = Y.decodeSnapshot(version.snapshot);
-  lastSnapshot = prevVersion === null ? Y.emptySnapshot : Y.decodeSnapshot(prevVersion);
-}
 
 versionIndexeddbPersistence.on('synced', () => {
 
@@ -124,6 +125,9 @@ export const drawingContent = {
   set(value) {
     this.drawingContent = doc.getArray(value);
     console.log(this.drawingContent);
+  },
+  clear() {
+    this.drawingContent.delete(0, this.drawingContent.length);
   }
 }
 
