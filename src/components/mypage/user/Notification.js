@@ -2,13 +2,13 @@ import React, { useEffect,useState } from "react";
 import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 
-function Notification(){
+function Notification({isLogin}){
     
     const [notifications] = useFetch('/api/notification');
     console.log(notifications);
 
     return(
-        <UserMyPage user="user" header="Notification">
+        <UserMyPage user="user" header="Notification" isLogin={isLogin}>
             <tbody className="notifications">
                 {notifications.map((notification, index) => <NotificationTable key={index} notification={notification}/>)}
             </tbody>
