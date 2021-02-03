@@ -31,14 +31,32 @@ function GetModel() {
     toggle();
   };
 
+  // for page
+  const [cur, setCur] = useState(0);
+  const page = [];
+  const pageComponantNum = 5;
+
+  for (let i=0; i<parseInt(modellist.length/pageComponantNum)+1; i++) {
+    page.push(<li key={i} onClick={() => setCur(i)}>{i+1}</li>);
+  };
+
   return (
     <>
-      {modellist.map((elem, index) =>
-        <div className="model" key={index}>
-          <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
-          <Like />
-        </div>
-      )}
+    <div className="model_list">
+      {modellist.map((elem, index) => {
+        if (cur*pageComponantNum<=index && index<cur*pageComponantNum+(pageComponantNum-1)) {
+          return (
+            <div className="model" key={index}>
+              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
+              <Like />
+            </div>
+          );
+        }
+      })}
+    </div>
+    <ul className="pageControll">
+      {page}
+    </ul>
     </>
   );
 }
@@ -148,9 +166,7 @@ function Main() {
 
         <Link to="/model/New_Model">Registration</Link>
 
-        <div className="model_list">
-          <GetModel />
-        </div>
+        <GetModel />
       </ModalContext.Provider>
       </ModelContext.Provider>
     </main>

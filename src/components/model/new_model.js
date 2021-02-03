@@ -5,8 +5,11 @@ import Header from "../common/header";
 import { Link, useHistory } from "react-router-dom";
 
 function ProfileForm() {
+  let history = useHistory();
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+
     const formData = new FormData();
     formData.append('file', e.target.photo.files[0]);
     formData.append('Name', e.target.Name.value);
@@ -23,26 +26,26 @@ function ProfileForm() {
 
     axios
     .post('/api/model/new', formData)
-    .then((response) => { console.log({ response }) });
+    .then((response) => { history.push(`/model/Model_Detail`) });
   };
 
   return (
-    <form class="model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
-      <div class="form_top">
+    <form className="model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
+      <div className="form_top">
 
-        <div class="left" id="photo_area">
-          <label for="photo">Profile photo</label>
+        <div className="left" id="photo_area">
+          <label htmlFor="photo">Profile photo</label>
           <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
         </div>
 
-        <div class="right" id="basic_info">
-          <label for="Name">Name</label>
+        <div className="right" id="basic_info">
+          <label htmlFor="Name">Name</label>
           <input type="text" name="Name" />
 
-          <label for="Age">Age</label>
+          <label htmlFor="Age">Age</label>
           <input type="text" name="Age" />
 
-          <label for="Gender">Gender</label>
+          <label htmlFor="Gender">Gender</label>
           <select name="Gender">
             <option value="">select</option>
             <option value="F">Female</option>
@@ -50,31 +53,31 @@ function ProfileForm() {
             <option value="N">None</option>
           </select>
 
-          <label for="height">height</label>
+          <label htmlFor="height">height</label>
           <input type="text" name="height" />
 
-          <label for="Busto">Busto</label>
+          <label htmlFor="Busto">Busto</label>
           <input type="text" name="Busto" />
 
-          <label for="Quadril">Quadril</label>
+          <label htmlFor="Quadril">Quadril</label>
           <input type="text" name="Quadril" />
 
-          <label for="Cintura">Cintura</label>
+          <label htmlFor="Cintura">Cintura</label>
           <input type="text" name="Cintura" />
 
-          <label for="instagram">instagram</label>
+          <label htmlFor="instagram">instagram</label>
           <input type="text" name="instagram" />
 
-          <label for="email">email</label>
+          <label htmlFor="email">email</label>
           <input type="text" name="email" />
         </div>
       </div>
 
-      <div class="form_bottom">
-        <label for="self_introduction">self introduction</label>
+      <div className="form_bottom">
+        <label htmlFor="self_introduction">self introduction</label>
         <input type="text" name="self_introduction" />
 
-        <label for="career">career</label>
+        <label htmlFor="career">career</label>
         <input type="text" name="career" />
       </div>
 

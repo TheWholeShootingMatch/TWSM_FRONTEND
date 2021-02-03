@@ -7,7 +7,10 @@ import Header from "../common/header";
 import Like from "./like_btn";
 
 function Main() {
-  const {modelId} = useParams();
+  let {modelId} = useParams();
+  if (typeof modelId == "undefined") {
+    modelId = "6018da5ed87b76316427267d";
+  }
 
   const param = {
     method: "POST",
