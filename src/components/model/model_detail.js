@@ -1,17 +1,11 @@
-import React, { useState } from "react";
 import { useFetch } from "../common/useFetch"
 import {useHistory, useParams} from 'react-router-dom';
-import axios from "axios";
 
 import Header from "../common/header";
 import Like from "./like_btn";
 
-function Main() {
-  let {modelId} = useParams();
-  if (typeof modelId == "undefined") {
-    modelId = "6018da5ed87b76316427267d";
-  }
-
+function Main({modelId}) {
+  // gwt model
   const param = {
     method: "POST",
     headers: {
@@ -27,24 +21,22 @@ function Main() {
         <div className="model_img">
           <img src={model.profile_img} alt={model.Name}/>
         </div>
-        <div className="model_detail">
-          <h2>{model.Name}</h2>
-          <p>Age : {model.Age}</p>
-          <p>Height : {model.height}</p>
-          <p>Busto : {model.Busto}</p>
-          <p>Quadril : {model.Quadril}</p>
-          <p>Cintura : {model.Cintura}</p>
-          <p>E-mail : {model.email}</p>
-          <p>Instagram : {model.instagram}</p>
-        </div>
+        <h2>{model.Name}</h2>
+        <p>Age : {model.Age}</p>
+        <p>Height : {model.height}</p>
+        <p>Busto : {model.Busto}</p>
+        <p>Quadril : {model.Quadril}</p>
+        <p>Cintura : {model.Cintura}</p>
+        <p>E-mail : {model.email}</p>
+        <p>Instagram : {model.instagram}</p>
         <div className="model_imgs">
           <img src="" alt="" />
           <img src="" alt="" />
         </div>
-        <div className="model_career">
-          <p>career</p>
-          <p>{model.career}</p>
-        </div>
+        <p>self introduction</p>
+        <p>{model.self_introduction}</p>
+        <p>career</p>
+        <p>{model.career}</p>
         <div className="model_loc">
           <p>Valid Location : </p>
         </div>
@@ -56,10 +48,16 @@ function Main() {
 }
 
 function Model_Detail() {
+  // get model id in query
+  let {modelId} = useParams();
+  if (typeof modelId == "undefined") {
+    return <p> Warning : incorrect path </p>
+  }
+
   return (
     <>
       <Header />
-      <Main />
+      <Main modelId = {modelId}/>
     </>
   );
 }

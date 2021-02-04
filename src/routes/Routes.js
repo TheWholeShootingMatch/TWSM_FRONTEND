@@ -10,6 +10,7 @@ import Model from "../components/model/model";
 import Model_Detail from "../components/model/model_detail";
 import New_Model from "../components/model/new_model";
 
+/* TCT pages */
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
 import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
 // import TctModel from "../components/tct/model_tab/Model";
@@ -68,7 +69,7 @@ function Routes() {
                         <Route path="/whiteboard"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
                         <Route path="/model/Model"><Model /></Route>
-                        <Route path="/model/Model_Detail/:modelId?"><Model_Detail /></Route>
+                        <Route path="/model/Model_Detail/:modelId"><Model_Detail /></Route>
                         <Route path="/model/New_Model"><New_Model /></Route>
                 </Switch>
             </>

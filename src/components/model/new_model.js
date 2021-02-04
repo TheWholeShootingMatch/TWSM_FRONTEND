@@ -1,10 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../common/useFetch"
 import Header from "../common/header";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 
 function ProfileForm() {
+  // for get user information
+  let isModel = false;
+  const [model, setModel] = useState({
+    Name : "",
+    Age : "",
+    Gender : "",
+    height : "",
+    Busto : "",
+    Quadril : "",
+    Cintura : "",
+    instagram : "",
+    email : "",
+    self_introduction : "",
+    career : "",
+  });
+
+  async function fetchUrl() {
+    const response = await fetch("/api/model/searchForUid");
+    const json = await response.json();
+    if (json != null) {
+      isModel = true;
+      setModel(json);
+    }
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setModel({
+      ...model,
+      [name]: value
+    });
+  };
+
+  // for form post
   let history = useHistory();
 
   const handleSubmit = (e) => {
@@ -23,10 +61,11 @@ function ProfileForm() {
     formData.append('email', e.target.email.value);
     formData.append('self_introduction', e.target.self_introduction.value);
     formData.append('career', e.target.career.value);
+    formData.append('isModel', isModel);
 
     axios
     .post('/api/model/new', formData)
-    .then((response) => { history.push(`/model/Model_Detail`) });
+    .then((response) => { history.push(`/model/Model`) });
   };
 
   return (
@@ -40,45 +79,45 @@ function ProfileForm() {
 
         <div className="right" id="basic_info">
           <label htmlFor="Name">Name</label>
-          <input type="text" name="Name" />
+          <input type="text" value={model.Name} name="Name" onChange={handleChange}/>
 
           <label htmlFor="Age">Age</label>
-          <input type="text" name="Age" />
+          <input type="text" name="Age" value={model.Age} onChange={handleChange}/>
 
           <label htmlFor="Gender">Gender</label>
-          <select name="Gender">
+          <select name="Gender" value={model.Gender} onChange={handleChange}>
             <option value="">select</option>
             <option value="F">Female</option>
             <option value="M">Male</option>
-            <option value="N">None</option>
+            <option value="N">Not on the list</option>
           </select>
 
           <label htmlFor="height">height</label>
-          <input type="text" name="height" />
+          <input type="text" name="height" value={model.height} onChange={handleChange}/>
 
           <label htmlFor="Busto">Busto</label>
-          <input type="text" name="Busto" />
+          <input type="text" name="Busto" value={model.Busto} onChange={handleChange}/>
 
           <label htmlFor="Quadril">Quadril</label>
-          <input type="text" name="Quadril" />
+          <input type="text" name="Quadril" value={model.Quadril} onChange={handleChange}/>
 
           <label htmlFor="Cintura">Cintura</label>
-          <input type="text" name="Cintura" />
+          <input type="text" name="Cintura" value={model.Cintura} onChange={handleChange}/>
 
           <label htmlFor="instagram">instagram</label>
-          <input type="text" name="instagram" />
+          <input type="text" name="instagram" value={model.instagram} onChange={handleChange}/>
 
           <label htmlFor="email">email</label>
-          <input type="text" name="email" />
+          <input type="text" name="email" value={model.email} onChange={handleChange}/>
         </div>
       </div>
 
       <div className="form_bottom">
         <label htmlFor="self_introduction">self introduction</label>
-        <input type="text" name="self_introduction" />
+        <input type="text" name="self_introduction" value={model.self_introduction} onChange={handleChange}/>
 
         <label htmlFor="career">career</label>
-        <input type="text" name="career" />
+        <input type="text" name="career" value={model.career} onChange={handleChange}/>
       </div>
 
       <button type="submit">save</button>
