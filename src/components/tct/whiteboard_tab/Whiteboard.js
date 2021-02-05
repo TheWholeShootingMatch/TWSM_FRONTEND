@@ -1,8 +1,8 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import {addVersion, renderVersion} from './tools/SharedTypes';
-import {deleteAllDrawing, undoDrawing, redoDrawing} from "./tools/Tools";
+import {addVersion, renderVersion, clearVersionList} from './tools/SharedTypes';
+import {deleteAllDrawing, undoDrawing, redoDrawing, getVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -25,22 +25,25 @@ function WhiteBoard(){
 function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
+    const [toggleHistoryMenu, setToggle] = useState(false);
+    const [versions, setVersion] = useState([]);
+
     const historyArea = useRef(null);
 
+    useEffect(() => {
+        const versionList = getVersionList();
+        console.log(versionList);
+        setVersion(versionList);
+    }, []);
+
     const onClickHistoy = () => {
-        const displayState = historyArea.current.style.display;
-        if (displayState === "block") {
-            historyArea.current.style.display = "none";
-        }
-        else {
-            historyArea.current.style.display = "block";
-        }
+        setToggle(!toggleHistoryMenu);
     }
 
     return (
         <div className="whiteboard_area">
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
-            <WhiteBoardContents toolType={toolType} historyArea={historyArea} />
+            <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
             <WhiteBoardSlides/>
         </div>
     )
@@ -72,26 +75,26 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
                 </ul>
             </div>
             <div className="history_btn">
-                <button onClick={onClickHistoy}>history</button>
+                <button onClick={() => onClickHistoy()}>history</button>
             </div>
         </div>
     )
 }
 
-function WhiteBoardContents({ toolType, historyArea }) {
-
-    const [versions, setVersion] = useState([]);
-
+function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
 
     return(
         <div className="whiteboard_contents">
             <div className="current_whiteboard">
                 <Canvas toolType={toolType} />
             </div>
-            <div className="history_area" ref={historyArea}>
+            <div ref={historyArea} className={toggleHistoryMenu ? "history_area active" : "history_area"}>
                 <ul className="history_list">
-                    <button onClick={() => addVersion("2")}>add</button>
-                    <button onClick={() => renderVersion("1")}>render</button>
+                    <button onClick={() => addVersion()}>add</button>
+                    <button onClick={() => clearVersionList()}>clear</button>
+                    {versions.map((version, index) => (
+                            <section onClick={() => renderVersion(version)}>{new Date(version.date).toLocaleString()}</section>
+                    ))}
                     <li className="version_info"></li>
                 </ul>
             </div>

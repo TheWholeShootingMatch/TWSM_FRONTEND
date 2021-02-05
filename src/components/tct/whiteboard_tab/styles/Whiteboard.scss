@@ -33,6 +33,10 @@
         top: 0;
         display: none;
 
+        &.active{
+            display: block;
+        }
+        
         .history_list{
             width: 143px;
             list-style: none;

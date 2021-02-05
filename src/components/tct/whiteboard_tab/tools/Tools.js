@@ -15,6 +15,7 @@ export const redoDrawing = () => {
     shared.whiteboardUndoManager.redo();
 }
 
-export const addVersionDoc = () => {
-
+export const getVersionList = () => {
+    const versions = shared.getVersionList();
+    return versions;
 }

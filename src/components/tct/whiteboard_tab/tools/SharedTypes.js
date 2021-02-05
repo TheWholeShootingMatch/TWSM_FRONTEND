@@ -26,36 +26,50 @@ export const versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'yjs
 versionWebsocketProvider.connectBc() // only connect via broadcastchannel
 export let versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
 export let versionType = versionDoc.getArray('versions');
+export const versionList = versionDoc.getArray('versionList');
 
-const persistence = new LeveldbPersistence('./storage-location');
-
-export const addVersion = (commitName) => {
-  console.log(commitName);
-  persistence.storeUpdate(commitName, Y.encodeStateAsUpdate(versionDoc));
-  console.log(persistence.getYDoc(commitName));
+export const getVersionList = () => {
+  return versionList;
 }
 
-export const renderVersion = async (commitName) => {
-  versionDoc = await persistence.getYDoc(commitName);
-  versionType = versionDoc.getArray('versions');
-  console.log(versionType);
-  console.log(await persistence.getAllDocNames());
-  versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc);
-  versionIndexeddbPersistence.on('synced', () => {
-    lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
-    versionType.observe(() => {
-    if (versionType.length > 0) {
-        const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
-        undoManager.clear()
-        Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
-        lastSnapshot = nextSnapshot
-        storeState(indexeddbPersistence)
-      }
-    })
-  })
+export const addVersion = () => {
+  
+  versionList.push([{
+    date: new Date().getTime(),
+    drawingDocState: Y.encodeStateAsUpdate(doc),
+    versionDocState : Y.encodeStateAsUpdate(versionDoc),
+    clientID: versionDoc.clientID
+  }]);
 }
 
-export let doc = new Y.Doc({ gcFilter })
+export const renderVersion = (version) => {
+  
+  console.log(version);
+  console.log(Y.encodeStateAsUpdate(doc));
+  console.log(Y.encodeStateAsUpdate(versionDoc));
+  
+  Y.applyUpdate(doc, version.drawingDocState); //doc state update
+  Y.applyUpdate(versionDoc, version.versionDocState) //version doc state update
+  
+  restoreVersion();
+
+}
+
+
+const restoreVersion = () => {
+  doc = new Y.Doc({ gcFilter });
+}
+
+export const clearVersionList = () => {
+  versionList.delete(0, versionList.length);
+}
+
+export let doc = new Y.Doc({ gcFilter });
+
+doc.on('update', () => {
+  console.log("update!");
+})
+
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
 export const webrtcProvider = new WebrtcProvider('yjs-website' + suffix, doc)
 export const awareness = webrtcProvider.awareness // websocketProvider.awareness
