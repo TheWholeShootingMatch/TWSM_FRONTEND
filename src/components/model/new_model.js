@@ -1,12 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../common/useFetch"
 import Header from "../common/header";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 
 function ProfileForm() {
+  // for get user information
+  let isModel = false;
+  const [model, setModel] = useState({
+    Name : "",
+    Age : "",
+    Gender : "",
+    height : "",
+    Busto : "",
+    Quadril : "",
+    Cintura : "",
+    instagram : "",
+    email : "",
+    self_introduction : "",
+    career : "",
+  });
+
+  async function fetchUrl() {
+    const response = await fetch("/api/model/searchForUid");
+    const json = await response.json();
+    if (json != null) {
+      isModel = true;
+      setModel(json);
+    }
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setModel({
+      ...model,
+      [name]: value
+    });
+  };
+
+  // for form post
+  let history = useHistory();
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+
     const formData = new FormData();
     formData.append('file', e.target.photo.files[0]);
     formData.append('Name', e.target.Name.value);
@@ -20,62 +61,63 @@ function ProfileForm() {
     formData.append('email', e.target.email.value);
     formData.append('self_introduction', e.target.self_introduction.value);
     formData.append('career', e.target.career.value);
+    formData.append('isModel', isModel);
 
     axios
     .post('/api/model/new', formData)
-    .then((response) => { console.log({ response }) });
+    .then((response) => { history.push(`/model/Model`) });
   };
 
   return (
-    <form class="model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
-      <div class="form_top">
+    <form className="model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
+      <div className="form_top">
 
-        <div class="left" id="photo_area">
-          <label for="photo">Profile photo</label>
+        <div className="left" id="photo_area">
+          <label htmlFor="photo">Profile photo</label>
           <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
         </div>
 
-        <div class="right" id="basic_info">
-          <label for="Name">Name</label>
-          <input type="text" name="Name" />
+        <div className="right" id="basic_info">
+          <label htmlFor="Name">Name</label>
+          <input type="text" value={model.Name} name="Name" onChange={handleChange}/>
 
-          <label for="Age">Age</label>
-          <input type="text" name="Age" />
+          <label htmlFor="Age">Age</label>
+          <input type="text" name="Age" value={model.Age} onChange={handleChange}/>
 
-          <label for="Gender">Gender</label>
-          <select name="Gender">
+          <label htmlFor="Gender">Gender</label>
+          <select name="Gender" value={model.Gender} onChange={handleChange}>
             <option value="">select</option>
             <option value="F">Female</option>
             <option value="M">Male</option>
-            <option value="N">None</option>
+            <option value="N">Not on the list</option>
           </select>
 
-          <label for="height">height</label>
-          <input type="text" name="height" />
+          <label htmlFor="height">height</label>
+          <input type="text" name="height" value={model.height} onChange={handleChange}/>
 
-          <label for="Busto">Busto</label>
-          <input type="text" name="Busto" />
+          <label htmlFor="Busto">Busto</label>
+          <input type="text" name="Busto" value={model.Busto} onChange={handleChange}/>
 
-          <label for="Quadril">Quadril</label>
-          <input type="text" name="Quadril" />
+          <label htmlFor="Quadril">Quadril</label>
+          <input type="text" name="Quadril" value={model.Quadril} onChange={handleChange}/>
 
-          <label for="Cintura">Cintura</label>
-          <input type="text" name="Cintura" />
+          <label htmlFor="Cintura">Cintura</label>
+          <input type="text" name="Cintura" value={model.Cintura} onChange={handleChange}/>
 
-          <label for="instagram">instagram</label>
-          <input type="text" name="instagram" />
+          <label htmlFor="instagram">instagram</label>
+          <input type="text" name="instagram" value={model.instagram} onChange={handleChange}/>
 
-          <label for="email">email</label>
-          <input type="text" name="email" />
+          <label htmlFor="email">email</label>
+          <input type="text" name="email" value={model.email} onChange={handleChange}/>
         </div>
       </div>
 
-      <div class="form_bottom">
-        <label for="self_introduction">self introduction</label>
-        <input type="text" name="self_introduction" />
+      <div className="form_bottom">
+        <label htmlFor="self_introduction">self introduction</label>
+        <input type="text" name="self_introduction" value={model.self_introduction} onChange={handleChange}/>
 
-        <label for="career">career</label>
-        <input type="text" name="career" />
+        <label htmlFor="career">career</label>
+        <input type="text" name="career" value={model.career} onChange={handleChange}/>
       </div>
 
       <button type="submit">save</button>

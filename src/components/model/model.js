@@ -16,11 +16,13 @@ const ModalContext = createContext({
   toggle: () => {}
 });
 
+// model ID inside modal
 const ModelContext = createContext({
   id: "",
   setModel: () => {}
 });
 
+// model && page listing
 function GetModel() {
   const [modellist, setModellist] = useFetch('/api/model');
   const { toggle } = useContext(ModalContext);
@@ -31,20 +33,38 @@ function GetModel() {
     toggle();
   };
 
+  // for page
+  const [cur, setCur] = useState(0);
+  const page = [];
+  const pageComponantNum = 5;
+
+  for (let i=0; i<parseInt(modellist.length/pageComponantNum)+1; i++) {
+    page.push(<li key={i} onClick={() => setCur(i)}>{i+1}</li>);
+  };
+
   return (
     <>
-      {modellist.map((elem, index) =>
-        <div className="model" key={index}>
-          <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
-          <Like />
-        </div>
-      )}
+    <div className="model_list">
+      {modellist.map((elem, index) => {
+        if (cur*pageComponantNum<=index && index<cur*pageComponantNum+(pageComponantNum-1)) {
+          return (
+            <div className="model" key={index}>
+              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
+              <Like />
+            </div>
+          );
+        }
+      })}
+    </div>
+    <ul className="pageControll">
+      {page}
+    </ul>
     </>
   );
 }
 
 function Compcard() {
-  //for info
+  //for model info
   const model = useContext(ModelContext);
   const [info, setInfo] = useState([]);
 
@@ -93,9 +113,8 @@ function Compcard() {
           <p>{info.career}</p>
         </div>
       </div>
-      <button className="back_btn"></button>
       <Like />
-      <Link to={`/model/Model_Detail/${model.id}`}>
+      <Link to={`/model/Model_Detail/${info._id}`}>
         View More
       </Link>
     </div>
@@ -103,7 +122,43 @@ function Compcard() {
   );
 }
 
+function NewButton() {
+  //check is user logined
+  const [isLogin, setIsLogin] = useState(false);
+  const [isModel, setIsModel] = useState(false);
+  axios
+    .get('/api/users/login')
+    .then(res => {
+      if(res.data === true ) {
+          setIsLogin(true);
+      }
+      else {
+          setIsLogin(false);
+      }
+    })
+
+  if (isLogin) {
+    axios
+      .get('/api/model/ismodel')
+      .then(res => {
+        if(res.data === true ) {
+            setIsModel(true);
+        }
+        else {
+            setIsModel(false);
+        }
+      })
+
+    if (isModel) {
+      return <Link to="/model/New_Model">Edit Profile</Link>
+    }
+    return <Link to="/model/New_Model">Registration</Link>
+  }
+  return <Link to="/login">Registration</Link>
+}
+
 function Main() {
+  //for modal status
   const toggle = () => {
     setBool(prevState => {
       return {
@@ -118,6 +173,7 @@ function Main() {
     toggle
   });
 
+  // for modal contents
   const setModel = (input) => {
     setId(prevState => {
       return {
@@ -138,19 +194,19 @@ function Main() {
       <ModalContext.Provider value={bool}>
         <Compcard />
 
-        <div className="sorting_bar">
-          <p>sort as </p>
-          <select name="sort">
-            <option value="popular" defaultValue>popular</option>
-            <option value="latest">lastest</option>
-          </select>
+        <div className="main_header">
+          <div className="sorting_bar">
+            <label htmlFor="sort">sort as </label>
+            <select name="sort">
+              <option value="popular" defaultValue>popular</option>
+              <option value="latest">lastest</option>
+            </select>
+          </div>
+
+          <NewButton />
         </div>
 
-        <Link to="/model/New_Model">Registration</Link>
-
-        <div className="model_list">
-          <GetModel />
-        </div>
+        <GetModel />
       </ModalContext.Provider>
       </ModelContext.Provider>
     </main>
