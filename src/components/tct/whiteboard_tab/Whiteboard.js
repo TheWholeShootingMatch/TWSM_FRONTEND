@@ -5,6 +5,7 @@ import {renderVersion, slideNum} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
+import axios from "axios";
 
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
@@ -26,18 +27,23 @@ function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
     const historyArea = useRef(null);
-    const [slides, setSlides] = useState([
-      {
-        id: "1",
-        name: "first"
-      },
-      {
-        id: "2",
-        name: "second"
-      }
-    ]);
+    const [slides, setSlides] = useState([]);
     const [activeSlide, setActiveSlide] = useState("1");
-    const nextSlide = useRef(3);
+    const nextSlide = useRef(1);
+
+    useEffect(() => {
+      axios({
+        method: "get",
+        withCredentials : true,
+        url: '/api/whiteboard',
+        data: {
+          TcTnum: "000"
+        }
+      }).then((res) => {
+        setSlides(res.data);
+        nextSlide.current = res.data.length + 1;
+      });
+    },[]);
 
     const onClickHistoy = () => {
         const displayState = historyArea.current.style.display;
@@ -129,30 +135,48 @@ function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
 }
 
 function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextSlide}){
-  const clickSlide = (id) => {
+  const clickSlide = (id) => {  //슬라이드 클릭 시 현재 슬라이드 번호를 바꿔줌
     setActiveSlide(id);
   }
 
-  const addSlide = (e) => {
+  const addSlide = () => {  //새 슬라이드 추가
     const slide = {
+      TcTnum: "000", //tct num 불러와야함
       id: nextSlide.current.toString(),
       name: "new tab"
     };
-    setSlides([...slides, slide]);
+    axios.post('/api/whiteboard/add', slide, {
+      withCredentials: true,
+    }).then(res => {
+      setSlides([res.body]);
+    })
     nextSlide.current += 1;
   }
 
-  const deliteSlide = (id) => {
-    setSlides(slides.filter(slide => slide.id !== id));
+  const deliteSlide = (id) => {  //슬라이드 삭제
+    const slide = {
+      TcTnum: "000",
+      id: id
+    }
+    axios.post('/api/whiteboard/delete', slide, {
+      withCredentials: true,
+    }).then(res => {
+      setSlides([res.body]);
+    })
   }
 
-  const onChange = (e) => {
-    setSlides(
-      slides.map(slide =>
-        slide.id === e.target.name ? { ...slide, name: e.target.value } : slide
-      )
-    );
-  }
+  const onChange = (e) => {  //슬라이드 이름 변경
+    const slide = {
+      TcTnum: "000", //tct num 불러와야함
+      id: e.target.name,
+      name: e.target.value
+    };
+    axios.post('/api/whiteboard/update', slide, {
+      withCredentials: true,
+    }).then(res => {
+      setSlides([res]);
+    });
+  };
 
   return(
   <div className="whiteboard_slides">
