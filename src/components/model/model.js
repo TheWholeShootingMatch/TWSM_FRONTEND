@@ -1,6 +1,6 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { useFetch } from "../common/useFetch"
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
 import './model.scss';
@@ -22,9 +22,52 @@ const ModelContext = createContext({
   setModel: () => {}
 });
 
+// get query - side_nav condition
+function MakeParam({query}) {
+  const inputs = {};
+
+  if (query.get("gender") != null) {
+    inputs.Gender = query.get("gender");
+  }
+
+  return { param : inputs };
+}
+
 // model && page listing
 function GetModel() {
-  const [modellist, setModellist] = useFetch('/api/model');
+  //for get models
+  let location = useLocation();
+  let query = new URLSearchParams(location.search);
+  const [modellist, setModellist] = useState([]);
+
+  async function fetchUrl() {
+    const response = await fetch("/api/model", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(MakeParam({query}))
+    });
+    const json = await response.json();
+    setModellist(json);
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, [useLocation().search]);
+
+  // for page
+  let history = useHistory();
+  const {pageNum} = useParams();
+
+  const page = [];
+  const pageComponantNum = 5;
+
+  for (let i=0; i<parseInt(modellist.length/pageComponantNum)+1; i++) {
+    page.push(<li key={i} onClick={() => { history.push(`/model/Model/${i}${location.search}`) }}>{i+1}</li>);
+  };
+
+  // for copmpcard
   const { toggle } = useContext(ModalContext);
   const { setModel } = useContext(ModelContext);
 
@@ -33,20 +76,11 @@ function GetModel() {
     toggle();
   };
 
-  // for page
-  const [cur, setCur] = useState(0);
-  const page = [];
-  const pageComponantNum = 5;
-
-  for (let i=0; i<parseInt(modellist.length/pageComponantNum)+1; i++) {
-    page.push(<li key={i} onClick={() => setCur(i)}>{i+1}</li>);
-  };
-
   return (
     <>
     <div className="model_list">
       {modellist.map((elem, index) => {
-        if (cur*pageComponantNum<=index && index<cur*pageComponantNum+(pageComponantNum-1)) {
+        if (pageNum*pageComponantNum<=index && index<pageNum*pageComponantNum+(pageComponantNum-1)) {
           return (
             <div className="model" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
@@ -214,10 +248,43 @@ function Main() {
 }
 
 function Model({isLogin}) {
+  const navContents = [
+    {
+      name : "gender",
+      option : [
+        {
+          value: "F",
+          text: "female"
+        },
+        {
+          value: "M",
+          text: "male"
+        },
+        {
+          value: "N",
+          text: "not on the list"
+        },
+      ]
+    },
+    {
+      name : "height",
+      option : [
+        {
+          value: "180~190",
+          text: "180~190"
+        },
+        {
+          value: "170~180",
+          text: "170~180"
+        },
+      ]
+    }
+  ];
+
   return (
     <>
       <Header isLogin={isLogin}/>
-      <SideNav />
+      <SideNav navContents={navContents} />
       <Main />
     </>
   );

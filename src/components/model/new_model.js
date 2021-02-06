@@ -65,7 +65,7 @@ function ProfileForm() {
 
     axios
     .post('/api/model/new', formData)
-    .then((response) => { history.push(`/model/Model`) });
+    .then((response) => { history.push(`/model/Model/0`) });
   };
 
   return (

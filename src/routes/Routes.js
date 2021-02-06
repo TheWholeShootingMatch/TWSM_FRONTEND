@@ -50,7 +50,7 @@ function Routes() {
                         <Route path="/signup"><Signup /></Route>
                         <Route path="/whiteboard"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
-                        <Route path="/model/Model"><Model isLogin={isLogin} /></Route>
+                        <Route path="/model/Model/:pageNum"><Model isLogin={isLogin}/></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail isLogin={isLogin}/></Route>
                         <Route path="/model/New_Model"><New_Model isLogin={isLogin}/></Route>
                 </Switch>
