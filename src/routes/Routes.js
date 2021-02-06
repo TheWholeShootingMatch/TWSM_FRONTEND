@@ -32,39 +32,21 @@ import {Logout, Login} from "../components/login/login";
 function Routes() {
 
     const [isLogin, setIsLogin] = useState(false);
-
-    useEffect(() => {
-        const response = async () => {
-            await axios({
-                method: 'get',
-                withCredentials : true,
-                url : '/api/users/login'
-            }).then((res) => {
-                if(res.data === true ) {
-                    setIsLogin(true);
-                }
-                else {
-                    setIsLogin(false);
-                }
-            });
-        };
-        response();
-    },[]);
+    const [userType, setUserType] = useState();
 
     return (
         <BrowserRouter>
             <>
                 <Switch>
                         <Route exact path="/"><MainPage isLogin={isLogin} /></Route>
-                        <Route exact path="/mypage/user"><Overview type="user" isLogin={isLogin}/></Route>
-                        <Route exact path="/mypage/manager"><Overview type="manager" isLogin={isLogin}/></Route>
+                        <Route exact path="/mypage"><Overview isLogin={isLogin} userType={userType}/></Route>
                         <Route path="/mypage/notification"><Notification isLogin={isLogin} /></Route>
                         <Route path="/mypage/requested-project"><RequestedProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/project"><MyProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/create-project"><CreateProject isLogin={isLogin}/></Route>
-                        <Route path="/mypage/requested-message"><RequestedMessage isLogin={isLogin} /></Route>
-                        <Route path="/login"><Login setIsLogin={setIsLogin} isLogin={isLogin}/></Route>
-                        <Route path="/logout"><Logout setIsLogin={setIsLogin}/></Route>
+                        <Route path="/mypage/requested-message"><RequestedMessage isLogin={isLogin} userType={userType}/></Route>
+                        <Route path="/login"><Login setIsLogin={setIsLogin} isLogin={isLogin} setUserType={setUserType}/></Route>
+                        <Route path="/logout"><Logout setIsLogin={setIsLogin} setUserType={setUserType}/></Route>
                         <Route path="/signup"><Signup /></Route>
                         <Route path="/whiteboard"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>

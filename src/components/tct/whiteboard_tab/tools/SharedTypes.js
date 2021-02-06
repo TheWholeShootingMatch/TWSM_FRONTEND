@@ -3,6 +3,8 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
+import { LeveldbPersistence } from 'y-leveldb'
+import { lighten } from '@material-ui/core'
 
 // const websocketUrl = 'wss://demos.yjs.dev'
 const websocketUrl = 'http://localhost:3000'
@@ -18,38 +20,56 @@ const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastS
 
 const suffix = '-v3'
 
-export const versionDoc = new Y.Doc();
+export let versionDoc = new Y.Doc();
 // this websocket provider doesn't connect
 export const versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website-version' + suffix, versionDoc, { connect: false })
 versionWebsocketProvider.connectBc() // only connect via broadcastchannel
-export const versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
-export const versionType = versionDoc.getArray('versions');
+export let versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
+export let versionType = versionDoc.getArray('versions');
 export const versionList = versionDoc.getArray('versionList');
 
-
-export const getListVersion = () => {
-  const versions = versionDoc.getArray('versionList');
-  return versions;
+export const getVersionList = () => {
+  return versionList;
 }
 
 export const addVersion = () => {
-  const prevVersion = versionType.length === 0 ? null : versionType.get(versionType.length - 1);
-  const prevSnapshot = prevVersion === null ? Y.emptySnapshot : Y.decodeSnapshot(prevVersion.snapshot);
-  const snapshot = Y.snapshot(versionDoc);
-  if (prevVersion != null) {
-    // account for the action of adding a version to ydoc
-    prevSnapshot.sv.set(prevVersion.clientID, prevSnapshot.sv.get(prevVersion.clientID) + 1);
-  }
-  if (!Y.equalSnapshots(prevSnapshot, snapshot)) {
-    versionList.push([{
-      date: new Date().getTime(),
-      snapshot: Y.encodeSnapshot(snapshot),
-      clientID: versionDoc.clientID
-    }])
-  }
+  
+  versionList.push([{
+    date: new Date().getTime(),
+    drawingDocState: Y.encodeStateAsUpdate(doc),
+    versionDocState : Y.encodeStateAsUpdate(versionDoc),
+    clientID: versionDoc.clientID
+  }]);
 }
 
-export let doc = new Y.Doc({ gcFilter })
+export const renderVersion = (version) => {
+  
+  console.log(version);
+  console.log(Y.encodeStateAsUpdate(doc));
+  console.log(Y.encodeStateAsUpdate(versionDoc));
+  
+  Y.applyUpdate(doc, version.drawingDocState); //doc state update
+  Y.applyUpdate(versionDoc, version.versionDocState) //version doc state update
+  
+  restoreVersion();
+
+}
+
+
+const restoreVersion = () => {
+  doc = new Y.Doc({ gcFilter });
+}
+
+export const clearVersionList = () => {
+  versionList.delete(0, versionList.length);
+}
+
+export let doc = new Y.Doc({ gcFilter });
+
+doc.on('update', () => {
+  console.log("update!");
+})
+
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
 export const webrtcProvider = new WebrtcProvider('yjs-website' + suffix, doc)
 export const awareness = webrtcProvider.awareness // websocketProvider.awareness
@@ -58,13 +78,8 @@ export let indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffi
 
 export const prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
 
-export const renderVersion = (version, prevVersion) => {
-  const currentSnapshot = Y.decodeSnapshot(version.snapshot);
-  lastSnapshot = prevVersion === null ? Y.emptySnapshot : Y.decodeSnapshot(prevVersion);
-}
-
 versionIndexeddbPersistence.on('synced', () => {
-  
+
   lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
   versionType.observe(() => {
     if (versionType.length > 0) {
@@ -105,8 +120,32 @@ versionIndexeddbPersistence.whenSynced.then(() => {
  *
  * @type {Y.Array<Y.Map<Y.Array|String|object>>}
  */
-export const drawingContent = doc.getArray('drawing')
-export const whiteboardUndoManager = new Y.UndoManager(drawingContent);
+
+export const slideNum = {
+  get() {
+    return this.active;
+  },
+  set(value) {
+    this.active = value;
+    drawingContent.set(value);
+  }
+}
+
+export const drawingContent = {
+  drawingContent: doc.getArray(slideNum.get()),
+  get() {
+    return this.drawingContent;
+  },
+  set(value) {
+    this.drawingContent = doc.getArray(value);
+    console.log(this.drawingContent);
+  },
+  clear() {
+    this.drawingContent.delete(0, this.drawingContent.length);
+  }
+}
+
+export const whiteboardUndoManager = new Y.UndoManager(drawingContent.get());
 
 let undoManager = null
 

@@ -33,6 +33,10 @@
         top: 0;
         display: none;
 
+        &.active{
+            display: block;
+        }
+        
         .history_list{
             width: 143px;
             list-style: none;
@@ -50,9 +54,12 @@
     justify-content: space-around;
 
     .slide{
-        background-color: whitesmoke;
-        width: 130px;
-        height: 80px;
+      background-color: whitesmoke;
+      width: 130px;
+    }
+
+    .current_slide{
+        background-color: white;
     }
 }
 

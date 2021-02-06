@@ -5,7 +5,7 @@ import axios from "axios";
 function CreateProject({ isLogin }) {
     console.log(isLogin);
     return(
-        <UserMyPage user="user" header="Create Project">
+        <UserMyPage user="user" header="Create Project" isLogin={isLogin}>
             <ProjectForm/>
         </UserMyPage>
     )

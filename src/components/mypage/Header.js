@@ -22,7 +22,7 @@ export function MHeader(){
         <div className="profile_nav">
             <div className="profile_upper">이미지랑 이름</div>
             <ul>
-                <li><NavLink to="/manager-page/requested-project">requested project</NavLink></li>
+                <li><NavLink to="/mypage/requested-message">requested project</NavLink></li>
                 <li><NavLink to="/manager-page/deleted-project">deleted project</NavLink></li>
                 <li><NavLink to="/manager-page/blocked-user">blocked user</NavLink></li>
             </ul>

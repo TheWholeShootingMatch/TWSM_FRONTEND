@@ -1,8 +1,8 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import {renderVersion} from './tools/SharedTypes';
-import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
+import {addVersion, renderVersion, clearVersionList} from './tools/SharedTypes';
+import {deleteAllDrawing, undoDrawing, redoDrawing, getVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -25,22 +25,25 @@ function WhiteBoard(){
 function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
+    const [toggleHistoryMenu, setToggle] = useState(false);
+    const [versions, setVersion] = useState([]);
+
     const historyArea = useRef(null);
 
+    useEffect(() => {
+        const versionList = getVersionList();
+        console.log(versionList);
+        setVersion(versionList);
+    }, []);
+
     const onClickHistoy = () => {
-        const displayState = historyArea.current.style.display;
-        if (displayState === "block") {
-            historyArea.current.style.display = "none";
-        }
-        else {
-            historyArea.current.style.display = "block";
-        }
+        setToggle(!toggleHistoryMenu);
     }
 
     return (
         <div className="whiteboard_area">
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
-            <WhiteBoardContents toolType={toolType} historyArea={historyArea} />
+            <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
             <WhiteBoardSlides/>
         </div>
     )
@@ -72,47 +75,30 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
                 </ul>
             </div>
             <div className="history_btn">
-                <button onClick={onClickHistoy}>history</button>
+                <button onClick={() => onClickHistoy()}>history</button>
             </div>
         </div>
     )
 }
 
-function WhiteBoardContents({ toolType, historyArea }) {
+function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
 
-    const [versions, setVersion] = useState([]);
-
-    useEffect(() => {
-        setVersion(showVersionList());
-    }, []);
-
-    // versions.forEach((version, index) => {
-    //  console.log(new Date(version.date).toLocaleString());
-    // })
-    
     return(
-    <div className="whiteboard_contents">
-        {/* <!-- 현재 화이트보드 슬라이드 --> */}
-        <div className="current_whiteboard">
-            <Canvas toolType={toolType}/>
+        <div className="whiteboard_contents">
+            <div className="current_whiteboard">
+                <Canvas toolType={toolType} />
+            </div>
+            <div ref={historyArea} className={toggleHistoryMenu ? "history_area active" : "history_area"}>
+                <ul className="history_list">
+                    <button onClick={() => addVersion()}>add</button>
+                    <button onClick={() => clearVersionList()}>clear</button>
+                    {versions.map((version, index) => (
+                            <section onClick={() => renderVersion(version)}>{new Date(version.date).toLocaleString()}</section>
+                    ))}
+                    <li className="version_info"></li>
+                </ul>
+            </div>
         </div>
-         {/* <!-- default style : display hidden --> */}
-         <div className="history_area" ref={historyArea}>
-             <ul className="history_list">
-                    <li className="version_info">
-                        {versions.map((version, index) => (
-                            <section onClick={() => renderVersion(version, index > 0 ? versions.get(index-1).snapshot : null)}>{new Date(version.date).toLocaleString()}</section>
-                        ))}
-                     <section>
-                        <ul>
-                            <li>username</li>
-                            <li>username</li>
-                        </ul>
-                    </section>
-                </li>
-            </ul>
-        </div>
-    </div>
     )
 }
 

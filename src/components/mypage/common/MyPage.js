@@ -6,8 +6,6 @@ import "./MyPage.scss";
 
 function MyPage({ children, user, header, isLogin }) {
     
-    console.log(isLogin);
-
     if(user === "manager"){
         return (
         <div>
