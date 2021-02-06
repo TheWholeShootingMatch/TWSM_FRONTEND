@@ -2,6 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
 import { BrowserRouter, Route, Switch, Router} from "react-router-dom";
 
+import Header from "../components/common/header";
+
 import MainPage from "../components/main/MainPage";
 // import Header from "../components/main/header/Header";
 
@@ -50,9 +52,9 @@ function Routes() {
                         <Route path="/signup"><Signup /></Route>
                         <Route path="/whiteboard"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
-                        <Route path="/model/Model/:pageNum"><Model isLogin={isLogin}/></Route>
-                        <Route path="/model/Model_Detail/:modelId"><Model_Detail isLogin={isLogin}/></Route>
-                        <Route path="/model/New_Model"><New_Model isLogin={isLogin}/></Route>
+                        <Route path="/model/Model/:pageNum"><Model> <Header isLogin={isLogin}/> </Model></Route>
+                        <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
+                        <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin}/> </New_Model></Route>
                 </Switch>
             </>
         </BrowserRouter>

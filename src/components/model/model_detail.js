@@ -1,7 +1,6 @@
 import { useFetch } from "../common/useFetch"
 import {useHistory, useParams} from 'react-router-dom';
 
-import Header from "../common/header";
 import Like from "./like_btn";
 
 function Main({modelId}) {
@@ -47,7 +46,7 @@ function Main({modelId}) {
   );
 }
 
-function Model_Detail({isLogin}) {
+function Model_Detail(props) {
   // get model id in query
   let {modelId} = useParams();
   if (typeof modelId == "undefined") {
@@ -56,6 +55,7 @@ function Model_Detail({isLogin}) {
 
   return (
     <>
+      {props.children}
       <Header isLogin={isLogin}/>
       <Main modelId = {modelId}/>
     </>

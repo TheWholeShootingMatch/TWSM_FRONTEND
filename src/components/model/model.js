@@ -5,7 +5,6 @@ import axios from "axios";
 
 import './model.scss';
 
-import Header from "../common/header";
 import SideNav from "../common/sidenav"
 import Like from "./like_btn";
 
@@ -247,7 +246,7 @@ function Main() {
   );
 }
 
-function Model({isLogin}) {
+function Model(props) {
   const navContents = [
     {
       name : "gender",
@@ -281,9 +280,10 @@ function Model({isLogin}) {
     }
   ];
 
+//get header as children
   return (
     <>
-      <Header isLogin={isLogin}/>
+      {props.children}
       <SideNav navContents={navContents} />
       <Main />
     </>

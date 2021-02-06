@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../common/useFetch"
-import Header from "../common/header";
 import { Link, useHistory, useParams } from "react-router-dom";
 
 function ProfileForm() {
@@ -125,10 +124,10 @@ function ProfileForm() {
   );
 }
 
-function New_Model({isLogin}) {
+function New_Model(props) {
   return (
     <>
-      <Header isLogin={isLogin}/>
+      {props.children}
       <main>
         <ProfileForm />
       </main>
