@@ -28,10 +28,6 @@ function Main({modelId}) {
         <p>Cintura : {model.Cintura}</p>
         <p>E-mail : {model.email}</p>
         <p>Instagram : {model.instagram}</p>
-        <div className="model_imgs">
-          <img src="" alt="" />
-          <img src="" alt="" />
-        </div>
         <p>self introduction</p>
         <p>{model.self_introduction}</p>
         <p>career</p>
@@ -56,7 +52,6 @@ function Model_Detail(props) {
   return (
     <>
       {props.children}
-      <Header isLogin={isLogin}/>
       <Main modelId = {modelId}/>
     </>
   );

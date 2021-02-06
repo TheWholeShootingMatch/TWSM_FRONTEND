@@ -151,6 +151,11 @@ function NoteArea(props) {
 
 function Contents() {
   const [noteList, setNoteList] = useFetch('/api/note');
+
+  if (setNoteList) {
+    return <p> loading... </p>
+  }
+  
   return (
     <div className="tct_contents">
 

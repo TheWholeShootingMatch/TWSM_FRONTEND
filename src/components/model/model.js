@@ -1,5 +1,4 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
-import { useFetch } from "../common/useFetch"
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -17,8 +16,19 @@ const ModalContext = createContext({
 
 // model ID inside modal
 const ModelContext = createContext({
-  id: "",
-  setModel: () => {}
+  model : {
+    id: "",
+    profile_img : "",
+    Name : "",
+    email : "",
+    instagram : "",
+    height : "",
+    Busto : "",
+    Quadril : "",
+    Cintura : ""
+  },
+
+  setModelContext: () => {}
 });
 
 // get query - side_nav condition
@@ -68,10 +78,11 @@ function GetModel() {
 
   // for copmpcard
   const { toggle } = useContext(ModalContext);
-  const { setModel } = useContext(ModelContext);
+  const { setModelContext } = useContext(ModelContext);
 
   const handleClick = (input) => {
-    setModel(input);
+    // console.log(input);
+    setModelContext(input);
     toggle();
   };
 
@@ -82,7 +93,7 @@ function GetModel() {
         if (pageNum*pageComponantNum<=index && index<pageNum*pageComponantNum+(pageComponantNum-1)) {
           return (
             <div className="model" key={index}>
-              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem._id)}/>
+              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
               <Like />
             </div>
           );
@@ -98,26 +109,7 @@ function GetModel() {
 
 function Compcard() {
   //for model info
-  const model = useContext(ModelContext);
-  const [info, setInfo] = useState([]);
-
-  const param = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ _id : model.id })
-  }
-
-  async function fetchUrl() {
-    const response = await fetch("/api/model/fetch", param);
-    const json = await response.json();
-    setInfo(json);
-  }
-
-  useEffect(() => {
-    fetchUrl();
-  }, [model.id]);
+  const modelC = useContext(ModelContext);
 
   //for modal
   const open = useContext(ModalContext);
@@ -128,26 +120,22 @@ function Compcard() {
     <div className="Compcard">
       <div className="model_info">
         <div className="model_img">
-          <img src={info.profile_img} alt={info.Name}/>
+          <img src={modelC.model.profile_img} alt={modelC.model.Name}/>
         </div>
         <div className="model_name">
-          <h2>{info.Name}</h2>
+          <h2>{modelC.model.Name}</h2>
         </div>
         <div className="model_contect">
-          <p>E-mail : {info.email}</p>
-          <p>Instagram : {info.instagram}</p>
+          <p>E-mail : {modelC.model.email}</p>
+          <p>Instagram : {modelC.model.instagram}</p>
         </div>
         <div className="model_size">
-          <p>Height : {info.height}</p>
-          <p>Age : {info.Age}</p>
-          <p>Size : {info.Busto}-{info.Busto}-{info.Busto}</p>
-        </div>
-        <div className="model_career">
-          <p>{info.career}</p>
+          <p>Height : {modelC.model.height}</p>
+          <p>Size : {modelC.model.Busto}-{modelC.model.Quadril}-{modelC.model.Cintura}</p>
         </div>
       </div>
       <Like />
-      <Link to={`/model/Model_Detail/${info._id}`}>
+      <Link to={`/model/Model_Detail/${modelC.model._id}`}>
         View More
       </Link>
     </div>
@@ -207,23 +195,33 @@ function Main() {
   });
 
   // for modal contents
-  const setModel = (input) => {
-    setId(prevState => {
+  const setModelContext = (input) => {
+    setModel(prevState => {
       return {
         ...prevState,
-        id : input
+        model : input
       };
     });
   }
 
-  const [id, setId] = useState({
-    id: "",
-    setModel
+  const [model, setModel] = useState({
+    model : {
+      id: "",
+      profile_img : "",
+      Name : "",
+      email : "",
+      instagram : "",
+      height : "",
+      Busto : "",
+      Quadril : "",
+      Cintura : ""
+    },
+    setModelContext
   });
 
   return (
     <main>
-      <ModelContext.Provider value={id}>
+      <ModelContext.Provider value={model}>
       <ModalContext.Provider value={bool}>
         <Compcard />
 
