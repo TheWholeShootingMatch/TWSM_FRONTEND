@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../common/useFetch"
+import { useHistory } from "react-router-dom";
+
 import Header from "../common/header";
-import { Link, useHistory, useParams } from "react-router-dom";
 
 function ProfileForm() {
   // for get user information
@@ -65,7 +66,7 @@ function ProfileForm() {
 
     axios
     .post('/api/model/new', formData)
-    .then((response) => { history.push(`/model/Model`) });
+    .then((response) => { history.push(`/model/Model/0`) });
   };
 
   return (

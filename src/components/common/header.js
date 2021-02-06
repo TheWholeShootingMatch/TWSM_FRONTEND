@@ -7,7 +7,7 @@ function header() {
         </div>
         <nav className="header_nav">
             <ul>
-                <li><Link to="/model/Model">model</Link></li>
+                <li><Link to="/model/Model/0">model</Link></li>
                 <li>photographer</li>
                 <li>collaborate</li>
                 <li>mypage</li>

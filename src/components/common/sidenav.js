@@ -1,39 +1,49 @@
 import React, { useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 
-const sample = [
-  {
-    name : "gender",
-    option : [
-      {
-        value: "f",
-        text: "female"
-      },
-      {
-        value: "m",
-        text: "male"
-      }
-    ]
-  }
-];
-
-function MakeSelct(props) {
+function MakeOption(props) {
   return(
-    <select name={props.name}>
+    <>
+      <option value={props.name}>{props.name}</option>
       {props.option.map((elem, index) =>
         <option value={elem.value} key={index}>{elem.text}</option>
       )}
-    </select>
+    </>
   );
 }
 
-function SideNav() {
+function SideNav({navContents}) {
+  let history = useHistory();
+  let location = useLocation();
+
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    history.push(location.pathname + "?" + name + "=" + value);
+  };
+
+  const cOption = [
+    {
+      value: "model",
+      text: "model"
+    },
+    {
+      value: "potographer",
+      text: "potographer"
+    }
+  ];
+
   return (
     <div className="side_nav">
-      {sample.map(({name, option}, index) => <MakeSelct
-        key={index}
-        name = {name}
-        option = {option}
-      />)}
+      <MakeOption name = "뭐라하지" option = {cOption} />
+
+      {navContents.map(({name, option}, index) =>
+        <select name={name} key={index} onChange={handleChange}>
+          <MakeOption
+            name = {name}
+            option = {option}
+          />
+        </select>
+      )}
     </div>
   );
 }
