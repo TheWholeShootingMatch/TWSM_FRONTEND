@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import TctComponant from "../tct_componant/TctComponant";
 import { useFetch } from "../../common/useFetch"
-import "./TctWorkflow.scss"
+
+import TctComponant from "../tct_componant/TctComponant";
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -95,7 +95,7 @@ function NoteArea(props) {
   }
   const [commentlist, setCommentlist] = useFetch(`/api/comment/fetch`, param);
 
-  //post
+  //post comment
   const [inputs, setInputs] = useState({ Lnum:props._id, contents:"" });
 
   const handleChange = (e) => {

@@ -1,11 +1,11 @@
 import React from "react";
 import {MHeader} from "../Header";
 import { UHeader } from "../Header";
-import Header from "../../common/Header";
+import Header from "../../common/header";
 import "./MyPage.scss";
 
 function MyPage({ children, user, header, isLogin }) {
-    
+
     if(user === "manager"){
         return (
         <div>

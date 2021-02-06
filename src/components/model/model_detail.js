@@ -1,7 +1,7 @@
 import { useFetch } from "../common/useFetch"
 import {useHistory, useParams} from 'react-router-dom';
 
-import Header from "../common/Header";
+import Header from "../common/header";
 import Like from "./like_btn";
 
 function Main({modelId}) {

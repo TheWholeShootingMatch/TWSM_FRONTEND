@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../common/useFetch"
-import Header from "../common/Header";
+import Header from "../common/header";
 import { Link, useHistory, useParams } from "react-router-dom";
 
 function ProfileForm() {

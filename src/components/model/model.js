@@ -5,7 +5,7 @@ import axios from "axios";
 
 import './model.scss';
 
-import Header from "../common/Header";
+import Header from "../common/header";
 import SideNav from "../common/sidenav"
 import Like from "./like_btn";
 

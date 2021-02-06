@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Header from "../common/Header";
+import Header from "../common/header";
 
 function MainPage({ isLogin }) {
     console.log(isLogin);
