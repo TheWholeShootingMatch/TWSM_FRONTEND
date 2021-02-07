@@ -1,6 +1,8 @@
 import React, { useEffect,useState } from "react";
 import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
+import { Link } from "react-router-dom";
+
 
 function Notification({isLogin}){
     
@@ -18,7 +20,7 @@ function Notification({isLogin}){
 
 function NotificationTable({ notification }) {
                 
-    const { TcTnum, sender, sendTime, type, status } = notification;
+    const { _id, TcTnum, sender, sendTime, type, status } = notification;
     const [msgTitle, setTitle] = useState("");
 
     useEffect(() => {
@@ -31,10 +33,9 @@ function NotificationTable({ notification }) {
         <tr className="message">
             <td className="msg_checked">{status? "안 읽음" : "읽음"}</td>
             <td className="sender">{sender}</td>
-            <td className="title">{msgTitle}</td>
+            <Link to={`/notification/notification_Detail/${_id}`}><td className="title">{msgTitle}</td></Link>
             <td className="date">{new Date(Number(sendTime)).toLocaleDateString()}</td>
         </tr>
     )
 }
-
 export default Notification;
