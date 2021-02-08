@@ -47,17 +47,17 @@ export const renderVersion = (version) => {
   console.log(version);
   console.log(Y.encodeStateAsUpdate(doc));
   console.log(Y.encodeStateAsUpdate(versionDoc));
-  
-  Y.applyUpdate(doc, version.drawingDocState); //doc state update
-  Y.applyUpdate(versionDoc, version.versionDocState) //version doc state update
-  
-  restoreVersion();
 
+  doc = new Y.Doc({ gcFilter});
+
+  restoreVersion(version);
 }
 
 
-const restoreVersion = () => {
-  doc = new Y.Doc({ gcFilter });
+const restoreVersion = (version) => {
+  Y.applyUpdate(doc, version.drawingDocState); //doc state update
+  Y.applyUpdate(versionDoc, version.versionDocState) //version doc state update
+  
 }
 
 export const clearVersionList = () => {
@@ -76,10 +76,11 @@ export const awareness = webrtcProvider.awareness // websocketProvider.awareness
 
 export let indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
 
-export const prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
+export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
 
 versionIndexeddbPersistence.on('synced', () => {
 
+  console.log("first");
   lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
   versionType.observe(() => {
     if (versionType.length > 0) {
