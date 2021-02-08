@@ -27,6 +27,7 @@ import Signup from "../components/signup/signup";
 import RequestedProject from "../components/mypage/user/RequestedProject";
 import {Logout, Login} from "../components/login/login";
 
+import NotificationDetail from "../components/mypage/user/NotificationDetail";
 /* Header 있는 페이지와 없는 페이지 구분 필요 */
 /* 유저 형태(관리자/일반유저)에 따라서 mypage 경로 변경해야 함
    지금은 mypage와 manager-page로 구분됨 */
@@ -54,7 +55,8 @@ function Routes() {
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
                         <Route path="/model/Model/:skip/:sort"><Model> <Header isLogin={isLogin}/> </Model></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
-                        <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin}/> </New_Model></Route>
+                        <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin} /> </New_Model></Route>
+                        <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>
                 </Switch>
             </>
         </BrowserRouter>

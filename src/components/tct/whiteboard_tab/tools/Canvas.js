@@ -10,7 +10,6 @@ function Canvas({toolType, activeSlide}){
     let sharedLine = null;
 
     useEffect(() => {
-        console.log("here");
         shared.slideNum.set(activeSlide);
         const canvas = canvasRef.current;
         canvas.width = 566 * 2;

@@ -93,7 +93,7 @@ function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu
                     <button onClick={() => addVersion()}>add</button>
                     <button onClick={() => clearVersionList()}>clear</button>
                     {versions.map((version, index) => (
-                            <section onClick={() => renderVersion(version)}>{new Date(version.date).toLocaleString()}</section>
+                        <section key={index} onClick={() => renderVersion(version)}>{new Date(version.date).toLocaleString()}</section>
                     ))}
                     <li className="version_info"></li>
                 </ul>
