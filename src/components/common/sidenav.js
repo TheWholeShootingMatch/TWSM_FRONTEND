@@ -19,12 +19,12 @@ function SideNav({navContents}) {
 
   const handleChange = (e) => {
     const { value, name } = e.target;
-    if (location.search === null) {
-      history.push(`${location.pathname}?${name}=${value}`);
-    }
-    else {
-      history.push(`${location.pathname}${location.search}&&${name}=${value}`);
-    }
+    history.push(`${location.pathname}?${name}=${value}`);
+    // if (location.search === null) {
+    // }
+    // else {
+    //   history.push(`${location.pathname}${location.search}&&${name}=${value}`);
+    // }
   };
 
   const cOption = [

@@ -9,7 +9,8 @@ import Like from "./like_btn";
 
 import Modal from '@material-ui/core/Modal';
 
-const postNum = 4;
+const postNum = 1;
+const pageNum = 3;
 
 const ModalContext = createContext({
   bool: false,
@@ -37,7 +38,8 @@ const ModelContext = createContext({
 function MakeParam({find, sort, skip}) {
   const findInput = {};
   const sortInput = {};
-  const skipInput = {};
+  let skipInput = 0;
+  let limitInput = postNum * pageNum;
 
   // find
   if (find.get("gender") != null) {
@@ -61,24 +63,23 @@ function MakeParam({find, sort, skip}) {
   }
 
   //skip
-  if (skip != null) {
-    skipInput.cur = skip;
-    skipInput.postNum = postNum;
+  if (skip != null && skip != 0) {
+    skipInput = parseInt(skip/pageNum) * postNum * pageNum;
+    limitInput = (parseInt(skip/pageNum) +1) * postNum * pageNum;
   }
 
   return {
     find : findInput,
     sort : sortInput,
-    skip : skipInput
+    skip : skipInput,
+    limit : limitInput
   };
 }
 
 // model && page listing
-function GetModel({setModelLeng}) {
+function GetModel({location, sort, skip, setModelLeng}) {
   //for get models
-  let location = useLocation();
   let find = new URLSearchParams(location.search);
-  const {sort, skip} = useParams();
 
   const [modellist, setModellist] = useState([]);
 
@@ -91,8 +92,8 @@ function GetModel({setModelLeng}) {
       body: JSON.stringify(MakeParam({find, sort, skip}))
     });
     const json = await response.json();
-    setModellist(json);
     setModelLeng(json.length);
+    setModellist(json);
   }
 
   useEffect(() => {
@@ -108,14 +109,23 @@ function GetModel({setModelLeng}) {
     toggle();
   };
 
+  let indexLow = 0;
+  if (skip != 0) {
+    indexLow = skip%pageNum;
+  }
+
   return (
     <div className="model_list">
-      {modellist.map((elem, index) =>
-        <div className="model" key={index}>
-          <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-          <Like />
-        </div>
-      )}
+      {modellist.map((elem, index) => {
+        if (indexLow*postNum<=index && index<indexLow*postNum+(postNum)) {
+          return (
+            <div className="model" key={index}>
+              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
+              <Like />
+            </div>
+          );
+        }
+      })}
     </div>
   );
 }
@@ -194,6 +204,7 @@ function NewButton() {
 function Main() {
   let location = useLocation();
   const [modelLeng,setModelLeng] = useState(1);
+  let pagePlus = 0;
 
   // for page
   let history = useHistory();
@@ -201,9 +212,15 @@ function Main() {
 
   const page = [];
 
-  for (let i=0; i<parseInt(modelLeng/postNum)+1; i++) {
-    page.push(<li key={i} onClick={() => { history.push(`/model/Model/${i}/${sort}${location.search}`) }}>{i+1}</li>);
+  if (skip != 0) {
+    pagePlus = parseInt(skip/pageNum);
+  }
+
+  page.push(<li onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
+  for (let i=0; i<parseInt(modelLeng/postNum); i++) {
+    page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pagePlus*pageNum+i}/${sort}${location.search}`) }}>{pagePlus*pageNum+i+1}</li>);
   };
+  page.push(<li onClick={() => { history.push(`/model/Model/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
 
   const handleChange = (e) => {
     history.push(`/model/Model/${skip}/${e.target.value}${location.search}`);
@@ -224,7 +241,7 @@ function Main() {
         <NewButton />
       </div>
 
-      <GetModel setModelLeng={setModelLeng}/>
+      <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} />
 
       <ul className="pageControll">
         {page}
