@@ -41,6 +41,7 @@ function Routes() {
         <BrowserRouter>
             <>
                 <Switch>
+                        
                         <Route exact path="/"><MainPage isLogin={isLogin} /></Route>
                         <Route exact path="/mypage"><Overview isLogin={isLogin} userType={userType}/></Route>
                         <Route path="/mypage/notification"><Notification isLogin={isLogin} /></Route>

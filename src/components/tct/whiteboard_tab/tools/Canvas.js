@@ -2,7 +2,9 @@ import React, {useEffect, useRef, useState} from "react";
 import * as shared from './SharedTypes';
 import * as Y from 'yjs'
 
-function Canvas({toolType, activeSlide}){
+export let externalContextRef = null;
+
+export default function Canvas({ toolType, activeSlide }) {
 
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
@@ -20,7 +22,8 @@ function Canvas({toolType, activeSlide}){
         context.strokeStyle = "black";
         context.lineWidth = "1";
         contextRef.current = context;
-        onStateChange();
+        externalContextRef = contextRef;
+        onStateChange(externalContextRef);
     },[activeSlide])
 
     const calculateCoordinate = (event) => {
@@ -64,12 +67,23 @@ function Canvas({toolType, activeSlide}){
     }
 
     shared.drawingContent.get().observe(function (event) {
-        onStateChange();
+        onStateChange(contextRef);
     })
 
-    const onStateChange = () => {
 
-        const canvas = contextRef.current.canvas;
+    return(
+        <canvas ref={canvasRef}
+        className="current_canvas"
+        onMouseDown={startDrawing}
+        onMouseUp={finishDrawing}
+        onMouseMove={moveDraw}
+        width="566px" height="283px"/>
+    )
+}
+
+export const onStateChange = (externalContextRef) => {
+
+        const canvas = externalContextRef.current.canvas;
         const context = canvas.getContext('2d');
         const yDrawingContent = shared.drawingContent.get();
         const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
@@ -109,16 +123,11 @@ function Canvas({toolType, activeSlide}){
         }
         yDrawingContent.observeDeep(requestDrawAnimationFrame);
         requestDrawAnimationFrame();
-    }
-
-    return(
-        <canvas ref={canvasRef}
-        className="current_canvas"
-        onMouseDown={startDrawing}
-        onMouseUp={finishDrawing}
-        onMouseMove={moveDraw}
-        width="566px" height="283px"/>
-    )
 }
 
-export default Canvas;
+export const versionRender = (externalContextRef) => {
+    
+    console.log(externalContextRef);
+    onStateChange(externalContextRef);
+
+}

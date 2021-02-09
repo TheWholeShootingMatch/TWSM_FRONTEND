@@ -1,6 +1,8 @@
-import React, {useRef, useState, useEffect, useCallback} from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import {useHistory} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
+import { versionRender, externalContextRef } from "./tools/Canvas";
 import {addVersion, renderVersion, clearVersionList} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, getVersionList} from "./tools/Tools";
 import * as Y from "yjs";
@@ -82,7 +84,7 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
 }
 
 function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
-
+    
     return(
         <div className="whiteboard_contents">
             <div className="current_whiteboard">
@@ -93,7 +95,10 @@ function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu
                     <button onClick={() => addVersion()}>add</button>
                     <button onClick={() => clearVersionList()}>clear</button>
                     {versions.map((version, index) => (
-                        <section key={index} onClick={() => renderVersion(version)}>{new Date(version.date).toLocaleString()}</section>
+                        <section key={index} onClick={() => {
+                            renderVersion(version);
+                            versionRender(externalContextRef);
+                        }}>{new Date(version.date).toLocaleString()}</section>
                     ))}
                     <li className="version_info"></li>
                 </ul>

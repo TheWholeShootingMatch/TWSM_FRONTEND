@@ -3,9 +3,6 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
-import { LeveldbPersistence } from 'y-leveldb'
-import { lighten } from '@material-ui/core'
-
 // const websocketUrl = 'wss://demos.yjs.dev'
 const websocketUrl = 'http://localhost:3000'
 
@@ -47,9 +44,7 @@ export const renderVersion = (version) => {
   console.log(version);
   console.log(Y.encodeStateAsUpdate(doc));
   console.log(Y.encodeStateAsUpdate(versionDoc));
-
-  doc = new Y.Doc({ gcFilter});
-
+  doc = new Y.Doc({ gcFilter });
   restoreVersion(version);
 }
 
@@ -57,7 +52,7 @@ export const renderVersion = (version) => {
 const restoreVersion = (version) => {
   Y.applyUpdate(doc, version.drawingDocState); //doc state update
   Y.applyUpdate(versionDoc, version.versionDocState) //version doc state update
-  
+  drawingContent.set();
 }
 
 export const clearVersionList = () => {
@@ -93,6 +88,9 @@ versionIndexeddbPersistence.on('synced', () => {
   })
 })
 
+
+/* version doc */
+
 class LocalRemoteUserData extends Y.PermanentUserData {
   /**
    * @param {number} clientid
@@ -112,6 +110,7 @@ class LocalRemoteUserData extends Y.PermanentUserData {
 
 export const permanentUserData = new LocalRemoteUserData(doc, versionDoc.getMap('users'))
 versionIndexeddbPersistence.whenSynced.then(() => {
+  console.log("whenSyned");
   permanentUserData.setUserMapping(doc, doc.clientID, 'local', {})
 })
 
