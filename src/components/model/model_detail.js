@@ -1,5 +1,5 @@
 import { useFetch } from "../common/useFetch"
-import {useHistory, useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import Like from "./like_btn";
 

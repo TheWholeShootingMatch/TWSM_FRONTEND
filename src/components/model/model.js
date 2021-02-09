@@ -9,7 +9,8 @@ import Like from "./like_btn";
 
 import Modal from '@material-ui/core/Modal';
 
-const postNum = 1;
+// post in one page && page
+const postNum = 3;
 const pageNum = 3;
 
 const ModalContext = createContext({
@@ -62,7 +63,7 @@ function MakeParam({find, sort, skip}) {
     sortInput._id = -1;
   }
 
-  //skip
+  //skip && limit
   if (skip != null && skip != 0) {
     skipInput = parseInt(skip/pageNum) * postNum * pageNum;
     limitInput = (parseInt(skip/pageNum) +1) * postNum * pageNum;
@@ -76,21 +77,23 @@ function MakeParam({find, sort, skip}) {
   };
 }
 
-// model && page listing
+// model listing
 function GetModel({location, sort, skip, setModelLeng}) {
   //for get models
-  let find = new URLSearchParams(location.search);
+  const find = new URLSearchParams(location.search);
 
   const [modellist, setModellist] = useState([]);
 
   async function fetchUrl() {
-    const response = await fetch("/api/model", {
+    const response = await fetch("/api/model",
+    {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(MakeParam({find, sort, skip}))
     });
+
     const json = await response.json();
     setModelLeng(json.length);
     setModellist(json);
@@ -109,6 +112,7 @@ function GetModel({location, sort, skip, setModelLeng}) {
     toggle();
   };
 
+  // for page
   let indexLow = 0;
   if (skip != 0) {
     indexLow = skip%pageNum;
@@ -203,23 +207,32 @@ function NewButton() {
 
 function Main() {
   let location = useLocation();
-  const [modelLeng,setModelLeng] = useState(1);
-  let pagePlus = 0;
-
-  // for page
   let history = useHistory();
   const {skip, sort} = useParams();
 
+  //for page
   const page = [];
 
+  const [modelLeng,setModelLeng] = useState(1);
+
+  let pageSet = 0;
   if (skip != 0) {
-    pagePlus = parseInt(skip/pageNum);
+    pageSet = parseInt(skip/pageNum);
+    page.push(<li onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
+  }
+  else {
+    page.push(<li>prev</li>);
   }
 
-  page.push(<li onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
   for (let i=0; i<parseInt(modelLeng/postNum); i++) {
-    page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pagePlus*pageNum+i}/${sort}${location.search}`) }}>{pagePlus*pageNum+i+1}</li>);
+    if (pageSet*pageNum+i == skip) {
+      page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}><strong>{pageSet*pageNum+i+1}</strong></li>);
+    }
+    else {
+      page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}>{pageSet*pageNum+i+1}</li>);
+    }
   };
+
   page.push(<li onClick={() => { history.push(`/model/Model/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
 
   const handleChange = (e) => {
@@ -297,7 +310,7 @@ function Model(props) {
           text: "~150"
         },
       ]
-    }
+    },
   ];
 
   //for modal status
