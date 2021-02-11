@@ -1,11 +1,129 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import Language from "../common/language"
+
+function Country() {
+
+  //get cities from DB
+  const [citiesDB, setCitiesDB] = useState([]);
+
+  async function fetchcitiesDB() {
+    const response = await fetch("/api/photographicAreaM/fetch");
+    const json = await response.json();
+    setCitiesDB(json);
+  }
+
+  const handleClick = (input) => {
+    fetch('/api/photographicAreaM/delete/'+input, {
+      method: 'DELETE',
+      headers: {
+        accept: "application/json",
+      },
+    });
+
+    fetchcitiesDB();
+  }
+
+  //user input will go in here
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+
+  //api key
+  const param = {
+    headers : {
+      accept: "application/json",
+      "X-CSCAPI-KEY": "enNoTTJWWjh5OVJIdDRDUzZkYmxiVUVtZTFkbjBhVklNODBqTTNBcg=="
+    }
+  };
+
+  // get countries from api
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    fetchcitiesDB();
+
+    axios
+    .get("https://api.countrystatecity.in/v1/countries", param)
+    .then(res => setCountries(res.data));
+  }, []);
+
+  // get states from api
+  const [states, setStates] = useState([]);
+
+  const handleCountry = (e) => {
+    e.preventDefault();
+    setCountry(e.target.value);
+    axios
+    .get(`https://api.countrystatecity.in/v1/countries/${e.target.value}/states`, param)
+    .then(res => setStates(res.data));
+    setCities([]);
+    setState("");
+  };
+
+  // get cities from api
+  const [cities, setCities] = useState([]);
+
+  const handleStates = (e) => {
+    e.preventDefault();
+    setState(e.target.value);
+    axios
+    .get(`https://api.countrystatecity.in/v1/countries/${country}/states/${e.target.value}/cities`, param)
+    .then(res => setCities(res.data));
+  };
+
+  // post to DB
+  const handleCity = (e) => {
+    e.preventDefault();
+    axios
+    .post("/api/photographicAreaM",
+      {
+        ciso : country,
+        siso : state,
+        name : e.target.value
+      }
+    )
+    .then(res => console.log(res));
+
+    fetchcitiesDB();
+  };
+
+  return (
+    <>
+      {citiesDB.map((elem,index) =>
+        <button key={index} onClick={(e) => handleClick(elem.name)}>{elem.name}</button>
+      )}
+      <label htmlFor="country">country</label>
+      <select name="country" onChange={handleCountry}>
+        <option value="">select</option>
+        {countries.map((elem, index) =>
+          <option value={elem.iso2} key={index}>{elem.name}</option>
+        )}
+      </select>
+
+      <label htmlFor="state">state</label>
+      <select name="state" onChange={handleStates}>
+        <option value="">select</option>
+        {states.map((elem, index) =>
+          <option value={elem.iso2} key={index}>{elem.name}</option>
+        )}
+      </select>
+
+      <label htmlFor="city">city</label>
+      <select name="city" onChange={handleCity}>
+        <option value="">select</option>
+        {cities.map((elem, index) =>
+          <option value={elem.name} key={index}>{elem.name}</option>
+        )}
+      </select>
+    </>
+  );
+}
 
 function ProfileForm() {
   // for get user information
-  let isModel = false;
   const [model, setModel] = useState({
+    _id : "",
     Name : "",
     Age : "",
     Gender : "",
@@ -17,13 +135,13 @@ function ProfileForm() {
     email : "",
     self_introduction : "",
     career : "",
+    language : ""
   });
 
   async function fetchUrl() {
     const response = await fetch("/api/model/searchForUid");
     const json = await response.json();
     if (json != null) {
-      isModel = true;
       setModel(json);
     }
   }
@@ -59,7 +177,7 @@ function ProfileForm() {
     formData.append('email', e.target.email.value);
     formData.append('self_introduction', e.target.self_introduction.value);
     formData.append('career', e.target.career.value);
-    formData.append('isModel', isModel);
+    formData.append('language', e.target.language.value);
 
     axios
     .post('/api/model/new', formData)
@@ -116,6 +234,13 @@ function ProfileForm() {
 
         <label htmlFor="career">career</label>
         <input type="text" name="career" value={model.career} onChange={handleChange}/>
+
+        <label htmlFor="language">language</label>
+        <select name="language" value={model.language} onChange={handleChange}>
+          <Language />
+        </select>
+
+        <Country />
       </div>
 
       <button type="submit">save</button>

@@ -52,6 +52,11 @@ function MakeParam({find, sort, skip}) {
     findInput.height = { $gte: height, $lt: height+10 };
   }
 
+  if (find.get("age") != null) {
+    const age = find.get("age");
+    findInput.Age = { $gte: age, $lt: age+10 };
+  }
+
   // sort : default "latest"
   if (sort === "P") {
     sortInput.height = 1;
@@ -311,6 +316,35 @@ function Model(props) {
         },
       ]
     },
+    {
+      name : "age",
+      option : [
+        {
+          value: 60,
+          text: "60~"
+        },
+        {
+          value: 50,
+          text: "50~60"
+        },
+        {
+          value: 40,
+          text: "40~50"
+        },
+        {
+          value: 30,
+          text: "30~40"
+        },
+        {
+          value: 20,
+          text: "20~30"
+        },
+        {
+          value: 10,
+          text: "~20"
+        },
+      ]
+    }
   ];
 
   //for modal status
