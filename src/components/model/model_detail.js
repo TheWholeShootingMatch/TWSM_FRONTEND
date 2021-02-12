@@ -1,10 +1,11 @@
+import React, { useState, useEffect } from "react";
 import { useFetch } from "../common/useFetch"
-import {useHistory, useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import Like from "./like_btn";
 
 function Main({modelId}) {
-  // gwt model
+  // get model
   const param = {
     method: "POST",
     headers: {
@@ -13,6 +14,27 @@ function Main({modelId}) {
     body: JSON.stringify({ _id : modelId })
   }
   const [model, setModel] = useFetch('/api/model/fetch',param);
+
+  //get cities
+  const cityparam = {
+    method: "POST",
+    headers: {
+            'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ Uid : model.Uid })
+  }
+
+  const [citiesDB, setCitiesDB] = useState([]);
+
+  async function fetchcitiesDB() {
+    const response = await fetch('/api/photographicAreaM/searchMid',cityparam);
+    const json = await response.json();
+    setCitiesDB(json);
+  }
+
+  useEffect(() => {
+    fetchcitiesDB();
+  }, [model]);
 
   return (
     <main>
@@ -28,15 +50,19 @@ function Main({modelId}) {
         <p>Cintura : {model.Cintura}</p>
         <p>E-mail : {model.email}</p>
         <p>Instagram : {model.instagram}</p>
-        <p>self introduction</p>
+        <h3>self introduction</h3>
         <p>{model.self_introduction}</p>
-        <p>career</p>
+        <h3>career</h3>
         <p>{model.career}</p>
+        <h3>language</h3>
+        <p>{model.language}</p>
         <div className="model_loc">
-          <p>Valid Location : </p>
+          <h3>Valid Location</h3>
+          {citiesDB.map((elem,index) =>
+            <p>{elem.name}</p>
+          )}
         </div>
       </div>
-      <button className="back_btn"></button>
       <Like />
     </main>
   );

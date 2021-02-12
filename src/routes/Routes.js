@@ -54,7 +54,7 @@ function Routes() {
                         <Route path="/signup"><Signup /></Route>
                         <Route path="/whiteboard"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
-                        <Route path="/model/Model/:pageNum"><Model> <Header isLogin={isLogin}/> </Model></Route>
+                        <Route path="/model/Model/:skip/:sort"><Model> <Header isLogin={isLogin}/> </Model></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
                         <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin} /> </New_Model></Route>
                         <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>

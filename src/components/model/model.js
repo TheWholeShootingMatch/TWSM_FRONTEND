@@ -9,6 +9,10 @@ import Like from "./like_btn";
 
 import Modal from '@material-ui/core/Modal';
 
+// post in one page && page
+const postNum = 3;
+const pageNum = 3;
+
 const ModalContext = createContext({
   bool: false,
   toggle: () => {}
@@ -32,65 +36,97 @@ const ModelContext = createContext({
 });
 
 // get query - side_nav condition
-function MakeParam({query}) {
-  const inputs = {};
+function MakeParam({find, sort, skip}) {
+  const findInput = {};
+  const sortInput = {};
+  let skipInput = 0;
+  let limitInput = postNum * pageNum;
 
-  if (query.get("gender") != null) {
-    inputs.Gender = query.get("gender");
+  // find
+  if (find.get("gender") != null) {
+    findInput.Gender = find.get("gender");
   }
 
-  return { param : inputs };
+  if (find.get("height") != null) {
+    const height = find.get("height");
+    findInput.height = { $gte: height, $lt: height+10 };
+  }
+
+  if (find.get("age") != null) {
+    const age = find.get("age");
+    findInput.Age = { $gte: age, $lt: age+10 };
+  }
+
+  // sort : default "latest"
+  if (sort === "P") {
+    sortInput.height = 1;
+  }
+  else if (sort === "O") {
+    sortInput._id = 1;
+  }
+  else {
+    sortInput._id = -1;
+  }
+
+  //skip && limit
+  if (skip != null && skip != 0) {
+    skipInput = parseInt(skip/pageNum) * postNum * pageNum;
+    limitInput = (parseInt(skip/pageNum) +1) * postNum * pageNum;
+  }
+
+  return {
+    find : findInput,
+    sort : sortInput,
+    skip : skipInput,
+    limit : limitInput
+  };
 }
 
-// model && page listing
-function GetModel() {
+// model listing
+function GetModel({location, sort, skip, setModelLeng}) {
   //for get models
-  let location = useLocation();
-  let query = new URLSearchParams(location.search);
+  const find = new URLSearchParams(location.search);
+
   const [modellist, setModellist] = useState([]);
 
   async function fetchUrl() {
-    const response = await fetch("/api/model", {
+    const response = await fetch("/api/model",
+    {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(MakeParam({query}))
+      body: JSON.stringify(MakeParam({find, sort, skip}))
     });
+
     const json = await response.json();
+    setModelLeng(json.length);
     setModellist(json);
   }
 
   useEffect(() => {
     fetchUrl();
-  }, [useLocation().search]);
-
-  // for page
-  let history = useHistory();
-  const {pageNum} = useParams();
-
-  const page = [];
-  const pageComponantNum = 5;
-
-  for (let i=0; i<parseInt(modellist.length/pageComponantNum)+1; i++) {
-    page.push(<li key={i} onClick={() => { history.push(`/model/Model/${i}${location.search}`) }}>{i+1}</li>);
-  };
+  }, [useLocation()]);
 
   // for copmpcard
   const { toggle } = useContext(ModalContext);
   const { setModelContext } = useContext(ModelContext);
 
   const handleClick = (input) => {
-    // console.log(input);
     setModelContext(input);
     toggle();
   };
 
+  // for page
+  let indexLow = 0;
+  if (skip != 0) {
+    indexLow = skip%pageNum;
+  }
+
   return (
-    <>
     <div className="model_list">
       {modellist.map((elem, index) => {
-        if (pageNum*pageComponantNum<=index && index<pageNum*pageComponantNum+(pageComponantNum-1)) {
+        if (indexLow*postNum<=index && index<indexLow*postNum+(postNum)) {
           return (
             <div className="model" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
@@ -100,10 +136,6 @@ function GetModel() {
         }
       })}
     </div>
-    <ul className="pageControll">
-      {page}
-    </ul>
-    </>
   );
 }
 
@@ -179,6 +211,142 @@ function NewButton() {
 }
 
 function Main() {
+  let location = useLocation();
+  let history = useHistory();
+  const {skip, sort} = useParams();
+
+  //for page
+  const page = [];
+
+  const [modelLeng,setModelLeng] = useState(1);
+
+  let pageSet = 0;
+  if (skip != 0) {
+    pageSet = parseInt(skip/pageNum);
+    page.push(<li onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
+  }
+  else {
+    page.push(<li>prev</li>);
+  }
+
+  for (let i=0; i<parseInt(modelLeng/postNum); i++) {
+    if (pageSet*pageNum+i == skip) {
+      page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}><strong>{pageSet*pageNum+i+1}</strong></li>);
+    }
+    else {
+      page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}>{pageSet*pageNum+i+1}</li>);
+    }
+  };
+
+  page.push(<li onClick={() => { history.push(`/model/Model/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
+
+  const handleChange = (e) => {
+    history.push(`/model/Model/${skip}/${e.target.value}${location.search}`);
+  };
+
+  return (
+    <main>
+      <div className="main_header">
+        <div className="sorting_bar">
+          <label htmlFor="sort">sort as </label>
+          <select name="sort" onChange={handleChange}>
+            <option value="L" defaultValue>Latest</option>
+            <option value="O">Oldest</option>
+            <option value="P">Popular</option>
+          </select>
+        </div>
+
+        <NewButton />
+      </div>
+
+      <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} />
+
+      <ul className="pageControll">
+        {page}
+      </ul>
+    </main>
+  );
+}
+
+function Model(props) {
+  const navContents = [
+    {
+      name : "gender",
+      option : [
+        {
+          value: "F",
+          text: "female"
+        },
+        {
+          value: "M",
+          text: "male"
+        },
+        {
+          value: "N",
+          text: "not on the list"
+        },
+      ]
+    },
+    {
+      name : "height",
+      option : [
+        {
+          value: 190,
+          text: "190~"
+        },
+        {
+          value: 180,
+          text: "180~190"
+        },
+        {
+          value: 170,
+          text: "170~180"
+        },
+        {
+          value: 160,
+          text: "160~170"
+        },
+        {
+          value: 150,
+          text: "150~160"
+        },
+        {
+          value: 140,
+          text: "~150"
+        },
+      ]
+    },
+    {
+      name : "age",
+      option : [
+        {
+          value: 60,
+          text: "60~"
+        },
+        {
+          value: 50,
+          text: "50~60"
+        },
+        {
+          value: 40,
+          text: "40~50"
+        },
+        {
+          value: 30,
+          text: "30~40"
+        },
+        {
+          value: 20,
+          text: "20~30"
+        },
+        {
+          value: 10,
+          text: "~20"
+        },
+      ]
+    }
+  ];
+
   //for modal status
   const toggle = () => {
     setBool(prevState => {
@@ -219,71 +387,19 @@ function Main() {
     setModelContext
   });
 
-  return (
-    <main>
-      <ModelContext.Provider value={model}>
-      <ModalContext.Provider value={bool}>
-        <Compcard />
-
-        <div className="main_header">
-          <div className="sorting_bar">
-            <label htmlFor="sort">sort as </label>
-            <select name="sort">
-              <option value="popular" defaultValue>popular</option>
-              <option value="latest">lastest</option>
-            </select>
-          </div>
-
-          <NewButton />
-        </div>
-
-        <GetModel />
-      </ModalContext.Provider>
-      </ModelContext.Provider>
-    </main>
-  );
-}
-
-function Model(props) {
-  const navContents = [
-    {
-      name : "gender",
-      option : [
-        {
-          value: "F",
-          text: "female"
-        },
-        {
-          value: "M",
-          text: "male"
-        },
-        {
-          value: "N",
-          text: "not on the list"
-        },
-      ]
-    },
-    {
-      name : "height",
-      option : [
-        {
-          value: "180~190",
-          text: "180~190"
-        },
-        {
-          value: "170~180",
-          text: "170~180"
-        },
-      ]
-    }
-  ];
-
-//get header as children
+  //get header as children
   return (
     <>
       {props.children}
+
       <SideNav navContents={navContents} />
-      <Main />
+
+      <ModelContext.Provider value={model}>
+      <ModalContext.Provider value={bool}>
+        <Compcard />
+        <Main />
+      </ModalContext.Provider>
+      </ModelContext.Provider>
     </>
   );
 }

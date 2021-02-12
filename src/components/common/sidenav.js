@@ -16,10 +16,23 @@ function MakeOption(props) {
 function SideNav({navContents}) {
   let history = useHistory();
   let location = useLocation();
+  const find = new URLSearchParams(location.search);
 
   const handleChange = (e) => {
     const { value, name } = e.target;
-    history.push(`${location.pathname}?${name}=${value}`);
+    let query = "";
+
+    navContents.map((elem) => {
+      if (elem.name == name) {
+        query = query + `${name}=${value}&&`;
+      }
+      else if (elem.name != name && find.get(elem.name) != null) {
+        query = query + `${elem.name}=${find.get(elem.name)}&&`;
+      }
+    });
+
+
+    history.push(`${location.pathname}?${query}`);
   };
 
   const cOption = [
@@ -36,7 +49,7 @@ function SideNav({navContents}) {
   return (
     <div className="side_nav">
       <select name="뭐라하지" onChange={handleChange}>
-        <MakeOption name = "뭐라하지" option = {cOption} />
+        <MakeOption name = "model" option = {cOption} />
       </select>
 
       {navContents.map(({name, option}, index) =>
