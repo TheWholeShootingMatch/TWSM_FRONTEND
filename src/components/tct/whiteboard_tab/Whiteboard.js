@@ -3,8 +3,8 @@ import {useHistory} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { versionRender, externalContextRef } from "./tools/Canvas";
-import {addVersion, renderVersion, clearVersionList} from './tools/SharedTypes';
-import {deleteAllDrawing, undoDrawing, redoDrawing, getVersionList} from "./tools/Tools";
+import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
+import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList } from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 

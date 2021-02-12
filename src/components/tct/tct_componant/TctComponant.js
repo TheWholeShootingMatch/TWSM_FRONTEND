@@ -1,5 +1,7 @@
-//import React, {useEffect} from "react";
+import React, {useState} from "react";
 import { Link, useHistory } from "react-router-dom";
+import { awareness } from "../whiteboard_tab/tools/SharedTypes";
+import { getActiveUserState } from "../whiteboard_tab/tools/activeUserInfo";
 import "./TctComponant.scss";
 
 function SideMenu() {
@@ -21,30 +23,37 @@ function SideMenu() {
   );
 }
 
-function Header() {
+function Header({ activeUserState }) {
+
   return (
     <header className="tct_header">
         <div className="project_title"><input placeholder="project#1" /></div>
-        <div className="connected_users">
-            <span className="user_icon">k</span>
-            <span className="user_icon">u</span>
-            <span className="invite_btn">
+      <div className="connected_users">
+        {activeUserState.map(state => <span className="user_icon" style={{ color: state.userInfo.color }}>{state.userInfo.name}</span>)}
+        <span className="invite_btn">
                 <details>
                     <summary>plus</summary>
                     <div>user list</div>
                 </details>
-            </span>
-        </div>
+        </span>
+      </div>
     </header>
   );
 }
 
-function TctComponant({children}) {
+function TctComponant({ children }) {
+
+  const [activeUserState, setActiveUserState] = useState(getActiveUserState());
+
+  awareness.on('change', () => {
+    setActiveUserState(getActiveUserState());
+  })
+  
   return (
     <div className="whole_wrapper">
       <SideMenu />
       <div className="tct_wrapper">
-        <Header />
+        <Header activeUserState={activeUserState}/>
         {children}
       </div>
     </div>
