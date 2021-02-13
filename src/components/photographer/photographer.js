@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
-import './model.scss';
+import './photographer.scss';
 
 import SideNav from "./sidenav"
 import Like from "./like_btn";
@@ -18,21 +18,17 @@ const ModalContext = createContext({
   toggle: () => {}
 });
 
-// model ID inside modal
-const ModelContext = createContext({
-  model : {
+// photographer inside modal
+const PhotographerContext = createContext({
+  photographer : {
     id: "",
     profile_img : "",
     Name : "",
     email : "",
     instagram : "",
-    height : "",
-    Busto : "",
-    Quadril : "",
-    Cintura : ""
   },
 
-  setModelContext: () => {}
+  setPhotographerContext: () => {}
 });
 
 // get query - side_nav condition
@@ -44,22 +40,6 @@ function MakeParam({find, sort, skip}) {
   let cityInput = "";
 
   // find
-  if (find.get("gender") != null) {
-    findInput.Gender = find.get("gender");
-  }
-
-  if (find.get("heightMin") != null) {
-    const heightMin = find.get("heightMin");
-    const heightMax = find.get("heightMax");
-    findInput.height = { $gte: heightMin, $lt: heightMax };
-  }
-
-  if (find.get("ageMin") != null) {
-    const ageMin = find.get("ageMin");
-    const ageMax = find.get("ageMax");
-    findInput.Age = { $gte: ageMin, $lt: ageMax };
-  }
-
   if (find.get("language") != null) {
     findInput.language = find.get("language");
   }
@@ -95,15 +75,15 @@ function MakeParam({find, sort, skip}) {
   };
 }
 
-// model listing
-function GetModel({location, sort, skip, setModelLeng}) {
-  //for get models
+// photographer listing
+function GetPhotographer ({location, sort, skip, setPhotographerLeng}) {
+  //for get photographers
   const find = new URLSearchParams(location.search);
 
-  const [modellist, setModellist] = useState([]);
+  const [photographerlist, setPhotographerlist] = useState([]);
 
   async function fetchUrl() {
-    const response = await fetch("/api/model",
+    const response = await fetch("/api/photographer",
     {
       method: "POST",
       headers: {
@@ -113,8 +93,8 @@ function GetModel({location, sort, skip, setModelLeng}) {
     });
 
     const json = await response.json();
-    setModelLeng(json.length);
-    setModellist(json);
+    setPhotographerLeng(json.length);
+    setPhotographerlist(json);
   }
 
   useEffect(() => {
@@ -123,10 +103,10 @@ function GetModel({location, sort, skip, setModelLeng}) {
 
   // for copmpcard
   const { toggle } = useContext(ModalContext);
-  const { setModelContext } = useContext(ModelContext);
+  const { setPhotographerContext } = useContext(PhotographerContext);
 
   const handleClick = (input) => {
-    setModelContext(input);
+    setPhotographerContext(input);
     toggle();
   };
 
@@ -137,11 +117,11 @@ function GetModel({location, sort, skip, setModelLeng}) {
   }
 
   return (
-    <div className="model_list">
-      {modellist.map((elem, index) => {
+    <div className="photographer_list">
+      {photographerlist.map((elem, index) => {
         if (indexLow*postNum<=index && index<indexLow*postNum+(postNum)) {
           return (
-            <div className="model" key={index}>
+            <div className="photographer" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
               <Like />
             </div>
@@ -153,8 +133,8 @@ function GetModel({location, sort, skip, setModelLeng}) {
 }
 
 function Compcard() {
-  //for model info
-  const modelC = useContext(ModelContext);
+  //for photographer info
+  const photographerC = useContext(PhotographerContext);
 
   //for modal
   const open = useContext(ModalContext);
@@ -163,24 +143,20 @@ function Compcard() {
   return (
     <Modal open={open.bool} onClose={toggle}>
     <div className="Compcard">
-      <div className="model_info">
-        <div className="model_img">
-          <img src={modelC.model.profile_img} alt={modelC.model.Name}/>
+      <div className="photographer_info">
+        <div className="photographer_img">
+          <img src={photographerC.photographer.profile_img} alt={photographerC.photographer.Name}/>
         </div>
-        <div className="model_name">
-          <h2>{modelC.model.Name}</h2>
+        <div className="photographer_name">
+          <h2>{photographerC.photographer.Name}</h2>
         </div>
-        <div className="model_contect">
-          <p>E-mail : {modelC.model.email}</p>
-          <p>Instagram : {modelC.model.instagram}</p>
-        </div>
-        <div className="model_size">
-          <p>Height : {modelC.model.height}</p>
-          <p>Size : {modelC.model.Busto}-{modelC.model.Quadril}-{modelC.model.Cintura}</p>
+        <div className="photographer_contact">
+          <p>E-mail : {photographerC.photographer.email}</p>
+          <p>Instagram : {photographerC.photographer.instagram}</p>
         </div>
       </div>
       <Like />
-      <Link to={`/model/Model_Detail/${modelC.model._id}`}>
+      <Link to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
         View More
       </Link>
     </div>
@@ -191,7 +167,7 @@ function Compcard() {
 function NewButton() {
   //check is user logined
   const [isLogin, setIsLogin] = useState(false);
-  const [isModel, setIsModel] = useState(false);
+  const [isPhotographer, setIsPhotographer] = useState(false);
   axios
     .get('/api/users/login')
     .then(res => {
@@ -202,17 +178,17 @@ function NewButton() {
 
   if (isLogin) {
     axios
-      .get('/api/model/ismodel')
+      .get('/api/photographer/isPhotographer')
       .then(res => {
         if(res.data === true ) {
-            setIsModel(true);
+            setIsPhotographer(true);
         }
       })
 
-    if (isModel) {
-      return <Link to="/model/New_Model">Edit Profile</Link>
+    if (isPhotographer) {
+      return <Link to="/photographer/New_Photographer">Edit Profile</Link>
     }
-    return <Link to="/model/New_Model">Registration</Link>
+    return <Link to="/photographer/New_Photographer">Registration</Link>
   }
   return <Link to="/login">Registration</Link>
 }
@@ -225,30 +201,30 @@ function Main() {
   //for page
   const page = [];
 
-  const [modelLeng,setModelLeng] = useState(1);
+  const [photographerLeng,setPhotographerLeng] = useState(1);
 
   let pageSet = 0;
   if (skip != 0) {
     pageSet = parseInt(skip/pageNum);
-    page.push(<li key={-1} onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
+    page.push(<li key={-1} onClick={() => { history.push(`/photographer/photographer/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
   }
   else {
     page.push(<li key={-1}>prev</li>);
   }
 
-  for (let i=0; i<parseInt(modelLeng/postNum)+1; i++) {
+  for (let i=0; i<parseInt(photographerLeng/postNum)+1; i++) {
     if (pageSet*pageNum+i == skip) {
-      page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}><strong>{pageSet*pageNum+i+1}</strong></li>);
+      page.push(<li key={i} onClick={() => { history.push(`/photographer/photographer/${pageSet*pageNum+i}/${sort}${location.search}`) }}><strong>{pageSet*pageNum+i+1}</strong></li>);
     }
     else {
-      page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}>{pageSet*pageNum+i+1}</li>);
+      page.push(<li key={i} onClick={() => { history.push(`/photographer/photographer/${pageSet*pageNum+i}/${sort}${location.search}`) }}>{pageSet*pageNum+i+1}</li>);
     }
   };
 
-  page.push(<li key={100} onClick={() => { history.push(`/model/Model/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
+  page.push(<li key={100} onClick={() => { history.push(`/photographer/photographer/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
 
   const handleChange = (e) => {
-    history.push(`/model/Model/${skip}/${e.target.value}${location.search}`);
+    history.push(`/photographer/photographer/${skip}/${e.target.value}${location.search}`);
   };
 
   return (
@@ -266,7 +242,7 @@ function Main() {
         <NewButton />
       </div>
 
-      <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} />
+      <GetPhotographer location={location} skip={skip} sort ={sort} setPhotographerLeng={setPhotographerLeng} />
 
       <ul className="pageControll">
         {page}
@@ -275,7 +251,7 @@ function Main() {
   );
 }
 
-function Model(props) {
+function Photographer(props) {
   //for modal status
   const toggle = () => {
     setBool(prevState => {
@@ -292,28 +268,24 @@ function Model(props) {
   });
 
   // for modal contents
-  const setModelContext = (input) => {
-    setModel(prevState => {
+  const setPhotographerContext = (input) => {
+    setPhotographer(prevState => {
       return {
         ...prevState,
-        model : input
+        photographer : input
       };
     });
   }
 
-  const [model, setModel] = useState({
-    model : {
+  const [photographer, setPhotographer] = useState({
+    photographer : {
       id: "",
       profile_img : "",
       Name : "",
       email : "",
       instagram : "",
-      height : "",
-      Busto : "",
-      Quadril : "",
-      Cintura : ""
     },
-    setModelContext
+    setPhotographerContext
   });
 
   //get header as children
@@ -323,14 +295,14 @@ function Model(props) {
 
       <SideNav />
 
-      <ModelContext.Provider value={model}>
+      <PhotographerContext.Provider value={photographer}>
       <ModalContext.Provider value={bool}>
         <Compcard />
         <Main />
       </ModalContext.Provider>
-      </ModelContext.Provider>
+      </PhotographerContext.Provider>
     </>
   );
 }
 
-export default Model;
+export default Photographer;

@@ -59,7 +59,7 @@ function Main({modelId}) {
         <div className="model_loc">
           <h3>Valid Location</h3>
           {citiesDB.map((elem,index) =>
-            <p>{elem.name}</p>
+            <p key={index}>{elem.name}</p>
           )}
         </div>
       </div>
