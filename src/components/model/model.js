@@ -4,7 +4,7 @@ import axios from "axios";
 
 import './model.scss';
 
-import SideNav from "../common/sidenav"
+import SideNav from "./sidenav"
 import Like from "./like_btn";
 
 import Modal from '@material-ui/core/Modal';
@@ -41,20 +41,27 @@ function MakeParam({find, sort, skip}) {
   const sortInput = {};
   let skipInput = 0;
   let limitInput = postNum * pageNum;
+  let cityInput = "";
 
   // find
   if (find.get("gender") != null) {
     findInput.Gender = find.get("gender");
   }
 
-  if (find.get("height") != null) {
-    const height = find.get("height");
-    findInput.height = { $gte: height, $lt: height+10 };
+  if (find.get("heightMin") != null) {
+    const heightMin = find.get("heightMin");
+    const heightMax = find.get("heightMax");
+    findInput.height = { $gte: heightMin, $lt: heightMax };
   }
 
-  if (find.get("age") != null) {
-    const age = find.get("age");
-    findInput.Age = { $gte: age, $lt: age+10 };
+  if (find.get("ageMin") != null) {
+    const ageMin = find.get("ageMin");
+    const ageMax = find.get("ageMax");
+    findInput.Age = { $gte: ageMin, $lt: ageMax };
+  }
+
+  if (find.get("language") != null) {
+    findInput.language = find.get("language");
   }
 
   // sort : default "latest"
@@ -74,11 +81,17 @@ function MakeParam({find, sort, skip}) {
     limitInput = (parseInt(skip/pageNum) +1) * postNum * pageNum;
   }
 
+  //city
+  if (find.get("city") != null) {
+    cityInput = find.get("city");
+  }
+
   return {
     find : findInput,
     sort : sortInput,
     skip : skipInput,
-    limit : limitInput
+    limit : limitInput,
+    city : cityInput
   };
 }
 
@@ -223,13 +236,13 @@ function Main() {
   let pageSet = 0;
   if (skip != 0) {
     pageSet = parseInt(skip/pageNum);
-    page.push(<li onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
+    page.push(<li key={-1} onClick={() => { history.push(`/model/Model/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
   }
   else {
-    page.push(<li>prev</li>);
+    page.push(<li key={-1}>prev</li>);
   }
 
-  for (let i=0; i<parseInt(modelLeng/postNum); i++) {
+  for (let i=0; i<parseInt(modelLeng/postNum)+1; i++) {
     if (pageSet*pageNum+i == skip) {
       page.push(<li key={i} onClick={() => { history.push(`/model/Model/${pageSet*pageNum+i}/${sort}${location.search}`) }}><strong>{pageSet*pageNum+i+1}</strong></li>);
     }
@@ -238,7 +251,7 @@ function Main() {
     }
   };
 
-  page.push(<li onClick={() => { history.push(`/model/Model/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
+  page.push(<li key={100} onClick={() => { history.push(`/model/Model/${skip*1+1}/${sort}${location.search}`) }}>next</li>);
 
   const handleChange = (e) => {
     history.push(`/model/Model/${skip}/${e.target.value}${location.search}`);
@@ -269,84 +282,6 @@ function Main() {
 }
 
 function Model(props) {
-  const navContents = [
-    {
-      name : "gender",
-      option : [
-        {
-          value: "F",
-          text: "female"
-        },
-        {
-          value: "M",
-          text: "male"
-        },
-        {
-          value: "N",
-          text: "not on the list"
-        },
-      ]
-    },
-    {
-      name : "height",
-      option : [
-        {
-          value: 190,
-          text: "190~"
-        },
-        {
-          value: 180,
-          text: "180~190"
-        },
-        {
-          value: 170,
-          text: "170~180"
-        },
-        {
-          value: 160,
-          text: "160~170"
-        },
-        {
-          value: 150,
-          text: "150~160"
-        },
-        {
-          value: 140,
-          text: "~150"
-        },
-      ]
-    },
-    {
-      name : "age",
-      option : [
-        {
-          value: 60,
-          text: "60~"
-        },
-        {
-          value: 50,
-          text: "50~60"
-        },
-        {
-          value: 40,
-          text: "40~50"
-        },
-        {
-          value: 30,
-          text: "30~40"
-        },
-        {
-          value: 20,
-          text: "20~30"
-        },
-        {
-          value: 10,
-          text: "~20"
-        },
-      ]
-    }
-  ];
-
   //for modal status
   const toggle = () => {
     setBool(prevState => {
@@ -392,7 +327,7 @@ function Model(props) {
     <>
       {props.children}
 
-      <SideNav navContents={navContents} />
+      <SideNav />
 
       <ModelContext.Provider value={model}>
       <ModalContext.Provider value={bool}>
