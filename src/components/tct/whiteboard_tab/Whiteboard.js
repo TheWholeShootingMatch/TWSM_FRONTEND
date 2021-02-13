@@ -29,18 +29,23 @@ function WhiteBoardArea(){
     const historyArea = useRef(null);
     const [slides, setSlides] = useState([]);
     const [activeSlide, setActiveSlide] = useState("1");
-    const nextSlide = useRef(2);
+    const nextSlide = useRef(1);
+
+    const updateSlide = (slides) => {
+      setSlides(slides);
+    }
 
     useEffect(() => {
       axios.post("/api/whiteboard", {TcTnum:"000"} )
       .then((res) => {
+        updateSlide(res.data);
         console.log(res.data);
-        setSlides(res.data);
-        nextSlide.current = res.data.length+1;
-      //   slides.map((slide, index) => {
-      //     if(nextSlide.current <= slide.Snum) nextSlide.current = slide.Snum+1 ;
-      //   })
-      //   console.log(nextSlide.current);
+        console.log(slides);
+        slides.map((slide, index) => {
+          console.log(nextSlide.current, slide.Snum)
+          if(nextSlide.current <= slide.Snum) nextSlide.current = slide.Snum+1;
+        })
+        console.log(nextSlide.current);
       })
     },[]);
 
