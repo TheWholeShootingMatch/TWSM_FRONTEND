@@ -12,8 +12,8 @@ function SideMenu() {
         </div>
         <nav className="menu_area">
             <ul>
-                <li className="menu"><Link to="/TctModel">model</Link></li>
-                <li className="menu"><Link to="">photographer</Link></li>
+                <li className="menu"><Link to="/TctModel/0">model</Link></li>
+                <li className="menu"><Link to="/TctPhotographer/0">photographer</Link></li>
                 <li className="menu"><Link to="/WhiteBoard">whiteboard</Link></li>
                 <li className="menu"><Link to="/TctWorkflow">workflow</Link></li>
             </ul>
@@ -48,7 +48,7 @@ function TctComponant({ children }) {
   awareness.on('change', () => {
     setActiveUserState(getActiveUserState());
   })
-  
+
   return (
     <div className="whole_wrapper">
       <SideMenu />

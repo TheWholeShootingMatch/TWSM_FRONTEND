@@ -121,7 +121,7 @@ function NoteArea(props) {
       <Accordion id = {props._id}>
         <AccordionSummary>
           <div className="note_title">
-            <p className="category_tag">{props.category}</p>
+            <p className="category_tag"></p>
             <h3>{props.title}</h3>
             <p>{props.contents}</p>
           </div>
@@ -155,7 +155,7 @@ function Contents() {
   if (setNoteList) {
     return <p> loading... </p>
   }
-  
+
   return (
     <div className="tct_contents">
 

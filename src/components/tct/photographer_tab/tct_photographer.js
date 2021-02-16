@@ -4,12 +4,12 @@ import TctComponant from "../tct_componant/TctComponant";
 function Contents() {
   return (
     <div>
-        <p>hello</p>
+
     </div>
   )
 }
 
-function Model() {
+function TctPhotographer() {
   return (
     <>
       <TctComponant>
@@ -18,4 +18,4 @@ function Model() {
     </>
   );
 }
-export default Model;
+export default TctPhotographer;

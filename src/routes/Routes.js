@@ -20,7 +20,8 @@ import New_Photographer from "../components/photographer/new_photographer";
 /* TCT pages */
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
 import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
-// import TctModel from "../components/tct/model_tab/Model";
+import TctModel from "../components/tct/model_tab/tct_model";
+import TctPhotographer from "../components/tct/photographer_tab/tct_photographer"
 
 import Overview from "../components/mypage/common/Overview";
 import Notification from "../components/mypage/user/Notification";
@@ -59,6 +60,8 @@ function Routes() {
                         <Route path="/signup"><Signup /></Route>
                         <Route path="/whiteboard"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
+                        <Route path="/TctModel/:skip"><TctModel /></Route>
+                        <Route path="/TctPhotographer/:skip"><TctPhotographer /></Route>
                         <Route path="/model/Model/:skip/:sort"><Model> <Header isLogin={isLogin}/> </Model></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
                         <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin} /> </New_Model></Route>
