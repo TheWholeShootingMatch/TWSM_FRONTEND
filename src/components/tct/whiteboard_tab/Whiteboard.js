@@ -28,8 +28,7 @@ function WhiteBoardArea(){
     const [toolType, setType] = useState("");
     const historyArea = useRef(null);
     const [slides, setSlides] = useState([]);
-    const [activeSlide, setActiveSlide] = useState("1");
-    const nextSlide = useRef(1);
+    const [activeSlide, setActiveSlide] = useState(null);
 
     const updateSlide = (slides) => {
       setSlides(slides);
@@ -39,13 +38,6 @@ function WhiteBoardArea(){
       axios.post("/api/whiteboard", {TcTnum:"000"} )
       .then((res) => {
         updateSlide(res.data);
-        console.log(res.data);
-        console.log(slides);
-        slides.map((slide, index) => {
-          console.log(nextSlide.current, slide.Snum)
-          if(nextSlide.current <= slide.Snum) nextSlide.current = slide.Snum+1;
-        })
-        console.log(nextSlide.current);
       })
     },[]);
 
@@ -61,7 +53,7 @@ function WhiteBoardArea(){
 
     return (
         <div className="whiteboard_area">
-            <WhiteBoardSlides slides={slides} setSlides={setSlides} activeSlide={activeSlide} setActiveSlide={setActiveSlide} nextSlide={nextSlide}/>
+            <WhiteBoardSlides slides={slides} setSlides={setSlides} activeSlide={activeSlide} setActiveSlide={setActiveSlide}/>
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
             <WhiteBoardContents toolType={toolType} historyArea={historyArea} activeSlide={activeSlide}/>
         </div>
@@ -138,37 +130,32 @@ function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
     )
 }
 
-function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextSlide}){
+function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide}){
   const clickSlide = (id) => {  //슬라이드 클릭 시 현재 슬라이드 번호를 바꿔줌
-    console.log(id);
     setActiveSlide(id);
   }
 
   const addSlide = () => {  //새 슬라이드 추가
     const slide = {
       TcTnum: "000", //tct num 불러와야함
-      Snum: nextSlide.current.toString(),
       Sname: "new tab"
     };
     axios.post('/api/whiteboard/add', slide, {
       withCredentials: true,
     })
     .then((res) => {
-      console.log(res.data);
       setSlides(res.data);
-      nextSlide.current += 1;
     })
   }
 
   const deliteSlide = (id) => {  //슬라이드 삭제
     const slide = {
       TcTnum: "000",
-      Snum: id
+      _id: id
     }
     axios.post('/api/whiteboard/delete', slide, {
       withCredentials: true,
     }).then((res) => {
-      console.log(res.data);
       setSlides(res.data);
     })
   }
@@ -176,13 +163,12 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextS
   const onChange = (e) => {  //슬라이드 이름 변경
     const slide = {
       TcTnum: "000", //tct num 불러와야함
-      Snum: e.target.name,
+      _id: e.target.name,
       Sname: e.target.value
     };
     axios.post('/api/whiteboard/rename', slide, {
       withCredentials: true,
     }).then((res) => {
-      console.log(res.data);
       setSlides(res.data);
     })
   };
@@ -191,19 +177,24 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide, nextS
   <div className="whiteboard_slides">
       {slides.map((slide, index) => {
         var slideClass;
+        if(activeSlide === null) {
+          setActiveSlide(slide._id);
+        }
         if(slide === null) {
           return (
             <div className={slideClass} key={index}>
             </div>
           );
         } else {
-          slide.Snum === activeSlide
+          slide._id === activeSlide
             ? (slideClass = 'current_slide slide')
             : (slideClass = 'slide');
           return (
             <div className={slideClass} key={index}>
-                <div onClick={() => clickSlide(slide.Snum)}> <input placeholder={slide.Sname} name={slide.Snum} onChange={onChange}/></div>
-                <button onClick={() => deliteSlide(slide.Snum)}>X</button>
+                <div onClick={() => clickSlide(slide._id)}>
+                  <input placeholder={slide.Sname} name={slide._id} onChange={onChange}/>
+                </div>
+                <button onClick={() => deliteSlide(slide._id)}>X</button>
             </div>
           );
         }
