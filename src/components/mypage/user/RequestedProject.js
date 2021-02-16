@@ -29,7 +29,7 @@ function RequestDetail({ request }) {
 function RequestedProjectList() {
     
     /* 요청보낸 프로젝트를 불러옴 */
-    const [requestedProject]  = useFetch('/api/tct');
+    const [requestedProject]  = useFetch('/api/project');
     console.log(requestedProject);
 
     return (

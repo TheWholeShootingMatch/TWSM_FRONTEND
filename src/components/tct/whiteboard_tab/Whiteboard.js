@@ -1,27 +1,46 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import {useHistory} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import axios from "axios";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { versionRender, externalContextRef } from "./tools/Canvas";
-import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
+import {addVersion, renderVersion, clearVersionList, connectToRoom} from './tools/SharedTypes';
 import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList } from "./tools/Tools";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
 
-const ydoc = new Y.Doc();
-const type = ydoc.getArray("drawing");
+function WhiteBoard() {
+    
+    const { TcTnum } = useParams();
+    let [isExist, setExist] = useState(true);
+    let [isLoading, setLoading] = useState(false);
 
-// const websocketProvider = new WebsocketProvider('localhost:3000', 'drawing', ydoc);
+    // useEffect(() => {
+    //     setLoading(true);
+    //     /* TcTnum 존재 여부를 db로부터 확인 */
+    //     axios.post('/api/tct', { TcTnum }, {
+    //         withCredentials: true,
+    //     }).then(res => {
+    //         setExist(res.data);
+    //     })
+    //     return () => { setLoading(false);}
+    // },[])
 
-function WhiteBoard(){
-    return(
-        <TctComponant>
-            <WhiteBoardArea/>
-        </TctComponant>
-    )
+
+    if (isExist === false) {
+        return (<p> Warning : incorrect path! Try Again</p>);
+    }
+    else if (isLoading) {
+        return (<p>loading...</p>)
+    }
+    else {
+        connectToRoom(TcTnum);
+        return (
+            <TctComponant>
+                <WhiteBoardArea/>
+            </TctComponant>
+        )
+    }
 }
 
 function WhiteBoardArea(){
@@ -34,7 +53,6 @@ function WhiteBoardArea(){
 
     useEffect(() => {
         const versionList = getVersionList();
-        console.log(versionList);
         setVersion(versionList);
     }, []);
 

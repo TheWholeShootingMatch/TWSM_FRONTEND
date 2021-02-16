@@ -48,7 +48,6 @@ export default function Canvas({ toolType, activeSlide }) {
         sharedLine = new Y.Array();
         drawElement.set('path', sharedLine);
         shared.drawingContent.get().push([drawElement]);
-        console.log(sharedLine)
     }
 
     const moveDraw = (event) => {
