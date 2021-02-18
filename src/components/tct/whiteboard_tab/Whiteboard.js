@@ -8,27 +8,26 @@ import {addVersion, renderVersion, clearVersionList, connectToRoom} from './tool
 import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList } from "./tools/Tools";
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
+import { isNonNullExpression } from "typescript";
 
 function WhiteBoard() {
     
     const { TcTnum } = useParams();
-    let [isExist, setExist] = useState(true);
+    let [isExist, setExist] = useState(null);
     let [isLoading, setLoading] = useState(false);
 
-    // useEffect(() => {
-    //     setLoading(true);
-    //     /* TcTnum 존재 여부를 db로부터 확인 */
-    //     axios.post('/api/tct', { TcTnum }, {
-    //         withCredentials: true,
-    //     }).then(res => {
-    //         setExist(res.data);
-    //     })
-    //     return () => { setLoading(false);}
-    // },[])
-
+    useEffect(() => {
+        setLoading(true);
+        axios.post('/api/tct', { TcTnum }, {
+            withCredentials: true,
+        }).then(res => {
+            setExist(res.data);
+        })
+        setLoading(false);
+    },[])
 
     if (isExist === false) {
-        return (<p> Warning : incorrect path! Try Again</p>);
+        return (<p> 접근 권한이 없습니다. 이전 페이지로 이동하세요 </p>);
     }
     else if (isLoading) {
         return (<p>loading...</p>)
