@@ -8,7 +8,6 @@ import {addVersion, renderVersion, clearVersionList, connectToRoom} from './tool
 import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList } from "./tools/Tools";
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
-import { isNonNullExpression } from "typescript";
 
 function WhiteBoard() {
     
