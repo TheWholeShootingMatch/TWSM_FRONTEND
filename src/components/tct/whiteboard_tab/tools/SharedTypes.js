@@ -101,12 +101,12 @@ class LocalRemoteUserData extends Y.PermanentUserData {
   }
 }
 
-export const permanentUserData = new LocalRemoteUserData(doc, versionDoc.getMap('users'));
+export const permanentUserData = new LocalRemoteUserData(doc, versionDoc.getMap('userInfo'));
 
 /* indexed db 연결 성공 시 */
 versionIndexeddbPersistence.whenSynced.then(() => {
   permanentUserData.setUserMapping(doc, doc.clientID, 'local', {})
-  setLocalUserInfo();
+  setLocalUserInfo(); //local user info update
   console.log("user info update!");
 })
 

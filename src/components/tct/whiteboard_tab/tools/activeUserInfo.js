@@ -9,7 +9,9 @@ const activeUserColor = [
 ]
 
 export const setLocalUserInfo = () => {
-    const myColor = activeUserColor[Math.floor(Math.random() * activeUserColor.length)];
+    const activeUserList = getActiveUserState();
+    console.log(activeUserList);
+    const myColor = activeUserColor[activeUserList.length];
     awareness.setLocalStateField("userInfo", {
         name: 'login id',
         color: myColor
@@ -17,13 +19,11 @@ export const setLocalUserInfo = () => {
 }
 
 export const getActiveUserState = () => {
-
     const userList = [];
     awareness.getStates().forEach(state => {
         if (state.userInfo) {
             userList.push(state);
         }
     })
-
     return userList;
 }
