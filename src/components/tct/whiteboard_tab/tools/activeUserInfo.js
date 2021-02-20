@@ -10,8 +10,10 @@ const activeUserColor = [
 
 export const setLocalUserInfo = () => {
     const activeUserList = getActiveUserState();
-    console.log(activeUserList);
-    const myColor = activeUserColor[activeUserList.length];
+    const usedColors = activeUserList.map((user) => user.userInfo.color);
+    const availableColor = activeUserColor.filter(color => !usedColors.includes(color));
+
+    const myColor = availableColor[0];
     awareness.setLocalStateField("userInfo", {
         name: 'login id',
         color: myColor
