@@ -1,6 +1,12 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
+import { useFetch } from "../../common/useFetch"
 import TctComponant from "../tct_componant/TctComponant";
+
+import * as Y from 'yjs'
+import { WebrtcProvider } from 'y-webrtc'
+import { WebsocketProvider } from 'y-websocket'
+import { IndexeddbPersistence, storeState } from 'y-indexeddb'
 
 import Modal from '@material-ui/core/Modal';
 
@@ -86,7 +92,7 @@ function GetPhotographer ({location, skip, setPhotographerLeng}) {
           return (
             <div className="photographer" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <button>ADD</button>
+              <button onClick={()=> pushSelectedP(elem._id)}>ADD</button>
             </div>
           );
         }
@@ -121,10 +127,68 @@ function Compcard() {
   );
 }
 
-function Selected() {
+const websocketUrl = 'http://localhost:3000'
+let pDoc = new Y.Doc();
+
+// Sync clients with the y-websocket provider
+const pWebsocketProvider = new WebsocketProvider(
+  websocketUrl, 'selectedP', pDoc, { connect: false }
+);
+pWebsocketProvider.connectBc();
+
+const pIndexeddbProvider = new IndexeddbPersistence('selectedP', pDoc);
+
+const selectedPArr = pDoc.getArray('selectedPArr');
+
+const pwebrtcProvider = new WebrtcProvider('selectedP', pDoc);
+
+selectedPArr.observe(event => {
+  console.log('new: ' + selectedPArr.toArray())
+});
+
+const getSelectedPArr = () => {
+  return selectedPArr.toArray();
+}
+
+const delSelectedP = (index) => {
+  console.log(index);
+  selectedPArr.delete(index,index);
+}
+
+const pushSelectedP = (id) => {
+  selectedPArr.push([id]);
+}
+
+function SelectedPhotographer({index, id}) {
+  const param = {
+    method: "POST",
+    headers: {
+            'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ _id : id })
+  }
+
+  const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
 
   return (
-    <p> hello </p>
+    <img src={photographer.profile_img} alt={photographer.Name} onClick={() => delSelectedP(index)}/>
+  );
+}
+
+function Selected() {
+  const selectedPList = selectedPArr.toArray();
+  console.log(selectedPList);
+
+  return (
+    <>
+      {
+        selectedPList.map((elem, index) => <SelectedPhotographer
+          id = {elem}
+          index = {index}
+          key={index}
+        />)
+      }
+    </>
   )
 }
 
