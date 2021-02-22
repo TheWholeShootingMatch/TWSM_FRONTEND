@@ -45,7 +45,7 @@ function TctComponant({ children }) {
 
   const [activeUserState, setActiveUserState] = useState(getActiveUserState());
 
-  awareness.on('update', () => {
+  awareness.on('change', () => {
     setActiveUserState(getActiveUserState());
   })
 
