@@ -1,5 +1,7 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
+import { useFetch } from "../../common/useFetch"
+import useSocket from "../tct_componant/useSocket";
 import TctComponant from "../tct_componant/TctComponant";
 
 import Modal from '@material-ui/core/Modal';
@@ -31,7 +33,7 @@ const ModelContext = createContext({
 });
 
 // model listing
-function GetModel({location, skip, setModelLeng}) {
+function GetModel({location, skip, setModelLeng, sendSelectedList}) {
   let skipInput = 0;
   let limitInput = postNum * pageNum;
 
@@ -91,7 +93,7 @@ function GetModel({location, skip, setModelLeng}) {
           return (
             <div className="model" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <button>ADD</button>
+              <button onClick={() => sendSelectedList({id:elem._id, func:"P"})}>ADD</button>
             </div>
           );
         }
@@ -130,11 +132,20 @@ function Compcard() {
   );
 }
 
-function Selected() {
+function Selected({index, id, sendSelectedList}) {
+  const param = {
+    method: "POST",
+    headers: {
+            'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ _id : id })
+  }
+
+  const [model, setModel] = useFetch('/api/model/fetch',param);
 
   return (
-    <p> hello </p>
-  )
+    <img src={model.profile_img} alt={model.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
+  );
 }
 
 function Main() {
@@ -171,11 +182,29 @@ function Main() {
     history.push(`/TctModel/${skip}`);
   };
 
+  // for selected list
+  const { roomId } = 201;
+  const { selectedList, sendSelectedList } = useSocket(roomId);
+
   return (
     <main>
-      <Selected />
+      <div className="selectedArea">
+      {
+        selectedList.map((elem, index) => <Selected
+          id = {elem.body}
+          index = {index}
+          key={index}
+          sendSelectedList={sendSelectedList}
+        />)
+      }
+      </div>
 
-      <GetModel location={location} skip={skip} setModelLeng={setModelLeng} />
+      <GetModel
+        location={location}
+        skip={skip}
+        setModelLeng={setModelLeng}
+        sendSelectedList = {sendSelectedList}
+      />
 
       <ul className="pageControll">
         {page}
