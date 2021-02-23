@@ -151,8 +151,7 @@ const getSelectedPArr = () => {
 }
 
 const delSelectedP = (index) => {
-  console.log(index);
-  selectedPArr.delete(index,index);
+  selectedPArr.delete(index);
 }
 
 const pushSelectedP = (id) => {
