@@ -1,12 +1,8 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import { useFetch } from "../../common/useFetch"
+import useSocket from "../tct_componant/useSocket";
 import TctComponant from "../tct_componant/TctComponant";
-
-import * as Y from 'yjs'
-import { WebrtcProvider } from 'y-webrtc'
-import { WebsocketProvider } from 'y-websocket'
-import { IndexeddbPersistence, storeState } from 'y-indexeddb'
 
 import Modal from '@material-ui/core/Modal';
 
@@ -33,7 +29,7 @@ const PhotographerContext = createContext({
 });
 
 // photographer listing
-function GetPhotographer ({location, skip, setPhotographerLeng}) {
+function GetPhotographer ({location, skip, setPhotographerLeng, sendSelectedList}) {
   let skipInput = 0;
   let limitInput = postNum * pageNum;
 
@@ -92,7 +88,7 @@ function GetPhotographer ({location, skip, setPhotographerLeng}) {
           return (
             <div className="photographer" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <button onClick={()=> pushSelectedP(elem._id)}>ADD</button>
+              <button onClick={() => sendSelectedList({id:elem._id, func:"P"})}>ADD</button>
             </div>
           );
         }
@@ -127,38 +123,7 @@ function Compcard() {
   );
 }
 
-const websocketUrl = 'http://localhost:3000'
-let pDoc = new Y.Doc();
-
-// Sync clients with the y-websocket provider
-const pWebsocketProvider = new WebsocketProvider(
-  websocketUrl, 'selectedP', pDoc, { connect: false }
-);
-pWebsocketProvider.connectBc();
-
-const pIndexeddbProvider = new IndexeddbPersistence('selectedP', pDoc);
-
-const selectedPArr = pDoc.getArray('selectedPArr');
-
-const pwebrtcProvider = new WebrtcProvider('selectedP', pDoc);
-
-selectedPArr.observe(event => {
-  console.log('new: ' + selectedPArr.toArray())
-});
-
-const getSelectedPArr = () => {
-  return selectedPArr.toArray();
-}
-
-const delSelectedP = (index) => {
-  selectedPArr.delete(index);
-}
-
-const pushSelectedP = (id) => {
-  selectedPArr.push([id]);
-}
-
-function SelectedPhotographer({index, id}) {
+function Selected({index, id, sendSelectedList}) {
   const param = {
     method: "POST",
     headers: {
@@ -170,25 +135,8 @@ function SelectedPhotographer({index, id}) {
   const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
 
   return (
-    <img src={photographer.profile_img} alt={photographer.Name} onClick={() => delSelectedP(index)}/>
+    <img src={photographer.profile_img} alt={photographer.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
   );
-}
-
-function Selected() {
-  const selectedPList = selectedPArr.toArray();
-  console.log(selectedPList);
-
-  return (
-    <>
-      {
-        selectedPList.map((elem, index) => <SelectedPhotographer
-          id = {elem}
-          index = {index}
-          key={index}
-        />)
-      }
-    </>
-  )
 }
 
 function Main() {
@@ -225,11 +173,29 @@ function Main() {
     history.push(`/TctPhotographer/${skip}`);
   };
 
+  // for selected list
+  const { roomId } = 101;
+  const { selectedList, sendSelectedList } = useSocket(roomId);
+
   return (
     <main>
-      <Selected />
+      <div className="selectedArea">
+      {
+        selectedList.map((elem, index) => <Selected
+          id = {elem.body}
+          index = {index}
+          key={index}
+          sendSelectedList={sendSelectedList}
+        />)
+      }
+      </div>
 
-      <GetPhotographer location={location} skip={skip} setPhotographerLeng={setPhotographerLeng} />
+      <GetPhotographer
+        location={location}
+        skip={skip}
+        setPhotographerLeng={setPhotographerLeng}
+        sendSelectedList = {sendSelectedList}
+      />
 
       <ul className="pageControll">
         {page}
