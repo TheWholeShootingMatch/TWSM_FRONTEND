@@ -4,7 +4,6 @@ import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
 import {setLocalUserInfo} from "./activeUserInfo";
-// const websocketUrl = 'wss://demos.yjs.dev'
 const websocketUrl = 'http://localhost:3000'
 
 let lastSnapshot = null
@@ -71,7 +70,6 @@ export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
 
 versionIndexeddbPersistence.on('synced', () => {
 
-  console.log("first");
   lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
   versionType.observe(() => {
     if (versionType.length > 0) {
@@ -109,7 +107,6 @@ versionIndexeddbPersistence.whenSynced.then(() => {
   setLocalUserInfo(); //local user info update
   console.log("user info update!");
 })
-
 
 /**
  * An array of draw element.

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { Link, useHistory } from "react-router-dom";
 import { awareness } from "../whiteboard_tab/tools/SharedTypes";
-import { getActiveUserState } from "../whiteboard_tab/tools/activeUserInfo";
+import { getActiveUserState, setLocalUserInfo, initialGetUsers } from "../whiteboard_tab/tools/activeUserInfo";
 import "./TctComponant.scss";
 
 function SideMenu() {
@@ -45,10 +45,15 @@ function TctComponant({ children }) {
 
   const [activeUserState, setActiveUserState] = useState(getActiveUserState());
 
+  useEffect(() => {
+    const activeUserList = getActiveUserState();
+    setActiveUserState(activeUserList);
+  }, []);
+
   awareness.on('change', () => {
     setActiveUserState(getActiveUserState());
   })
-
+  
   return (
     <div className="whole_wrapper">
       <SideMenu />
