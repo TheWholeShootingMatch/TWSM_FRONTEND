@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import socketIOClient from "socket.io-client";
 
-const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
+const NEW_SELECT_EVENT = "newSelect";
 const SOCKET_SERVER_URL = "http://localhost:3001";
 
 const useSocket = (roomId) => {
+  console.log(roomId);
   const [selectedList, setSelectedList] = useState([]);
   const socketRef = useRef();
 
@@ -13,7 +14,7 @@ const useSocket = (roomId) => {
       query: { roomId },
     });
 
-    socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (selectedList) => {
+    socketRef.current.on(NEW_SELECT_EVENT, (selectedList) => {
       const incoming = {
         ...selectedList
       };
@@ -44,7 +45,7 @@ const useSocket = (roomId) => {
   }, [roomId]);
 
   const sendSelectedList = (input) => {
-    socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
+    socketRef.current.emit(NEW_SELECT_EVENT, {
       body: input.id,
       func: input.func
     });

@@ -174,8 +174,7 @@ function Main() {
   };
 
   // for selected list
-  const { roomId } = 101;
-  const { selectedList, sendSelectedList } = useSocket(roomId);
+  const { selectedList, sendSelectedList } = useSocket(101);
 
   return (
     <main>
