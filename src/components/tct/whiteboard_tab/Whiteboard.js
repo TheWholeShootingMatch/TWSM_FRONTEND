@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import {renderVersion, slideNum} from './tools/SharedTypes';
+import {renderVersion, drawingContent, deleteSlide} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
@@ -24,22 +24,9 @@ function WhiteBoard(){
 }
 
 function WhiteBoardArea(){
-    const tctnum = "000";
     const [toolType, setType] = useState("");
     const historyArea = useRef(null);
-    const [slides, setSlides] = useState([]);
     const [activeSlide, setActiveSlide] = useState(null);
-
-    const updateSlide = (slides) => {
-      setSlides(slides);
-    }
-
-    useEffect(() => {
-      axios.post("/api/whiteboard", {TcTnum:"000"} )
-      .then((res) => {
-        updateSlide(res.data);
-      })
-    },[]);
 
     const onClickHistoy = () => {
         const displayState = historyArea.current.style.display;
@@ -53,7 +40,7 @@ function WhiteBoardArea(){
 
     return (
         <div className="whiteboard_area">
-            <WhiteBoardSlides slides={slides} setSlides={setSlides} activeSlide={activeSlide} setActiveSlide={setActiveSlide}/>
+            <WhiteBoardSlides activeSlide={activeSlide} setActiveSlide={setActiveSlide}/>
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
             <WhiteBoardContents toolType={toolType} historyArea={historyArea} activeSlide={activeSlide}/>
         </div>
@@ -130,9 +117,23 @@ function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
     )
 }
 
-function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide}){
+function WhiteBoardSlides({activeSlide, setActiveSlide}){
+
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    const response = async() => {
+      await axios.post('/api/whiteboard', {TcTnum:"000"}, {
+        withCredentials: true,
+      }).then((res) => {
+        setSlides(res.data);
+      })
+    }
+    response();
+  }, [setSlides])
+
   const clickSlide = (id) => {  //슬라이드 클릭 시 현재 슬라이드 번호를 바꿔줌
-    setActiveSlide(id);
+    setActiveSlide(id)
   }
 
   const addSlide = () => {  //새 슬라이드 추가
@@ -140,12 +141,14 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide}){
       TcTnum: "000", //tct num 불러와야함
       Sname: "new tab"
     };
-    axios.post('/api/whiteboard/add', slide, {
-      withCredentials: true,
-    })
-    .then((res) => {
-      setSlides(res.data);
-    })
+    const response = async() => {
+      await axios.post('/api/whiteboard/add', slide, {
+        withCredentials: true,
+      }).then((res) => {
+        setSlides([...slides, res.data]);
+      })
+    }
+    response();
   }
 
   const deliteSlide = (id) => {  //슬라이드 삭제
@@ -153,11 +156,14 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide}){
       TcTnum: "000",
       _id: id
     }
-    axios.post('/api/whiteboard/delete', slide, {
-      withCredentials: true,
-    }).then((res) => {
-      setSlides(res.data);
-    })
+    const response = async() => {
+      await axios.post('/api/whiteboard/delete', slide, {
+        withCredentials: true,
+      }).then((res) => {
+        setSlides(res.data);
+      })
+    }
+    response();
   }
 
   const onChange = (e) => {  //슬라이드 이름 변경
@@ -174,11 +180,11 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide}){
   };
 
   return(
-  <div className="whiteboard_slides">
+    <div className="whiteboard_slides">
       {slides.map((slide, index) => {
         var slideClass;
         if(activeSlide === null) {
-          setActiveSlide(slide._id);
+          // setActiveSlide(slide._id);
         }
         if(slide === null) {
           return (
@@ -202,8 +208,9 @@ function WhiteBoardSlides({slides, setSlides, activeSlide, setActiveSlide}){
       <div className="slide add_slide_btn" onClick={() => addSlide()}>
           슬라이드 더하기
       </div>
-  </div>
+    </div>
   )
 }
+
 
 export default WhiteBoard;
