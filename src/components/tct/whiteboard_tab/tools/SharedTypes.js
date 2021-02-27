@@ -112,21 +112,22 @@ export const slideNum = {
   },
   set(value) {
     this.active = value;
-    drawingContent.set(value);
+    // drawingContent.set(value);
   }
 }
+//
+// export const drawingContent = {
+//   drawingContent: doc.getArray(slideNum.get()),
+//   get() {
+//     return this.drawingContent;
+//   },
+//   set(value) {
+//     this.drawingContent = doc.getArray(value);
+//   }
+// }
+export const drawingContent = doc.getArray('doc-list');
 
-export const drawingContent = {
-  drawingContent: doc.getArray(slideNum.get()),
-  get() {
-    return this.drawingContent;
-  },
-  set(value) {
-    this.drawingContent = doc.getArray(value);
-  }
-}
-
-export const whiteboardUndoManager = new Y.UndoManager(drawingContent.get());
+export const whiteboardUndoManager = new Y.UndoManager(drawingContent);
 
 let undoManager = null
 

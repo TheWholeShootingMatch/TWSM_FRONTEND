@@ -2,7 +2,7 @@ import * as shared from './SharedTypes';
 
 /* delete all (trash action) */
 export const deleteAllDrawing = () => {
-    shared.drawingContent.get().delete(0, shared.drawingContent.get().length);
+    shared.drawingContent.delete(0, shared.drawingContent.length);
 }
 
 /* undo drawing (undo action) */

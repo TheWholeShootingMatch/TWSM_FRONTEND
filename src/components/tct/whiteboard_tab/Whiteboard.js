@@ -120,6 +120,21 @@ function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
 function WhiteBoardSlides({activeSlide, setActiveSlide}){
 
   const [slides, setSlides] = useState([]);
+  const slideNum = useRef(null);
+
+  drawingContent.observe(function(event) {
+    console.log("observe");
+    const response = async() => {
+      await axios.post('/api/whiteboard', {TcTnum:"000"}, {
+        withCredentials: true,
+      }).then((res) => {
+        setSlides(res.data);
+        setActiveSlide(res.data.[0]._id)
+      })
+    }
+    response();
+    console.log(drawingContent)
+  })
 
   useEffect(() => {
     const response = async() => {
@@ -127,6 +142,7 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides(res.data);
+        setActiveSlide(res.data.[0]._id)
       })
     }
     response();
@@ -146,12 +162,16 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides([...slides, res.data]);
+        setActiveSlide(res.data._id);
       })
     }
     response();
+    const newDoc = new Y.Array();
+    drawingContent.push([newDoc]);
   }
 
-  const deliteSlide = (id) => {  //슬라이드 삭제
+  const deliteSlide = (index) => {  //슬라이드 삭제
+    let id = slides[index]._id
     const slide = {
       TcTnum: "000",
       _id: id
@@ -161,9 +181,12 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides(res.data);
+        setActiveSlide(res.data.[0]._id)
       })
     }
     response();
+    // drawingContent.delete(index, index)
+    console.log(index);
   }
 
   const onChange = (e) => {  //슬라이드 이름 변경
@@ -183,9 +206,6 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
     <div className="whiteboard_slides">
       {slides.map((slide, index) => {
         var slideClass;
-        if(activeSlide === null) {
-          // setActiveSlide(slide._id);
-        }
         if(slide === null) {
           return (
             <div className={slideClass} key={index}>
@@ -200,7 +220,7 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
                 <div onClick={() => clickSlide(slide._id)}>
                   <input placeholder={slide.Sname} name={slide._id} onChange={onChange}/>
                 </div>
-                <button onClick={() => deliteSlide(slide._id)}>X</button>
+                <button onClick={() => deliteSlide(index)}>X</button>
             </div>
           );
         }

@@ -45,7 +45,7 @@ function Canvas({toolType, activeSlide}){
         drawElement.set('coordinate', coordinate);
         sharedLine = new Y.Array();
         drawElement.set('path', sharedLine);
-        shared.drawingContent.get().push([drawElement]);
+        shared.drawingContent.push([drawElement]);
     }
 
     const moveDraw = (event) => {
@@ -64,7 +64,7 @@ function Canvas({toolType, activeSlide}){
         sharedLine= null;
     }
 
-    shared.drawingContent.get().observe(function (event) {
+    shared.drawingContent.observe(function (event) {
         onStateChange();
     })
 
@@ -72,7 +72,7 @@ function Canvas({toolType, activeSlide}){
 
         const canvas = contextRef.current.canvas;
         const context = canvas.getContext('2d');
-        const yDrawingContent = shared.drawingContent.get();
+        const yDrawingContent = shared.drawingContent;
         const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
 
         const draw = () => {
