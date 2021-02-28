@@ -101,11 +101,18 @@ class LocalRemoteUserData extends Y.PermanentUserData {
 
 export const permanentUserData = new LocalRemoteUserData(doc, versionDoc.getMap('userInfo'));
 
+awareness.on('update', ({ added, updated, removed }) => {
+  const localState = awareness.getLocalState();
+  if (localState === null || JSON.stringify(localState) === JSON.stringify({})) {
+    setLocalUserInfo();
+  }
+});
+
+// setLocalUserInfo(Array.from(awareness.states));
+
 /* indexed db 연결 성공 시 */
 versionIndexeddbPersistence.whenSynced.then(() => {
-  permanentUserData.setUserMapping(doc, doc.clientID, 'local', {})
-  setLocalUserInfo(); //local user info update
-  console.log("user info update!");
+  permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
 })
 
 /**

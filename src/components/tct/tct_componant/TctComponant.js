@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { Link, useHistory } from "react-router-dom";
 import { awareness } from "../whiteboard_tab/tools/SharedTypes";
-import { getActiveUserState, setLocalUserInfo, initialGetUsers } from "../whiteboard_tab/tools/activeUserInfo";
+import { getActiveUserState } from "../whiteboard_tab/tools/activeUserInfo";
 import "./TctComponant.scss";
 
 function SideMenu() {
@@ -23,7 +23,36 @@ function SideMenu() {
   );
 }
 
-function Header({ activeUserState }) {
+function Header() {
+  
+  const [activeUserState, setActiveUserState] = useState([]);
+
+  useEffect(() => {
+    
+    const activeUserList = getActiveUserState();
+    // const localState = awareness.getLocalState();
+    // if (localState !== null && JSON.stringify(localState) !== JSON.stringify({})) {
+    //   console.log(localState);
+    //   activeUserList.push(localState);
+    // }
+    setActiveUserState(activeUserList);
+  }, []);
+
+  awareness.on('update', () => {
+    const localState = awareness.getLocalState();
+    if (localState !== null && JSON.stringify(localState) !== JSON.stringify({})) {
+      if (activeUserState.length > 0 && !activeUserState.includes(localState)) {
+        const userList = getActiveUserState();
+        console.log(activeUserState, userList);
+        setActiveUserState(userList);
+      }
+    }
+  })
+
+  awareness.on('change', () => {
+    const userList = getActiveUserState();
+    setActiveUserState(userList);
+  })
 
   return (
     <header className="tct_header">
@@ -42,23 +71,12 @@ function Header({ activeUserState }) {
 }
 
 function TctComponant({ children }) {
-
-  const [activeUserState, setActiveUserState] = useState(getActiveUserState());
-
-  useEffect(() => {
-    const activeUserList = getActiveUserState();
-    setActiveUserState(activeUserList);
-  }, []);
-
-  awareness.on('change', () => {
-    setActiveUserState(getActiveUserState());
-  })
   
   return (
     <div className="whole_wrapper">
       <SideMenu />
       <div className="tct_wrapper">
-        <Header activeUserState={activeUserState}/>
+        <Header />
         {children}
       </div>
     </div>

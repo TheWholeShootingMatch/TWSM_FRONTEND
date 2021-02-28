@@ -9,15 +9,16 @@ const activeUserColor = [
 ]
 
 export const setLocalUserInfo = () => {
+
     const activeUserList = getActiveUserState();
     const usedColors = activeUserList.map((user) => user.userInfo.color);
     const availableColor = activeUserColor.filter(color => !usedColors.includes(color));
     const myColor = availableColor[0];
     
     awareness.setLocalStateField("userInfo", {
-        name: 'login id',
+        name: doc.clientID,
         color: myColor
-    })
+    }) 
 }
 
 export const getActiveUserState = () => {
@@ -26,6 +27,6 @@ export const getActiveUserState = () => {
         if (state.userInfo) {
             userList.push(state);
         }
-    })
+    });
     return userList;
 }
