@@ -4,7 +4,7 @@ import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { versionRender, externalContextRef } from "./tools/Canvas";
 import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
-import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList } from "./tools/Tools";
+import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -29,7 +29,8 @@ function WhiteBoardArea(){
     const [toolType, setType] = useState("");
     const [toggleHistoryMenu, setToggle] = useState(false);
     const [versions, setVersion] = useState([]);
-
+    
+    const hiddenFileInput = useRef(null);
     const historyArea = useRef(null);
 
     useEffect(() => {
@@ -42,17 +43,30 @@ function WhiteBoardArea(){
         setToggle(!toggleHistoryMenu);
     }
 
+    const onClickImageInput = () => {
+        hiddenFileInput.current.click();
+    }
+
+    const onChangeImageInput = (e) => {
+        if (e.target.files) {
+            const fileUploaded = e.target.files[0];
+            const canvas = externalContextRef.current.canvas;
+            const context = canvas.getContext('2d');
+            uploadImage(fileUploaded, context);
+        }
+    }
+    
     return (
         <div className="whiteboard_area">
-            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
+            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy} hiddenFileInput={hiddenFileInput} onClickImageInput={onClickImageInput} onChangeImageInput={onChangeImageInput}/>
             <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
             <WhiteBoardSlides/>
         </div>
     )
 }
 
-function WhiteBoardHeader({ setType, onClickHistoy }) {
-    
+function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImageInput, onChangeImageInput}) {
+
     return(
         <div className="whiteboard_header">
             <div className="tools">
@@ -60,7 +74,16 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
                     <li id="select">select</li>
                     <li id="figure" onClick={() => setType("figure")}>figure</li>
                     <li id="text" onClick={() => setType("text")}>text</li>
-                    <li id="image" onClick={() => setType("image")}>image</li>
+                    <li id="image" onClick={() => {;
+                        setType("image");
+                        onClickImageInput();
+                    }}>image</li>
+                    <input
+                        type="file"
+                        accept="image/*" 
+                        ref={hiddenFileInput}
+                        onChange={onChangeImageInput}
+                        style={{ display: 'none' }} />
                     <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
                     <li id="undo" onClick={() => {
                         setType("undo");
