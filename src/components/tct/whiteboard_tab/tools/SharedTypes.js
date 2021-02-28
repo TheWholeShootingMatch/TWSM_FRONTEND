@@ -112,20 +112,47 @@ export const slideNum = {
   },
   set(value) {
     this.active = value;
-    // drawingContent.set(value);
+    drawingContent.set(value);
   }
 }
-//
+
+export const slideList = doc.getArray('doc-list');
+
+// export const drawingContent = doc.getArray("drawing");  //처음 상태
+
+// const currentTab  = {  //밖에서 정해줄 때
+//   currentTab : slideList.get(0),
+//   get() {
+//     return this.currentTab;
+//   },
+//   set(value) {
+//     this.currentTab = slideList.get(value)
+//   }
+// }
 // export const drawingContent = {
-//   drawingContent: doc.getArray(slideNum.get()),
+//   drawingContet : currentTab.get().getArray("drawing"),
+//
 //   get() {
 //     return this.drawingContent;
 //   },
 //   set(value) {
-//     this.drawingContent = doc.getArray(value);
+//     this.drawingContent = currentTab.get().getArray("drawing");
 //   }
 // }
-export const drawingContent = doc.getArray('doc-list');
+
+
+export const drawingContent = {  //
+  currentTab: slideList.get(0),
+  drawingContet : this.currentTab.getArray("drawing"),
+
+  get() {
+    return this.drawingContent;
+  },
+  set(value) {
+    this.currentTab = slideList.get(value);
+    this.drawingContent = this.currentTab.getArray("drawing");
+  }
+}
 
 export const whiteboardUndoManager = new Y.UndoManager(drawingContent);
 

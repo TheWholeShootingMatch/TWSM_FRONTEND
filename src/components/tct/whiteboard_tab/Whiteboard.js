@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import {renderVersion, drawingContent, deleteSlide} from './tools/SharedTypes';
+import {doc, renderVersion, slideList, deleteSlide} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
@@ -122,18 +122,19 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
   const [slides, setSlides] = useState([]);
   const slideNum = useRef(null);
 
-  drawingContent.observe(function(event) {
+  slideList.observe(function(event) {
     console.log("observe");
     const response = async() => {
       await axios.post('/api/whiteboard', {TcTnum:"000"}, {
         withCredentials: true,
       }).then((res) => {
         setSlides(res.data);
-        setActiveSlide(res.data.[0]._id)
+        setActiveSlide(0)
       })
     }
     response();
-    console.log(drawingContent)
+    console.log(slideList.get(0))
+    console.log(slideList.get(0).getArray("drawing"));
   })
 
   useEffect(() => {
@@ -142,14 +143,14 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides(res.data);
-        setActiveSlide(res.data.[0]._id)
+        setActiveSlide(0)
       })
     }
     response();
   }, [setSlides])
 
-  const clickSlide = (id) => {  //슬라이드 클릭 시 현재 슬라이드 번호를 바꿔줌
-    setActiveSlide(id)
+  const clickSlide = (index) => {  //슬라이드 클릭 시 현재 슬라이드 번호를 바꿔줌
+    setActiveSlide(index)
   }
 
   const addSlide = () => {  //새 슬라이드 추가
@@ -162,31 +163,31 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides([...slides, res.data]);
-        setActiveSlide(res.data._id);
+        setActiveSlide(0);
       })
     }
     response();
-    const newDoc = new Y.Array();
-    drawingContent.push([newDoc]);
+    const newDoc = new Y.Doc();
+    slideList.push([newDoc]);
+    console.log(newDoc)
   }
 
   const deliteSlide = (index) => {  //슬라이드 삭제
-    let id = slides[index]._id
+    // let id = slides[index]._id
     const slide = {
       TcTnum: "000",
-      _id: id
+      _id: index
     }
     const response = async() => {
       await axios.post('/api/whiteboard/delete', slide, {
         withCredentials: true,
       }).then((res) => {
         setSlides(res.data);
-        setActiveSlide(res.data.[0]._id)
+        setActiveSlide(0)
       })
     }
     response();
-    // drawingContent.delete(index, index)
-    console.log(index);
+    slideList.delete(index, index)
   }
 
   const onChange = (e) => {  //슬라이드 이름 변경
@@ -212,15 +213,15 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
             </div>
           );
         } else {
-          slide._id === activeSlide
+          index === activeSlide
             ? (slideClass = 'current_slide slide')
             : (slideClass = 'slide');
           return (
             <div className={slideClass} key={index}>
-                <div onClick={() => clickSlide(slide._id)}>
+                <div onClick={() => clickSlide(index)}>
                   <input placeholder={slide.Sname} name={slide._id} onChange={onChange}/>
                 </div>
-                <button onClick={() => deliteSlide(index)}>X</button>
+                <button onClick={() => deliteSlide(slide._id)}>X</button>
             </div>
           );
         }

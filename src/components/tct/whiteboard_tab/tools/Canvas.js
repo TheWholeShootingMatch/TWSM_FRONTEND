@@ -11,7 +11,6 @@ function Canvas({toolType, activeSlide}){
 
     useEffect(() => {
         console.log("here");
-        shared.slideNum.set(activeSlide);
         const canvas = canvasRef.current;
         canvas.width = 566 * 2;
         canvas.height = 283 * 2;
