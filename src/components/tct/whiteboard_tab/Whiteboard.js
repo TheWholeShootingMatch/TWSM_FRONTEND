@@ -1,6 +1,10 @@
-import React, {useRef, useState, useEffect, useCallback} from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import {useHistory} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
+import { versionRender, externalContextRef } from "./tools/Canvas";
+import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
+import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -23,56 +27,106 @@ function WhiteBoard(){
 function WhiteBoardArea(){
 
     const [toolType, setType] = useState("");
-    console.log(toolType);
+    const [toggleHistoryMenu, setToggle] = useState(false);
+    const [versions, setVersion] = useState([]);
+    
+    const hiddenFileInput = useRef(null);
+    const historyArea = useRef(null);
 
+    useEffect(() => {
+        const versionList = getVersionList();
+        console.log(versionList);
+        setVersion(versionList);
+    }, []);
+
+    const onClickHistoy = () => {
+        setToggle(!toggleHistoryMenu);
+    }
+
+    const onClickImageInput = () => {
+        hiddenFileInput.current.click();
+    }
+
+    const onChangeImageInput = (e) => {
+        if (e.target.files) {
+            const fileUploaded = e.target.files[0];
+            const canvas = externalContextRef.current.canvas;
+            const context = canvas.getContext('2d');
+            uploadImage(fileUploaded, context);
+        }
+    }
+    
     return (
         <div className="whiteboard_area">
-            <WhiteBoardHeader setType={setType}/>
-            <WhiteBoardContents toolType={toolType}/>
+            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy} hiddenFileInput={hiddenFileInput} onClickImageInput={onClickImageInput} onChangeImageInput={onChangeImageInput}/>
+            <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
             <WhiteBoardSlides/>
         </div>
     )
 }
 
-function WhiteBoardHeader({setType}){
+function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImageInput, onChangeImageInput}) {
+
     return(
         <div className="whiteboard_header">
             <div className="tools">
                 <ul>
+                    <li id="select">select</li>
                     <li id="figure" onClick={() => setType("figure")}>figure</li>
                     <li id="text" onClick={() => setType("text")}>text</li>
-                    <li id="image" onClick={() => setType("image")}>image</li>
+                    <li id="image" onClick={() => {;
+                        setType("image");
+                        onClickImageInput();
+                    }}>image</li>
+                    <input
+                        type="file"
+                        accept="image/*" 
+                        ref={hiddenFileInput}
+                        onChange={onChangeImageInput}
+                        style={{ display: 'none' }} />
                     <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
+                    <li id="undo" onClick={() => {
+                        setType("undo");
+                        undoDrawing();
+                    }}>undo</li>
+                    <li id="redo" onClick={() => {
+                        setType("redo");
+                        redoDrawing();
+                    }}>redo</li>
+                    <li id="trash" onClick={() => {
+                        setType("trash");
+                        deleteAllDrawing();
+                    }}>trash</li>
                 </ul>
             </div>
-            <div className="history_btn"><button>history</button></div>
+            <div className="history_btn">
+                <button onClick={() => onClickHistoy()}>history</button>
+            </div>
         </div>
     )
 }
 
-function WhiteBoardContents({toolType}){
-
+function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
+    
     return(
-    <div className="whiteboard_contents">
-        {/* <!-- 현재 화이트보드 슬라이드 --> */}
-        <div className="current_whiteboard">
-            <Canvas toolType={toolType}/>
+        <div className="whiteboard_contents">
+            <div className="current_whiteboard">
+                <Canvas toolType={toolType} />
+            </div>
+            <div ref={historyArea} className={toggleHistoryMenu ? "history_area active" : "history_area"}>
+                <ul className="history_list">
+                    <button onClick={() => addVersion()}>add</button>
+                    <button onClick={() => clearVersionList()}>clear</button>
+                    {versions.map((version, index) => (
+                        <section key={index} onClick={() => {
+                            renderVersion(version);
+                            versionRender(externalContextRef);
+                        }}>{new Date(version.date).toLocaleString()}</section>
+                    ))}
+                    <li className="version_info"></li>
+                </ul>
+            </div>
         </div>
-         {/* <!-- default style : display hidden --> */}
-         <div className="hitory_area">
-             <ul className="history_list">
-                 <li className="version_info">
-                     <section>date</section>
-                     <section>
-                        <ul>
-                            <li>username</li>
-                            <li>username</li>
-                        </ul>
-                    </section>
-                </li>
-            </ul>
-        </div>
-    </div>
     )
 }
 

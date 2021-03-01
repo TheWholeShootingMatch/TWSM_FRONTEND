@@ -1,23 +1,12 @@
-import React, {useEffect} from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
+import Header from "../common/header";
 
-function MainPage(){
-
-    useEffect(() => {
-        const response = async() => {
-            const result = await axios({
-                method: 'get',
-                withCredentials : true,
-                url : '/api/index'
-            });
-            console.log(result.data);
-        }; 
-        response();
-    },[]);
-
+function MainPage({ isLogin }) {
+    console.log(isLogin);
     return(
         <div>
-            hello world!
+            <Header isLogin={isLogin}/>
+            <p>main page</p>
         </div>
     )
 }

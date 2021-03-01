@@ -24,7 +24,29 @@
 
 /*whiteboard contents*/
 .whiteboard_contents{
-    height: 65vh
+    height: 65vh;
+    position: relative;
+
+    .history_area{
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: none;
+
+        &.active{
+            display: block;
+        }
+        
+        .history_list{
+            width: 143px;
+            list-style: none;
+            padding: 17px;
+            margin: 0;
+            height: 268px;
+            overflow: auto;
+            background-color: white;
+        }
+    }
 }
 
 .whiteboard_slides{
@@ -32,9 +54,12 @@
     justify-content: space-around;
 
     .slide{
-        background-color: whitesmoke;
-        width: 130px;
-        height: 80px;
+      background-color: whitesmoke;
+      width: 130px;
+    }
+
+    .current_slide{
+        background-color: white;
     }
 }
 

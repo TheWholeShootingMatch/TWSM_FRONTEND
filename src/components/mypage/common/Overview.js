@@ -1,10 +1,16 @@
 import React from "react";
+import { Redirect } from 'react-router-dom';
 import MyPage from "./MyPage";
 
-function Overview({type}){
+function Overview({ isLogin, userType }) {
+    console.log(userType);
+    if (!isLogin) {
+        alert("로그인 후 이용하세요!");
+        return <Redirect to={{pathname: "/login"}}/>
+    }
     return(
-        <MyPage user={type} header="Overview">
-            <OverviewPropjects user={type}/>
+        <MyPage header="Overview" isLogin={isLogin} user={userType}>
+            <OverviewPropjects user={userType}/>
         </MyPage>
     )
 }
@@ -34,7 +40,7 @@ function OverviewPropjects({user}){
             <>
             <ProjectForm title="requested project"/>
             <ProjectForm title="approved project"/>
-        </>
+            </>
         )
     }
     else{
