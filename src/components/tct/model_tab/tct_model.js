@@ -132,16 +132,26 @@ function Compcard() {
   );
 }
 
-function Selected({index, id, sendSelectedList}) {
-  const param = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ _id : id })
-  }
+function Selected({id, sendSelectedList}) {
+  const [model, setModel] = useState([]);
 
-  const [model, setModel] = useFetch('/api/model/fetch',param);
+  async function fetchUrl() {
+    const response = await fetch("/api/model/fetch",
+    {
+      method: "POST",
+      headers: {
+              'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ _id : id })
+    });
+
+    const json = await response.json();
+    setModel(json);
+  };
+
+  useEffect(() => {
+    fetchUrl();
+  }, []);
 
   return (
     <img src={model.profile_img} alt={model.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
@@ -183,8 +193,7 @@ function Main() {
   };
 
   // for selected list
-  const { roomId } = 201;
-  const { selectedList, sendSelectedList } = useSocket(roomId);
+  const { selectedList, sendSelectedList } = useSocket(201);
 
   return (
     <main>
@@ -192,7 +201,6 @@ function Main() {
       {
         selectedList.map((elem, index) => <Selected
           id = {elem.body}
-          index = {index}
           key={index}
           sendSelectedList={sendSelectedList}
         />)
