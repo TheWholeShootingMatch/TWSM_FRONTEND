@@ -52,8 +52,7 @@ function GetPhotographer ({location, skip, setPhotographerLeng, sendSelectedList
         find : {},
         sort : {},
         skip : skipInput,
-        limit : limitInput,
-        city : ""
+        limit : limitInput
       })
     });
 
@@ -123,16 +122,26 @@ function Compcard() {
   );
 }
 
-function Selected({index, id, sendSelectedList}) {
-  const param = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ _id : id })
-  }
+function Selected({id, sendSelectedList}) {
+  const [photographer, setPhotographer] = useState([]);
 
-  const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
+  async function fetchUrl() {
+    const response = await fetch("/api/photographer/fetch",
+    {
+      method: "POST",
+      headers: {
+              'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ _id : id })
+    });
+
+    const json = await response.json();
+    setPhotographer(json);
+  };
+
+  useEffect(() => {
+    fetchUrl();
+  }, [id]);
 
   return (
     <img src={photographer.profile_img} alt={photographer.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
@@ -142,7 +151,7 @@ function Selected({index, id, sendSelectedList}) {
 function Main() {
   let location = useLocation();
   let history = useHistory();
-  const {skip, sort} = useParams();
+  const {skip} = useParams();
 
   //for page
   const page = [];
@@ -152,7 +161,7 @@ function Main() {
   let pageSet = 0;
   if (skip != 0) {
     pageSet = parseInt(skip/pageNum);
-    page.push(<li key={-1} onClick={() => { history.push(`/photographer/photographer/${skip*1-1}/${sort}${location.search}`) }}>prev</li>);
+    page.push(<li key={-1} onClick={() => { history.push(`/TctPhotographer/${skip*1-1}`) }}>prev</li>);
   }
   else {
     page.push(<li key={-1}>prev</li>);
@@ -182,7 +191,6 @@ function Main() {
       {
         selectedList.map((elem, index) => <Selected
           id = {elem.body}
-          index = {index}
           key={index}
           sendSelectedList={sendSelectedList}
         />)

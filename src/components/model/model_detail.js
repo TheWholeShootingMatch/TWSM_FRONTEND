@@ -6,35 +6,42 @@ import Like from "./like_btn";
 
 function Main({modelId}) {
   // get model
-  const param = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ _id : modelId })
-  }
-  const [model, setModel] = useFetch('/api/model/fetch',param);
+  const [model, setModel] = useState({
+    _id : "",
+    Name : "",
+    Age : "",
+    Gender : "",
+    height : "",
+    Busto : "",
+    Quadril : "",
+    Cintura : "",
+    instagram : "",
+    email : "",
+    self_introduction : "",
+    career : "",
+    country : "",
+    locations : ""
+  });
 
-  //get cities
-  const cityparam = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ Uid : model.Uid })
-  }
+  async function fetchUrl() {
+    const response = await fetch('/api/model/fetch',
+    {
+      method: "POST",
+      headers: {
+              'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ _id : modelId })
+    });
 
-  const [citiesDB, setCitiesDB] = useState([]);
-
-  async function fetchcitiesDB() {
-    const response = await fetch('/api/photographicAreaM/searchMid',cityparam);
     const json = await response.json();
-    setCitiesDB(json);
+    if (json != null) {
+      setModel(json);
+    }
   }
 
   useEffect(() => {
-    fetchcitiesDB();
-  }, [model]);
+    fetchUrl();
+  }, []);
 
   return (
     <main>
@@ -54,13 +61,10 @@ function Main({modelId}) {
         <p>{model.self_introduction}</p>
         <h3>career</h3>
         <p>{model.career}</p>
-        <h3>language</h3>
-        <p>{model.language}</p>
         <div className="model_loc">
           <h3>Valid Location</h3>
-          {citiesDB.map((elem,index) =>
-            <p key={index}>{elem.name}</p>
-          )}
+          <p>{model.country}</p>
+          <p>{model.location}</p>
         </div>
       </div>
       <Like />

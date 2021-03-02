@@ -156,19 +156,29 @@ function Contents() {
   const find = new URLSearchParams(location.search);
 
   const findInput = {};
-  if (find.get("category") != null) {
+  if (find.get("category") !== null && find.get("category") !== "") {
     findInput.category = find.get("category");
   }
 
-  const [noteList, setNoteList] = useFetch('/api/note/fetch',
+  const [noteList, setNoteList] = useState([]);
+
+  async function fetchUrl() {
+    const response = await fetch("/api/note/fetch",
     {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({find : findInput})
-    }
-  );
+    });
+
+    const json = await response.json();
+    setNoteList(json);
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, [useLocation()]);
 
   // category filter
   const handleChange = (e) => {
@@ -177,10 +187,6 @@ function Contents() {
 
     history.push(`/TctWorkflow?${find}`);
   };
-
-  if (setNoteList) {
-    return <p> loading... </p>
-  }
 
   return (
     <div className="tct_contents">

@@ -57,8 +57,7 @@ function GetModel({location, skip, setModelLeng, sendSelectedList}) {
         find : {},
         sort : {},
         skip : skipInput,
-        limit : limitInput,
-        city : ""
+        limit : limitInput
       })
     });
 
@@ -151,10 +150,12 @@ function Selected({id, sendSelectedList}) {
 
   useEffect(() => {
     fetchUrl();
-  }, []);
+  }, [id]);
 
   return (
+    <>
     <img src={model.profile_img} alt={model.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
+    </>
   );
 }
 

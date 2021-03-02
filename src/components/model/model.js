@@ -18,7 +18,7 @@ const ModalContext = createContext({
   toggle: () => {}
 });
 
-// model ID inside modal
+// model info inside modal
 const ModelContext = createContext({
   model : {
     id: "",
@@ -44,7 +44,7 @@ function MakeParam({find, sort, skip}) {
   let cityInput = "";
 
   // find
-  if (find.get("gender") != null) {
+  if (find.get("gender") !== null && find.get("gender") !== "") {
     findInput.Gender = find.get("gender");
   }
 
@@ -54,14 +54,18 @@ function MakeParam({find, sort, skip}) {
     findInput.height = { $gte: heightMin, $lt: heightMax };
   }
 
-  if (find.get("ageMin") != null) {
-    const ageMin = find.get("ageMin");
-    const ageMax = find.get("ageMax");
-    findInput.Age = { $gte: ageMin, $lt: ageMax };
-  }
+  // if (find.get("ageMin") != null) {
+  //   const ageMin = find.get("ageMin");
+  //   const ageMax = find.get("ageMax");
+  //   findInput.Age = { $gte: ageMin, $lt: ageMax };
+  // }
 
-  if (find.get("language") != null) {
-    findInput.language = find.get("language");
+  // if (find.get("language") != null && find.get("language") !== "") {
+  //   findInput.language = find.get("language");
+  // }
+
+  if (find.get("country") != null  && find.get("country") !== "") {
+    findInput.country = find.get("country");
   }
 
   // sort : default "latest"
@@ -81,17 +85,11 @@ function MakeParam({find, sort, skip}) {
     limitInput = (parseInt(skip/pageNum) +1) * postNum * pageNum;
   }
 
-  //city
-  if (find.get("city") != null) {
-    cityInput = find.get("city");
-  }
-
   return {
     find : findInput,
     sort : sortInput,
     skip : skipInput,
-    limit : limitInput,
-    city : cityInput
+    limit : limitInput
   };
 }
 

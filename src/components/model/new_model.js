@@ -1,123 +1,114 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import Language from "../common/language"
+import {CountryOption} from "../common/country"
+// import Language from "../common/language"
 
-function Country() {
-
-  //get cities from DB
-  const [citiesDB, setCitiesDB] = useState([]);
-
-  async function fetchcitiesDB() {
-    const response = await fetch("/api/photographicAreaM/fetch");
-    const json = await response.json();
-    setCitiesDB(json);
-  }
-
-  const handleClick = (input) => {
-    fetch('/api/photographicAreaM/delete/'+input, {
-      method: 'DELETE',
-      headers: {
-        accept: "application/json",
-      },
-    });
-
-    fetchcitiesDB();
-  }
-
-  //user input will go in here
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-
-  //api key
-  const param = {
-    headers : {
-      accept: "application/json",
-      "X-CSCAPI-KEY": "enNoTTJWWjh5OVJIdDRDUzZkYmxiVUVtZTFkbjBhVklNODBqTTNBcg=="
-    }
-  };
-
-  // get countries from api
-  const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    fetchcitiesDB();
-
-    axios
-    .get("https://api.countrystatecity.in/v1/countries", param)
-    .then(res => setCountries(res.data));
-  }, []);
-
-  // get states from api
-  const [states, setStates] = useState([]);
-
-  const handleCountry = (e) => {
-    e.preventDefault();
-    setCountry(e.target.value);
-    axios
-    .get(`https://api.countrystatecity.in/v1/countries/${e.target.value}/states`, param)
-    .then(res => setStates(res.data));
-    setCities([]);
-    setState("");
-  };
-
-  // get cities from api
-  const [cities, setCities] = useState([]);
-
-  const handleStates = (e) => {
-    e.preventDefault();
-    setState(e.target.value);
-    axios
-    .get(`https://api.countrystatecity.in/v1/countries/${country}/states/${e.target.value}/cities`, param)
-    .then(res => setCities(res.data));
-  };
-
-  // post to DB
-  const handleCity = (e) => {
-    e.preventDefault();
-    axios
-    .post("/api/photographicAreaM",
-      {
-        ciso : country,
-        siso : state,
-        name : e.target.value
-      }
-    )
-
-    fetchcitiesDB();
-  };
-
-  return (
-    <form>
-      {citiesDB.map((elem,index) =>
-        <button key={index} onClick={(e) => handleClick(elem.name)}>{elem.name}</button>
-      )}
-      <label htmlFor="country">country</label>
-      <select name="country" onChange={handleCountry}>
-        <option value="">select</option>
-        {countries.map((elem, index) =>
-          <option value={elem.iso2} key={index}>{elem.name}</option>
-        )}
-      </select>
-
-      <label htmlFor="state">state</label>
-      <select name="state" onChange={handleStates}>
-        <option value="">select</option>
-        {states.map((elem, index) =>
-          <option value={elem.iso2} key={index}>{elem.name}</option>
-        )}
-      </select>
-
-      <label htmlFor="city">city</label>
-      <select name="city" onChange={handleCity}>
-        <option value="">select</option>
-        {cities.map((elem, index) =>
-          <option value={elem.name} key={index}>{elem.name}</option>
-        )}
-      </select>
-    </form>
-  );
-}
+// function Country({citiesArr, setCitiesArr}) {
+//
+//   const handleClick = (input) => {
+//     setCitiesArr((citiesArr) => citiesArr.filter(elem => elem != input));
+//   }
+//
+//   //user input will go in here
+//   const [country, setCountry] = useState("");
+//   const [state, setState] = useState("");
+//
+//   //api key
+//   const param = {
+//     headers : {
+//       accept: "application/json",
+//       "X-CSCAPI-KEY": "enNoTTJWWjh5OVJIdDRDUzZkYmxiVUVtZTFkbjBhVklNODBqTTNBcg=="
+//     }
+//   };
+//
+//   // get countries from api
+//   const [countries, setCountries] = useState([]);
+//
+//   useEffect(() => {
+//     axios
+//     .get("https://api.countrystatecity.in/v1/countries", param)
+//     .then(res => setCountries(res.data));
+//   }, []);
+//
+//   // get states from api
+//   const [states, setStates] = useState([]);
+//
+//   const handleCountry = (e) => {
+//     e.preventDefault();
+//     setCountry(e.target.value);
+//     axios
+//     .get(`https://api.countrystatecity.in/v1/countries/${e.target.value}/states`, param)
+//     .then(res => setStates(res.data));
+//     setCities([]);
+//     setState("");
+//   };
+//
+//   // get cities from api
+//   const [cities, setCities] = useState([]);
+//
+//   const handleStates = (e) => {
+//     e.preventDefault();
+//     setState(e.target.value);
+//     axios
+//     .get(`https://api.countrystatecity.in/v1/countries/${country}/states/${e.target.value}/cities`, param)
+//     .then(res => setCities(res.data));
+//   };
+//
+//   const exist = (arr,input) => {
+//     let bool = false;
+//
+//     arr.map((elem) => {
+//       if (elem === input) {
+//         bool = true;
+//     }});
+//
+//     return bool;
+//   }
+//
+//   // push to citiesArr
+//   const handleCity = (e) => {
+//     e.preventDefault();
+//     exist(citiesArr)
+//     setCitiesArr((citiesArr) =>
+//       exist(citiesArr, e.target.value) ?
+//       [...citiesArr] :
+//       [...citiesArr, e.target.value]
+//     )
+//   };
+//
+//   return (
+//     <>
+//       {citiesArr.map((elem,index) =>
+//         <button key={index} onClick={(e) => handleClick(elem)}>{elem}</button>
+//       )}
+//
+//       <label htmlFor="country">country</label>
+//       <select name="country" onChange={handleCountry}>
+//         <option value="">select</option>
+//         {countries.map((elem, index) =>
+//           <option value={elem.iso2} key={index}>{elem.name}</option>
+//         )}
+//       </select>
+//
+//       <label htmlFor="state">state</label>
+//       <select name="state" onChange={handleStates}>
+//         <option value="">select</option>
+//         {states.map((elem, index) =>
+//           <option value={elem.iso2} key={index}>{elem.name}</option>
+//         )}
+//       </select>
+//
+//       <label htmlFor="city">city</label>
+//       <select name="city" onChange={handleCity}>
+//         <option value="">select</option>
+//         {cities.map((elem, index) =>
+//           <option value={elem.name} key={index}>{elem.name}</option>
+//         )}
+//       </select>
+//     </>
+//   );
+// }
 
 function ProfileForm() {
   // for get user information
@@ -134,7 +125,9 @@ function ProfileForm() {
     email : "",
     self_introduction : "",
     career : "",
-    language : ""
+    language : "",
+    country : "",
+    locations : ""
   });
 
   async function fetchUrl() {
@@ -157,6 +150,8 @@ function ProfileForm() {
     });
   };
 
+  const [citiesArr, setCitiesArr] = useState([]);
+
   // for form post
   let history = useHistory();
 
@@ -176,7 +171,11 @@ function ProfileForm() {
     formData.append('email', e.target.email.value);
     formData.append('self_introduction', e.target.self_introduction.value);
     formData.append('career', e.target.career.value);
-    formData.append('language', e.target.language.value);
+    // formData.append('language', e.target.language.value);
+    formData.append('country', e.target.country.value);
+    formData.append('locations', e.target.locations.value);
+
+    // formData.append('photographicArea', citiesArr);
 
     axios
     .post('/api/model/new', formData)
@@ -234,10 +233,13 @@ function ProfileForm() {
         <label htmlFor="career">career</label>
         <input type="text" name="career" value={model.career} onChange={handleChange}/>
 
-        <label htmlFor="language">language</label>
-        <select name="language" value={model.language} onChange={handleChange}>
-          <Language />
+        <label htmlFor="country">country</label>
+        <select name="country" value={model.country} onChange={handleChange}>
+          <CountryOption />
         </select>
+ 
+        <label htmlFor="locations">locations</label>
+        <input type="text" name="locations" value={model.locations} onChange={handleChange}/>
       </div>
 
       <button type="submit">save</button>
@@ -251,7 +253,6 @@ function New_Model(props) {
       {props.children}
       <main>
         <ProfileForm />
-        <Country />
       </main>
     </>
   );

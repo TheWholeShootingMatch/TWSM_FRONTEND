@@ -71,10 +71,6 @@ function SideNav() {
 
   return (
     <div className="side_nav">
-      <select name="category" onChange={handleCategory}>
-        <option value="">Photographer</option>
-        <option value="model">model</option>
-      </select>
 
       <select name="language" onChange={handleChange}>
         <option value="">language</option>

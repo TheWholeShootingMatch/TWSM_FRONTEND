@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import socketIOClient from "socket.io-client";
+import axios from "axios";
 
 const NEW_SELECT_EVENT = "newSelect";
 const SOCKET_SERVER_URL = ":3001";
 
 const useSocket = (roomId) => {
-  console.log(roomId);
   const [selectedList, setSelectedList] = useState([]);
   const socketRef = useRef();
 
@@ -40,6 +40,7 @@ const useSocket = (roomId) => {
 
     // 이부분에서 DB에 저장
     return () => {
+      axios.post("")
       socketRef.current.disconnect();
     };
   }, [roomId]);
