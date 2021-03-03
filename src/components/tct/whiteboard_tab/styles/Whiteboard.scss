@@ -26,7 +26,8 @@
 .whiteboard_contents{
     height: 65vh;
     position: relative;
-
+    overflow: hidden;
+    
     .history_area{
         position: absolute;
         right: 0;

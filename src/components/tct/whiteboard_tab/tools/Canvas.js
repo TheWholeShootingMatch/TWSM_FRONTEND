@@ -1,128 +1,126 @@
 import React, {useEffect, useRef, useState} from "react";
 import * as shared from './SharedTypes';
 import * as Y from 'yjs'
+import { fabric } from "fabric";
 
 export let externalContextRef = null;
 
 export default function Canvas({ toolType, activeSlide }) {
-
+    
+    console.log(toolType);
     const canvasRef = useRef(null);
-    const contextRef = useRef(null);
-    const [isDrawing, setIsDrawing] = useState(true);
     let sharedLine = null;
 
     useEffect(() => {
-        shared.slideNum.set(activeSlide);
-        const canvas = canvasRef.current;
-        canvas.width = 566 * 2;
-        canvas.height = 283 * 2;
-
-        const context = canvas.getContext("2d");
-        context.lineCap = context.lineJoin = "round";
-        context.strokeStyle = "black";
-        context.lineWidth = "1";
-        contextRef.current = context;
-        externalContextRef = contextRef;
+        initCanvas();
         onStateChange(externalContextRef);
-    },[activeSlide])
+    }, []);
 
-    const calculateCoordinate = (event) => {
-        const canvasRect = canvasRef.current.getBoundingClientRect();
-        return {
-            x: (event.clientX - canvasRect.left) / canvasRect.width,
-            y: (event.clientY - canvasRect.top) / canvasRect.height
-        }
+    /* handle action for toolType */
+    if (toolType === "drawing") {
+        canvasRef.current.isDrawingMode = true;
+        canvasRef.current.freeDrawingBrush.color = "#000";
+        canvasRef.current.freeDrawingBrush.width = 4;
     }
-
-    const startDrawing = (event) => {
-        console.log("start drawing");
-        if(toolType !== "drawing"){
-            // setIsDrawing(false);
+     
+    const initCanvas = () => {
+        canvasRef.current = new fabric.Canvas("canvas", {
+            height: 283 * 2,
+            width: 566 * 2,            
+            backgroundColor: "pink"
+        });
+        canvasRef.current.on("mouse:down", (options) => drawingStart(options));
+        canvasRef.current.on("mouse:move", (options) => drawingLine(options));
+        canvasRef.current.on("mouse:up", drawingFinish);
+        externalContextRef = canvasRef.current.getContext("2d");
+    };
+    
+    const drawingStart = (options) => {
+        if (toolType !== "drawing") {
             return;
         }
-        const drawElement = new Y.Map();
-        const coordinate = calculateCoordinate(event);
-        drawElement.set('color','black');
-        drawElement.set('type','path');
-        drawElement.set('coordinate', coordinate);
         sharedLine = new Y.Array();
+        const drawElement = new Y.Map();
+        const coordinate = canvasRef.current.getPointer(options);
+        drawElement.set('color','#000');
+        drawElement.set('type', 'path');
+        drawElement.set('coordinate', { x: coordinate.x, y: coordinate.y });
+        console.log("drawing start", coordinate);
         drawElement.set('path', sharedLine);
         shared.drawingContent.get().push([drawElement]);
-        console.log(sharedLine)
-    }
-
-    const moveDraw = (event) => {
-        console.log("move drawing");
-        if(isDrawing && toolType === "drawing"){
-            if(sharedLine !== null){
-                const coordinate = calculateCoordinate(event);
-                sharedLine.push([coordinate]);
+    };
+    
+    const drawingLine = (options) => {
+        if (canvasRef.current.isDrawingMode) {
+            if (sharedLine !== null && toolType === "drawing") {
+                const coordinate = canvasRef.current.getPointer(options);
+                console.log(sharedLine);
+                console.log("drawing Line", coordinate);
+                sharedLine.push([{ x: coordinate.x, y: coordinate.y }]);
             }
         }
-    }
-
-    const finishDrawing = () => {
-        console.log("finish drawing");
-        sharedLine= null;
-    }
+    };
+    
+    const drawingFinish = () => {
+        canvasRef.current.isDrawingMode = false;
+        sharedLine = null;
+    };
 
     shared.drawingContent.get().observe(function (event) {
-        onStateChange(contextRef);
+        console.log("update")
+        onStateChange(externalContextRef);
     })
-
 
     return(
         <canvas ref={canvasRef}
-        className="current_canvas"
-        onMouseDown={startDrawing}
-        onMouseUp={finishDrawing}
-        onMouseMove={moveDraw}
-        width="566px" height="283px"/>
+        id="canvas"/>
     )
 }
 
 export const onStateChange = (externalContextRef) => {
+    
+    externalContextRef.on('object:added', () => {
+        console.log('here');
+    })
 
-        const canvas = externalContextRef.current.canvas;
-        const context = canvas.getContext('2d');
-        const yDrawingContent = shared.drawingContent.get();
-        const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
+    const yDrawingContent = shared.drawingContent.get();
+    const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
+    const draw = () => {
 
-        const draw = () => {
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-            const width = context.canvas.width;
-            const height = context.canvas.height;
+        const width = externalContextRef.canvas.width;
+        const height = externalContextRef.canvas.height;
 
-            yDrawingContent.forEach(drawElement => {
-                console.log("on state draw");
-                if (drawElement.get('type') === 'path') {
-                    const coordinate = drawElement.get('coordinate');
-                    //   const color = drawElement.get('color');
-                    const path = drawElement.get('path');
-
-                    if (path) {
-                        context.beginPath();
-                        context.moveTo(coordinate.x * width, coordinate.y * height);
-                        let lastPoint = coordinate;
-                        path.forEach(c => {
-                            const pointBetween = {
-                                x: (c.x + lastPoint.x) / 2,
-                                y: (c.y + lastPoint.y) / 2
-                            }
-                            context.quadraticCurveTo(lastPoint.x * width, lastPoint.y * height, pointBetween.x * width, pointBetween.y * height);
-                            lastPoint = c;
-                        })
-                        context.lineTo(lastPoint.x * width, lastPoint.y * height);
-                        context.stroke();
-                    }
+        yDrawingContent.forEach(drawElement => {
+            if (drawElement.get('type') === 'path') {
+                const coordinate = drawElement.get('coordinate');
+                const path = drawElement.get('path');
+                
+                if (path) {
+                    console.log("state", path);
+                    externalContextRef.beginPath();
+                    externalContextRef.moveTo(coordinate.x * width, coordinate.y * height);
+                    let lastPoint = coordinate;
+                    path.forEach(c => {
+                        const pointBetween = {
+                            x: (c.x + lastPoint.x) / 2,
+                            y: (c.y + lastPoint.y) /2
+                        }
+                        externalContextRef.quadraticCurveTo(lastPoint.x * width, lastPoint.y * height, pointBetween.x * width, pointBetween.y * height);
+                        lastPoint = c;
+                    })
+                    externalContextRef.lineTo(lastPoint.x * width, lastPoint.y * height);
+                    externalContextRef.stroke();
                 }
-            });
-        }
-        const requestDrawAnimationFrame = () => {
-            requestAnimationFrame(draw);
-        }
-        yDrawingContent.observeDeep(requestDrawAnimationFrame);
-        requestDrawAnimationFrame();
+            }
+        })
+    }
+    
+    const requestDrawAnimationFrame = () => {
+        requestAnimationFrame(draw);
+    }
+    
+    yDrawingContent.observeDeep(requestDrawAnimationFrame);
+    requestDrawAnimationFrame();
 }
 
 export const versionRender = (externalContextRef) => {
