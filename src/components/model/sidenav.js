@@ -85,33 +85,6 @@ function SideNav() {
     history.push(`/model/Model/0/L?${find}`);
   };
 
-  // when it changed to photographer it will move to photographer page
-  const handleCategory = (e) => {
-    e.preventDefault();
-    history.push(`${location.pathname}`);
-  }
-
-  //user input will go in here
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-
-  //api key
-  const param = {
-    headers : {
-      accept: "application/json",
-      "X-CSCAPI-KEY": "enNoTTJWWjh5OVJIdDRDUzZkYmxiVUVtZTFkbjBhVklNODBqTTNBcg=="
-    }
-  };
-
-  // get countries from api
-  const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    axios
-    .get("https://api.countrystatecity.in/v1/countries", param)
-    .then(res => setCountries(res.data));
-  }, []);
-
   return (
     <div className="side_nav">
 

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
 
-import Language from "../common/language"
+// import Language from "../common/language"
+import {CountryOption} from "../common/country"
 import Slider from '@material-ui/core/Slider';
 
 // side_nav make query and move to that pgae
@@ -18,84 +19,11 @@ function SideNav() {
     history.push(`/photographer/Photographer/0/L?${find}`);
   };
 
-  // when it changed to photographer it will move to photographer page
-  const handleCategory = (e) => {
-    e.preventDefault();
-    console.log("idk");
-  }
-
-  //user input will go in here
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-
-  //api key
-  const param = {
-    headers : {
-      accept: "application/json",
-      "X-CSCAPI-KEY": "enNoTTJWWjh5OVJIdDRDUzZkYmxiVUVtZTFkbjBhVklNODBqTTNBcg=="
-    }
-  };
-
-  // get countries from api
-  const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    axios
-    .get("https://api.countrystatecity.in/v1/countries", param)
-    .then(res => setCountries(res.data));
-  }, []);
-
-  // get states from api
-  const [states, setStates] = useState([]);
-
-  const handleCountry = (e) => {
-    e.preventDefault();
-    setCountry(e.target.value);
-    axios
-    .get(`https://api.countrystatecity.in/v1/countries/${e.target.value}/states`, param)
-    .then(res => setStates(res.data));
-    setCities([]);
-    setState("");
-  };
-
-  // get cities from api
-  const [cities, setCities] = useState([]);
-
-  const handleStates = (e) => {
-    e.preventDefault();
-    setState(e.target.value);
-    axios
-    .get(`https://api.countrystatecity.in/v1/countries/${country}/states/${e.target.value}/cities`, param)
-    .then(res => setCities(res.data));
-  };
-
   return (
     <div className="side_nav">
 
-      <select name="language" onChange={handleChange}>
-        <option value="">language</option>
-        <Language />
-      </select>
-
-      <select name="country" onChange={handleCountry}>
-        <option value="">country</option>
-        {countries.map((elem, index) =>
-          <option value={elem.iso2} key={index}>{elem.name}</option>
-        )}
-      </select>
-
-      <select name="state" onChange={handleStates}>
-        <option value="">state</option>
-        {states.map((elem, index) =>
-          <option value={elem.iso2} key={index}>{elem.name}</option>
-        )}
-      </select>
-
-      <select name="city" onChange={handleChange}>
-        <option value="">city</option>
-        {cities.map((elem, index) =>
-          <option value={elem.name} key={index}>{elem.name}</option>
-        )}
+      <select name="country" onChange={handleChange}>
+        <CountryOption />
       </select>
 
     </div>

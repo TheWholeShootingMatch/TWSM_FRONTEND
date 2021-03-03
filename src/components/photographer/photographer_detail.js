@@ -6,35 +6,43 @@ import Like from "./like_btn";
 
 function Main({photographerId}) {
   // get photographer
-  const param = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ _id : photographerId })
-  }
-  const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
+  // const param = {
+  //   method: "POST",
+  //   headers: {
+  //           'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({ _id : photographerId })
+  // }
+  // const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
 
-  //get cities
-  const cityparam = {
-    method: "POST",
-    headers: {
-            'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ Uid : photographer.Uid })
-  }
+  const [photographer, setPhotographer] = useState({
+    _id: "",
+    Name: "",
+    instagram: "",
+    email: "",
+    self_introduction: "",
+    career: "",
+    country : "",
+    locations : "",
+  });
 
-  const [citiesDB, setCitiesDB] = useState([]);
+  async function fetchUrl() {
+    const response = await fetch('/api/photographicAreaP/searchPid',
+    {
+      method: "POST",
+      headers: {
+              'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ _id : photographerId })
+    });
 
-  async function fetchcitiesDB() {
-    const response = await fetch('/api/photographicAreaP/searchPid',cityparam);
     const json = await response.json();
-    setCitiesDB(json);
+    setPhotographer(json);
   }
 
   useEffect(() => {
-    fetchcitiesDB();
-  }, [photographer]);
+    fetchUrl();
+  }, []);
 
   return (
     <main>
@@ -49,13 +57,10 @@ function Main({photographerId}) {
         <p>{photographer.self_introduction}</p>
         <h3>career</h3>
         <p>{photographer.career}</p>
-        <h3>language</h3>
-        <p>{photographer.language}</p>
         <div className="photographer_loc">
           <h3>Valid Location</h3>
-          {citiesDB.map((elem,index) =>
-            <p key={index}>{elem.name}</p>
-          )}
+          <p>{photographer.country}</p>
+          <p>{photographer.locations}</p>
         </div>
       </div>
       <Like />

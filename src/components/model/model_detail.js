@@ -34,9 +34,7 @@ function Main({modelId}) {
     });
 
     const json = await response.json();
-    if (json != null) {
-      setModel(json);
-    }
+    setModel(json);
   }
 
   useEffect(() => {
@@ -64,7 +62,7 @@ function Main({modelId}) {
         <div className="model_loc">
           <h3>Valid Location</h3>
           <p>{model.country}</p>
-          <p>{model.location}</p>
+          <p>{model.locations}</p>
         </div>
       </div>
       <Like />

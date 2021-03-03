@@ -150,8 +150,6 @@ function ProfileForm() {
     });
   };
 
-  const [citiesArr, setCitiesArr] = useState([]);
-
   // for form post
   let history = useHistory();
 
@@ -237,7 +235,7 @@ function ProfileForm() {
         <select name="country" value={model.country} onChange={handleChange}>
           <CountryOption />
         </select>
- 
+
         <label htmlFor="locations">locations</label>
         <input type="text" name="locations" value={model.locations} onChange={handleChange}/>
       </div>

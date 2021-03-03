@@ -44,6 +44,10 @@ function MakeParam({find, sort, skip}) {
     findInput.language = find.get("language");
   }
 
+  if (find.get("country") != null  && find.get("country") !== "") {
+    findInput.country = find.get("country");
+  }
+
   // sort : default "latest"
   if (sort === "P") {
     sortInput.height = 1;
@@ -62,16 +66,15 @@ function MakeParam({find, sort, skip}) {
   }
 
   //city
-  if (find.get("city") != null) {
-    cityInput = find.get("city");
-  }
+  // if (find.get("city") != null) {
+  //   cityInput = find.get("city");
+  // }
 
   return {
     find : findInput,
     sort : sortInput,
     skip : skipInput,
-    limit : limitInput,
-    city : cityInput
+    limit : limitInput
   };
 }
 
