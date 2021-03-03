@@ -15,7 +15,7 @@ let lastSnapshot = null
 
 const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastSnapshot && (lastSnapshot.sv.get(item.id.client) || 0) <= item.id.clock)
 
-const suffix = '/602d0c1801cdf45b14462599'
+const suffix = '/602d0c1801cdf45b14462590'
 
 export let versionDoc = new Y.Doc();
 // this websocket provider doesn't connect
@@ -57,10 +57,6 @@ export const clearVersionList = () => {
 }
 
 export let doc = new Y.Doc({ gcFilter });
-
-doc.on('update', () => {
-  console.log("update!");
-})
 
 // export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
 export const webrtcProvider = new WebrtcProvider('yjs-website' + suffix, doc)
