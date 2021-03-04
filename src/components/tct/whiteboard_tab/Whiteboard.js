@@ -1,27 +1,55 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import {useHistory} from 'react-router-dom';
+import {Redirect, useParams} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { versionRender, externalContextRef } from "./tools/Canvas";
 import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
 import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
 import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
+import axios from "axios";
 
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
 
-const ydoc = new Y.Doc();
-const type = ydoc.getArray("drawing");
 
-// const websocketProvider = new WebsocketProvider('localhost:3000', 'drawing', ydoc);
+function WhiteBoard() {
 
-function WhiteBoard(){
-    return(
-        <TctComponant>
-            <WhiteBoardArea/>
-        </TctComponant>
-    )
+    const [loading, setLoading] = useState(true);
+    const [toMain, setToMain] = useState(false);
+     let { TcTnum } = useParams();
+
+    useEffect(() => {
+        if (TcTnum) {
+            setLoading(true);
+            axios.post('/api/tct', { TcTnum: TcTnum }, {
+                withCredentials: true,
+            }).then(res => {
+                if (!res.data) {
+                    alert("권한이 없습니다!");
+                    setToMain(true);
+                }
+                setLoading(false);
+            });
+        }
+    }, []);
+
+    if (loading) {
+        return (
+            <TctComponant>
+                <div>loading...</div>
+            </TctComponant>
+        )
+    }
+    else {
+        if (toMain) {
+            return (<Redirect to={{ pathname: "/" }} />);
+        }
+        return (
+            <TctComponant>
+                <WhiteBoardArea />
+            </TctComponant>
+        ) 
+    }
 }
 
 function WhiteBoardArea(){

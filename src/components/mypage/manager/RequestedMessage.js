@@ -4,7 +4,7 @@ import { useFetch } from "../../common/useFetch";
 import axios from "axios";
 
 function RequestedMessage({isLogin, userType}) {
-    const [requestedMessage] = useFetch('/api/tct');
+    const [requestedMessage] = useFetch('/api/project');
 
     return(
         <ManagerPage header="Requested project" user={userType} isLogin={isLogin}>
@@ -28,7 +28,7 @@ function RequestedProject({ message }) {
     }, []);
 
     const onApprove = () => {
-        axios.post('/api/tct/approve', { _id, owner, title }, { withCredentials: true })
+        axios.post('/api/project/approve', { _id, owner, title }, { withCredentials: true })
             .then(res => {
                 if (res.data) {
                     setStatus('A');

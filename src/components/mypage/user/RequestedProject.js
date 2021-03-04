@@ -18,7 +18,7 @@ function RequestDetail({ request }) {
         <div className="box_long">
             <div className="box_long_upper">
                 <span>{title}</span>
-                <span>{new Date(Number(request_time)).toLocaleDateString()}</span>
+                <span>{new Date(request_time).toLocaleDateString()}</span>
             </div>
             <p>{description}</p>
             <span>{status}</span>
@@ -29,7 +29,7 @@ function RequestDetail({ request }) {
 function RequestedProjectList() {
     
     /* 요청보낸 프로젝트를 불러옴 */
-    const [requestedProject]  = useFetch('/api/tct');
+    const [requestedProject]  = useFetch('/api/project');
     console.log(requestedProject);
 
     return (

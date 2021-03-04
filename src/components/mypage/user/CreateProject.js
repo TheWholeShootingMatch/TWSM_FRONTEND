@@ -33,7 +33,7 @@ function ProjectForm() {
     const onSubmitForm = (e) => {
         e.preventDefault();
         setLoading(true);
-        axios.post('/api/tct', formData, {
+        axios.post('/api/project', formData, {
             withCredentials: true,
         }).then(res => {
             console.log(res.data);

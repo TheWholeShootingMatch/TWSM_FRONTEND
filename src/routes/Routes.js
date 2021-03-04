@@ -3,9 +3,7 @@ import axios from "axios";
 import { BrowserRouter, Route, Switch, Router} from "react-router-dom";
 
 import Header from "../components/common/header";
-
 import MainPage from "../components/main/MainPage";
-// import Header from "../components/main/header/Header";
 
 /* explore - model pages */
 import Model from "../components/model/model";
@@ -23,20 +21,22 @@ import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
 import TctModel from "../components/tct/model_tab/tct_model";
 import TctPhotographer from "../components/tct/photographer_tab/tct_photographer"
 
+/* my page (common) */
 import Overview from "../components/mypage/common/Overview";
-import Notification from "../components/mypage/user/Notification";
 import MyProject from "../components/mypage/user/MyProject";
+
+/* my page (general user) */
 import CreateProject from "../components/mypage/user/CreateProject";
-
-import RequestedMessage from "../components/mypage/manager/RequestedMessage";
-import Signup from "../components/signup/signup";
 import RequestedProject from "../components/mypage/user/RequestedProject";
-import {Logout, Login} from "../components/login/login";
-
 import NotificationDetail from "../components/mypage/user/NotificationDetail";
-/* Header 있는 페이지와 없는 페이지 구분 필요 */
-/* 유저 형태(관리자/일반유저)에 따라서 mypage 경로 변경해야 함
-   지금은 mypage와 manager-page로 구분됨 */
+import Notification from "../components/mypage/user/Notification";
+
+/* my page (manager) */
+import RequestedMessage from "../components/mypage/manager/RequestedMessage";
+
+/* signup, login, logout */
+import Signup from "../components/signup/signup";
+import {Logout, Login} from "../components/login/login";
 
 function Routes() {
 
@@ -46,8 +46,8 @@ function Routes() {
     return (
         <BrowserRouter>
             <>
+                {/* <Header isLogin={isLogin}/> */}
                 <Switch>
-
                         <Route exact path="/"><MainPage isLogin={isLogin} /></Route>
                         <Route exact path="/mypage"><Overview isLogin={isLogin} userType={userType}/></Route>
                         <Route path="/mypage/notification"><Notification isLogin={isLogin} /></Route>
@@ -58,7 +58,7 @@ function Routes() {
                         <Route path="/login"><Login setIsLogin={setIsLogin} isLogin={isLogin} setUserType={setUserType}/></Route>
                         <Route path="/logout"><Logout setIsLogin={setIsLogin} setUserType={setUserType}/></Route>
                         <Route path="/signup"><Signup /></Route>
-                        <Route path="/whiteboard"><WhiteBoard /></Route>
+                        <Route path="/whiteboard/:TcTnum"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
                         <Route path="/TctModel/:skip"><TctModel /></Route>
                         <Route path="/TctPhotographer/:skip"><TctPhotographer /></Route>

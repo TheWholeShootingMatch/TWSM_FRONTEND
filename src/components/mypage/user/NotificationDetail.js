@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {useHistory, useParams} from 'react-router-dom';
-
+import {Link, useHistory, useParams} from 'react-router-dom';
 import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
+import axios from "axios";
 
 function NotificationDetail({isLogin, props}){
 
     let { notificationNum } = useParams();
 
+    /* GET notification detail */
     const param = {
         method: "POST",
         headers: {
@@ -15,19 +16,16 @@ function NotificationDetail({isLogin, props}){
         },
         body: JSON.stringify({ _id : notificationNum })
     }
-    const [notification, setNotification] = useFetch('/api/notification/fetch', param); //노티 정보를 받아옴
+    const [notification, setNotification] = useFetch('/api/notification/fetch', param);
     const [msgTitle, setTitle] = useState("");
-    const [msgContent, setContent] = useState("");
-
-    const { _id, TcTnum, sender, sendTime, type, status } = notification;
+    const { _id, TcTnum, sender, sendTime, type } = notification;
 
     useEffect(() => {
         if (type === "A") {
             setTitle(`${TcTnum} 프로젝트가 승인되었습니다.`);
-            setContent("프로젝트로 이동하시려면 아래 링크를 클릭하세요");
         }
-    },[])
-
+    }, [])
+    
     return(
         <UserMyPage user="user" header={msgTitle} isLogin={isLogin}>
             <div className="mail_upper">
@@ -36,9 +34,20 @@ function NotificationDetail({isLogin, props}){
                 <span>보낸 시간: {new Date(Number(sendTime)).toLocaleDateString()}</span>
             </div>
             <div className="mail_content">
-                {msgContent}
+                <MsgContent TcTnum={TcTnum}/>
             </div>
         </UserMyPage>
     )
+}
+
+function MsgContent({ TcTnum }) {
+    if (TcTnum) {
+        return (
+            <p>프로젝트로 이동하시려면 아래 링크를 클릭하세요 <br /> <Link to={`/whiteboard/${TcTnum}`}>"http://localhost:3000/whiteboard/{TcTnum}"</Link></p>
+        ) 
+    }
+    else {
+        return(<p>loading...</p>)
+    }
 }
 export default NotificationDetail;
