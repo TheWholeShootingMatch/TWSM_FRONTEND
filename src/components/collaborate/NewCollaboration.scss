@@ -1,0 +1,10 @@
+.model_area{
+    &.active{
+        min-height: 200px;
+
+    }
+
+    &.model_area{
+        max-height: 0;
+    }
+}

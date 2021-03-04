@@ -13,7 +13,7 @@ function Header({ isLogin }) {
                 <ul>
                     <li><Link to="/model/Model/0/L">model</Link></li>
                     <li><Link to="/photographer/Photographer/0/L">photographer</Link></li>
-                    <li>collaborate</li>
+                    <li><Link to="/collaboration/project">collaborate</Link></li>
                     <li>{isLogin ? <Link to="/mypage">my page</Link> : <Link to="/login">my page</Link>}</li>
                     <li>{isLogin ? <Link to="/logout">logout</Link> : <Link to="/login">login</Link>}</li>
                 </ul>

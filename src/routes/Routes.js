@@ -36,7 +36,11 @@ import RequestedMessage from "../components/mypage/manager/RequestedMessage";
 
 /* signup, login, logout */
 import Signup from "../components/signup/signup";
-import {Logout, Login} from "../components/login/login";
+import { Logout, Login } from "../components/login/login";
+
+/* collaboration page */
+import Collaboration from "../components/collaborate/CollaborateProject";
+import NewCollaborate from "../components/collaborate/NewCollaborate";
 
 function Routes() {
 
@@ -69,6 +73,8 @@ function Routes() {
                         <Route path="/Photographer/Photographer_Detail/:photographerId"><Photographer_Detail> <Header isLogin={isLogin}/> </Photographer_Detail></Route>
                         <Route path="/Photographer/New_Photographer"><New_Photographer> <Header isLogin={isLogin} /> </New_Photographer></Route>
                         <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>
+                        <Route path="/collaboration/project"><Collaboration isLogin={isLogin}/></Route>
+                        <Route path="/collaboration/create-project"><NewCollaborate isLogin={isLogin}/></Route>
                 </Switch>
             </>
         </BrowserRouter>

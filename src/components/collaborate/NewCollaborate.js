@@ -1,12 +1,55 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Header from "../common/header";
+import "./NewCollaboration.scss";
 
-function CollaborateForm() {
-
-
+function NewCollaborate({isLogin}) {
 
   return (
-    <form onSubmit={handleSubmit}>
+  
+    <div>
+      <Header isLogin={isLogin} />
+      <div className="collaboration_wrapper">
+        <main>
+          <CollaborationForm />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function CollaborationForm() {
+
+  const [isModel, setModel] = useState(false);
+  const [isPhotographer, setPhotographer] = useState(false);
+
+  const handleSubmit = () => {
+
+  }
+
+  const handleCollaborate = () => {
+
+  }
+
+  const handleModel = () => {
+
+  }
+
+  const handlePhotographer = () => {
+
+  }
+
+  // const onClickArea = (type) => {
+  //   if (type === "model") {
+  //     setModel(!isModel);
+  //   }
+  //   else {
+  //     setPhotographer(!isPhotographer);
+  //   }
+  // }
+
+  return (
+        <form onSubmit={handleSubmit}>
       <div className="overview">
         <div className="title_area">
           <label htmlFor="title">Title</label>
@@ -17,10 +60,10 @@ function CollaborateForm() {
           <input type="text" name="corporation_name" onChange={handleCollaborate}/>
         </div>
         <div className="about_project_area">
-          <label htmlFor="corporation_name"></label>
+          <label htmlFor="about_project"></label>
           <input type="text" name="about_project" onChange={handleCollaborate}/>
         </div>
-        <div className="shooting_location_area">  //수정필요
+        <div className="shooting_location_area">
           <label htmlFor="shooting_location">Shooting Location</label>
           <input type="text" name="shooting_location" onChange={handleCollaborate}/>
         </div>
@@ -34,11 +77,12 @@ function CollaborateForm() {
         </div>
       </div>
 
+        {/* photographer_area */}
       <div className="model">
-        <div className="model_title">
-          <button onClick={() => onClickModel()}>Model</button>
+        <div className="title_area">
+          <button>Model</button>
         </div>
-        <div className={isModel ? "model_area active" : "model_area"}>
+        <div>
           <div className="gender_area">
             <label htmlFor="gender">Gender</label>
             <radio name="gender" value="A" onChange={handleModel}/>All
@@ -47,27 +91,27 @@ function CollaborateForm() {
           </div>
           <div className="model_age_area">
             <label >Age</label>
-            <input type="number" name="age_min" min="0" onChange={handleModel}/> - <input type="number" name="age_max" min={model.age_min} onChange={handleModel}/>years
+            <input type="number" name="age_min" min="0" onChange={handleModel}/> - <input type="number" name="age_max"  onChange={handleModel}/>years
           </div>
           <div className="model_height_area">
             <label >Height</label>
-            <input type="number" name="height_min" min="0" onChange={handleModel}/> - <input type="number" name="height_max" min={model.height_min} onChange={handleModel}/>cm
+            <input type="number" name="height_min" min="0" onChange={handleModel}/> - <input type="number" name="height_max" onChange={handleModel}/>cm
           </div>
           <div className="model_weight_area">
             <label >Weight</label>
-            <input type="number" name="weight_min" min="0" onChange={handleModel}/> - <input type="number" name="weight_max" min={model.weight_min} onChange={handleModel}/>kg
+            <input type="number" name="weight_min" min="0" onChange={handleModel}/> - <input type="number" name="weight_max" onChange={handleModel}/>kg
           </div>
           <div className="model_top_size_area">
             <label >Top size</label>
-            <input type="number" name="top_size_min" min="0" onChange={handleModel}/> - <input type="number" name="top_size_max" min={model.top_size_min} onChange={handleModel}/>
+            <input type="number" name="top_size_min" min="0" onChange={handleModel}/> - <input type="number" name="top_size_max" onChange={handleModel}/>
           </div>
           <div className="model_height_area">
             <label >Buttom size</label>
-            <input type="number" name="bottom_size_min" min="0" onChange={handleModel}/> - <input type="number" name="bottom_size_max" min={model.bottom_size_min} onChange={handleModel}/>
+            <input type="number" name="bottom_size_min" min="0" onChange={handleModel}/> - <input type="number" name="bottom_size_max" onChange={handleModel}/>
           </div>
           <div className="model_height_area">
             <label >Shoe size</label>
-            <input type="number" name="model_height" min="0" onChange={handleModel}/> - <input type="number" name="shoe_size_max" min={model.shoe_size_min} onChange={handleModel}/>mm
+            <input type="number" name="model_height" min="0" onChange={handleModel}/> - <input type="number" name="shoe_size_max" onChange={handleModel}/>mm
           </div>
           <div className="ethnicity_area">
             <label htmlFor="ethnicity">Ethnicity</label>
@@ -109,8 +153,15 @@ function CollaborateForm() {
             <input type="text" name="detail" onChange={handleModel}/>
           </div>
         </div>
+      </div>
 
-        <div className={isPhotographer ? "photographer_area active" : "photographer_area"}>
+        
+      {/* photographer_area */}
+      <div className="photographer">
+        <div className="title_area">
+          <button>photographer</button>
+        </div>
+        <div>
           <div className="field_area">
             <label htmlFor="field">Field</label>
             <checkbox name="field" value="Fashion" onChange={handlePhotographer}/>Fashion
@@ -128,11 +179,11 @@ function CollaborateForm() {
           <div classNmae="photographer_detail">
             <input type="text" name="detail" onChange={handlePhotographer}/>
           </div>
+          </div>
         </div>
-
       <button type="submit">save</button>
     </form>
-  );
+  )
+  
 }
-
-export default New_Collaborate;
+export default NewCollaborate;
