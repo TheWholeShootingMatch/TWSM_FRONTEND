@@ -4,10 +4,26 @@ import { useHistory } from "react-router-dom";
 import {CountryOption} from "../common/country"
 // import Language from "../common/language"
 
-// function Country({citiesArr, setCitiesArr}) {
+// function Country() {
+//
+//   //get cities from DB
+//   const [citiesDB, setCitiesDB] = useState([]);
+//
+//   async function fetchcitiesDB() {
+//     const response = await fetch("/api/photographicAreaP/fetch");
+//     const json = await response.json();
+//     setCitiesDB(json);
+//   }
 //
 //   const handleClick = (input) => {
-//     setCitiesArr((citiesArr) => citiesArr.filter(elem => elem != input));
+//     fetch('/api/photographicAreaP/delete/'+input, {
+//       method: 'DELETE',
+//       headers: {
+//         accept: "application/json",
+//       },
+//     });
+//
+//     fetchcitiesDB();
 //   }
 //
 //   //user input will go in here
@@ -26,6 +42,8 @@ import {CountryOption} from "../common/country"
 //   const [countries, setCountries] = useState([]);
 //
 //   useEffect(() => {
+//     fetchcitiesDB();
+//
 //     axios
 //     .get("https://api.countrystatecity.in/v1/countries", param)
 //     .then(res => setCountries(res.data));
@@ -55,34 +73,26 @@ import {CountryOption} from "../common/country"
 //     .then(res => setCities(res.data));
 //   };
 //
-//   const exist = (arr,input) => {
-//     let bool = false;
-//
-//     arr.map((elem) => {
-//       if (elem === input) {
-//         bool = true;
-//     }});
-//
-//     return bool;
-//   }
-//
-//   // push to citiesArr
+//   // post to DB
 //   const handleCity = (e) => {
 //     e.preventDefault();
-//     exist(citiesArr)
-//     setCitiesArr((citiesArr) =>
-//       exist(citiesArr, e.target.value) ?
-//       [...citiesArr] :
-//       [...citiesArr, e.target.value]
+//     axios
+//     .post("/api/photographicAreaP",
+//       {
+//         ciso : country,
+//         siso : state,
+//         name : e.target.value
+//       }
 //     )
+//
+//     fetchcitiesDB();
 //   };
 //
 //   return (
-//     <>
-//       {citiesArr.map((elem,index) =>
-//         <button key={index} onClick={(e) => handleClick(elem)}>{elem}</button>
+//     <form>
+//       {citiesDB.map((elem,index) =>
+//         <button key={index} onClick={(e) => handleClick(elem.name)}>{elem.name}</button>
 //       )}
-//
 //       <label htmlFor="country">country</label>
 //       <select name="country" onChange={handleCountry}>
 //         <option value="">select</option>
@@ -106,35 +116,28 @@ import {CountryOption} from "../common/country"
 //           <option value={elem.name} key={index}>{elem.name}</option>
 //         )}
 //       </select>
-//     </>
+//     </form>
 //   );
 // }
 
 function ProfileForm() {
   // for get user information
-  const [model, setModel] = useState({
+  const [photographer, setPhotographer] = useState({
     _id : "",
     Name : "",
-    Age : "",
-    Gender : "",
-    height : "",
-    Busto : "",
-    Quadril : "",
-    Cintura : "",
     instagram : "",
     email : "",
     self_introduction : "",
     career : "",
-    language : "",
     country : "",
     locations : ""
   });
 
   async function fetchUrl() {
-    const response = await fetch("/api/model/searchForUid");
+    const response = await fetch("/api/photographer/searchForUid");
     const json = await response.json();
     if (json != null) {
-      setModel(json);
+      setPhotographer(json);
     }
   }
 
@@ -144,8 +147,8 @@ function ProfileForm() {
 
   const handleChange = (e) => {
     const { value, name } = e.target;
-    setModel({
-      ...model,
+    setPhotographer({
+      ...photographer,
       [name]: value
     });
   };
@@ -159,12 +162,6 @@ function ProfileForm() {
     const formData = new FormData();
     formData.append('file', e.target.photo.files[0]);
     formData.append('Name', e.target.Name.value);
-    formData.append('Age', e.target.Age.value);
-    formData.append('Gender', e.target.Gender.value);
-    formData.append('height', e.target.height.value);
-    formData.append('Busto', e.target.Busto.value);
-    formData.append('Quadril', e.target.Quadril.value);
-    formData.append('Cintura', e.target.Cintura.value);
     formData.append('instagram', e.target.instagram.value);
     formData.append('email', e.target.email.value);
     formData.append('self_introduction', e.target.self_introduction.value);
@@ -173,15 +170,13 @@ function ProfileForm() {
     formData.append('country', e.target.country.value);
     formData.append('locations', e.target.locations.value);
 
-    // formData.append('photographicArea', citiesArr);
-
     axios
-    .post('/api/model/new', formData)
-    .then((response) => { history.push(`/model/Model/0/L`) });
+    .post('/api/photographer/new', formData)
+    .then((response) => { history.push(`/photographer/Photographer/0/L`) });
   };
 
   return (
-    <form className="model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
+    <form className="photographer_form" encType='multipart/form-data' onSubmit={handleSubmit}>
       <div className="form_top">
 
         <div className="left" id="photo_area">
@@ -191,53 +186,30 @@ function ProfileForm() {
 
         <div className="right" id="basic_info">
           <label htmlFor="Name">Name</label>
-          <input type="text" value={model.Name} name="Name" onChange={handleChange}/>
-
-          <label htmlFor="Age">Age</label>
-          <input type="text" name="Age" value={model.Age} onChange={handleChange}/>
-
-          <label htmlFor="Gender">Gender</label>
-          <select name="Gender" value={model.Gender} onChange={handleChange}>
-            <option value="select">select</option>
-            <option value="F">Female</option>
-            <option value="M">Male</option>
-            <option value="N">Not on the list</option>
-          </select>
-
-          <label htmlFor="height">height</label>
-          <input type="text" name="height" value={model.height} onChange={handleChange}/>
-
-          <label htmlFor="Busto">Busto</label>
-          <input type="text" name="Busto" value={model.Busto} onChange={handleChange}/>
-
-          <label htmlFor="Quadril">Quadril</label>
-          <input type="text" name="Quadril" value={model.Quadril} onChange={handleChange}/>
-
-          <label htmlFor="Cintura">Cintura</label>
-          <input type="text" name="Cintura" value={model.Cintura} onChange={handleChange}/>
+          <input type="text" value={photographer.Name} name="Name" onChange={handleChange}/>
 
           <label htmlFor="instagram">instagram</label>
-          <input type="text" name="instagram" value={model.instagram} onChange={handleChange}/>
+          <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange}/>
 
           <label htmlFor="email">email</label>
-          <input type="text" name="email" value={model.email} onChange={handleChange}/>
+          <input type="text" name="email" value={photographer.email} onChange={handleChange}/>
         </div>
       </div>
 
       <div className="form_bottom">
         <label htmlFor="self_introduction">self introduction</label>
-        <input type="text" name="self_introduction" value={model.self_introduction} onChange={handleChange}/>
+        <input type="text" name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
 
         <label htmlFor="career">career</label>
-        <input type="text" name="career" value={model.career} onChange={handleChange}/>
+        <input type="text" name="career" value={photographer.career} onChange={handleChange}/>
 
         <label htmlFor="country">country</label>
-        <select name="country" value={model.country} onChange={handleChange}>
+        <select name="country" value={photographer.country} onChange={handleChange}>
           <CountryOption />
         </select>
 
         <label htmlFor="locations">locations</label>
-        <input type="text" name="locations" value={model.locations} onChange={handleChange}/>
+        <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
       </div>
 
       <button type="submit">save</button>
@@ -245,7 +217,7 @@ function ProfileForm() {
   );
 }
 
-function New_Model(props) {
+function New_Photographer(props) {
   return (
     <>
       {props.children}
@@ -256,4 +228,4 @@ function New_Model(props) {
   );
 }
 
-export default New_Model;
+export default New_Photographer;

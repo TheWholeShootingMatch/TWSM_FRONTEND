@@ -1,44 +1,27 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { useParams } from 'react-router-dom';
-import axios from "axios";
+import {useHistory} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { versionRender, externalContextRef } from "./tools/Canvas";
-import {addVersion, renderVersion, clearVersionList, connectToRoom} from './tools/SharedTypes';
-import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList } from "./tools/Tools";
+import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
+import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
 
-function WhiteBoard() {
-    
-    const { TcTnum } = useParams();
-    let [isExist, setExist] = useState(null);
-    let [isLoading, setLoading] = useState(false);
+const ydoc = new Y.Doc();
+const type = ydoc.getArray("drawing");
 
-    useEffect(() => {
-        setLoading(true);
-        axios.post('/api/tct', { TcTnum }, {
-            withCredentials: true,
-        }).then(res => {
-            setExist(res.data);
-        })
-        setLoading(false);
-    },[])
+// const websocketProvider = new WebsocketProvider('localhost:3000', 'drawing', ydoc);
 
-    if (isExist === false) {
-        return (<p> 접근 권한이 없습니다. 이전 페이지로 이동하세요 </p>);
-    }
-    else if (isLoading) {
-        return (<p>loading...</p>)
-    }
-    else {
-        connectToRoom(TcTnum);
-        return (
-            <TctComponant>
-                <WhiteBoardArea/>
-            </TctComponant>
-        )
-    }
+function WhiteBoard(){
+    return(
+        <TctComponant>
+            <WhiteBoardArea/>
+        </TctComponant>
+    )
 }
 
 function WhiteBoardArea(){
@@ -46,11 +29,13 @@ function WhiteBoardArea(){
     const [toolType, setType] = useState("");
     const [toggleHistoryMenu, setToggle] = useState(false);
     const [versions, setVersion] = useState([]);
-
+    
+    const hiddenFileInput = useRef(null);
     const historyArea = useRef(null);
 
     useEffect(() => {
         const versionList = getVersionList();
+        console.log(versionList);
         setVersion(versionList);
     }, []);
 
@@ -58,17 +43,30 @@ function WhiteBoardArea(){
         setToggle(!toggleHistoryMenu);
     }
 
+    const onClickImageInput = () => {
+        hiddenFileInput.current.click();
+    }
+
+    const onChangeImageInput = (e) => {
+        if (e.target.files) {
+            const fileUploaded = e.target.files[0];
+            const canvas = externalContextRef.current.canvas;
+            const context = canvas.getContext('2d');
+            uploadImage(fileUploaded, context);
+        }
+    }
+    
     return (
         <div className="whiteboard_area">
-            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy}/>
+            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy} hiddenFileInput={hiddenFileInput} onClickImageInput={onClickImageInput} onChangeImageInput={onChangeImageInput}/>
             <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
             <WhiteBoardSlides/>
         </div>
     )
 }
 
-function WhiteBoardHeader({ setType, onClickHistoy }) {
-    
+function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImageInput, onChangeImageInput}) {
+
     return(
         <div className="whiteboard_header">
             <div className="tools">
@@ -76,7 +74,16 @@ function WhiteBoardHeader({ setType, onClickHistoy }) {
                     <li id="select">select</li>
                     <li id="figure" onClick={() => setType("figure")}>figure</li>
                     <li id="text" onClick={() => setType("text")}>text</li>
-                    <li id="image" onClick={() => setType("image")}>image</li>
+                    <li id="image" onClick={() => {;
+                        setType("image");
+                        onClickImageInput();
+                    }}>image</li>
+                    <input
+                        type="file"
+                        accept="image/*" 
+                        ref={hiddenFileInput}
+                        onChange={onChangeImageInput}
+                        style={{ display: 'none' }} />
                     <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
                     <li id="undo" onClick={() => {
                         setType("undo");

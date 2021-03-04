@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../../common/useFetch"
+import { useHistory, useLocation } from "react-router-dom";
 
 import TctComponant from "../tct_componant/TctComponant";
 
@@ -14,7 +15,7 @@ function Category() {
   return (
     <>
       {categorylist.map((element, index) =>
-        <option value={element._id} key={index}>{element.category}</option>
+        <option value={element._id} key={index}>{element.name}</option>
       )}
     </>
   );
@@ -59,14 +60,14 @@ function AddBtn() {
       <Modal open={open} onClose={handleClose}>
         <form className="new_note" onSubmit={handleSubmit}>
           <div className="new_header">
-            <input type="text" name="new_title" placeholder="NoTitle" onChange={handleChange}/>
-            <select name="Cnum" onChange={handleChange}>
+            <input type="text" name="title" placeholder="NoTitle" onChange={handleChange}/>
+            <select name="category" onChange={handleChange}>
               <option value={""}>select</option>
               <Category />
             </select>
           </div>
 
-          <input type="text" name="new_text" placeholder="Leave a message" onChange={handleChange}/>
+          <input type="text" name="text" placeholder="Leave a message" onChange={handleChange}/>
           <button type="submit">save</button>
         </form>
       </Modal>
@@ -78,7 +79,7 @@ function AddBtn() {
 function Comment(props) {
   return (
     <div className="comment" id = {props._id}>
-      <p className="comment_name">{props.id}</p>
+      <p className="comment_name">{props.writer}</p>
       <p className="comment_text">{props.contents}</p>
     </div>
   );
@@ -115,28 +116,28 @@ function NoteArea(props) {
   };
 
   return (
-    <div className="note_area">
+    <div className="note_area" id = {props._id}>
       <div className="note_dot"></div>
 
-      <Accordion id = {props._id}>
+      <Accordion>
         <AccordionSummary>
           <div className="note_title">
-            <p className="category_tag">{props.category}</p>
+            <p className="category_tag">{props.category.name}</p>
             <h3>{props.title}</h3>
             <p>{props.contents}</p>
           </div>
 
           <div className="note_detail">
-            <p>{props.writer}</p>
+            <p>{props.writer.id}</p>
             <p>{props.logdate}</p>
             <p>댓글 {commentlist.length}개</p>
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          {commentlist.map(({_id, id, contents}, index) => <Comment
+          {commentlist.map(({_id, writer, contents}, index) => <Comment
             key={index}
             _id = {_id}
-            id = {id}
+            writer = {writer.name}
             contents = {contents}
           />)}
           <form onSubmit={handleSubmit}>
@@ -150,17 +151,48 @@ function NoteArea(props) {
 }
 
 function Contents() {
-  const [noteList, setNoteList] = useFetch('/api/note');
+  let history = useHistory();
+  let location = useLocation();
+  const find = new URLSearchParams(location.search);
 
-  if (setNoteList) {
-    return <p> loading... </p>
+  const findInput = {};
+  if (find.get("category") !== null && find.get("category") !== "") {
+    findInput.category = find.get("category");
   }
-  
+
+  const [noteList, setNoteList] = useState([]);
+
+  async function fetchUrl() {
+    const response = await fetch("/api/note/fetch",
+    {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({find : findInput})
+    });
+
+    const json = await response.json();
+    setNoteList(json);
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, [useLocation()]);
+
+  // category filter
+  const handleChange = (e) => {
+    e.preventDefault();
+    find.set(e.target.name, e.target.value);
+
+    history.push(`/TctWorkflow?${find}`);
+  };
+
   return (
     <div className="tct_contents">
 
       <div className="category_area">
-        <select name="category">
+        <select name="category" onChange={handleChange}>
           <option value={""}>select</option>
           <Category />
         </select>
@@ -168,14 +200,14 @@ function Contents() {
       </div>
 
       <div className="note_list">
-        {noteList.map(({ title,logdate,id,_id,category,contents }, index) => <NoteArea
+        {noteList.map((elem, index) => <NoteArea
           key={index}
-          title = {title}
-          logdate = {logdate}
-          writer = {id}
-          _id = {_id}
-          category = {category}
-          contents = {contents}
+          _id = {elem._id}
+          writer = {elem.writer}
+          category = {elem.category}
+          title = {elem.title}
+          contents = {elem.contents}
+          logdate = {elem.logdate}
         />)}
       </div>
     </div>

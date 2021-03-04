@@ -8,21 +8,17 @@ const activeUserColor = [
   '#ee6352',
 ]
 
-export const getNumberOfActiveUsers = () => {
-    const numberOfUsers = Array.from(awareness.getStates().values()).length;
-    console.log(awareness.getStates());
-    console.log(numberOfUsers);
-    return numberOfUsers;
-}
-
 export const setLocalUserInfo = () => {
-   
-    const numberOfUsers = getNumberOfActiveUsers();
-    const myColor = activeUserColor[numberOfUsers-1];
+
+    const activeUserList = getActiveUserState();
+    const usedColors = activeUserList.map((user) => user.userInfo.color);
+    const availableColor = activeUserColor.filter(color => !usedColors.includes(color));
+    const myColor = availableColor[0];
+    
     awareness.setLocalStateField("userInfo", {
-        name: 'login id',
+        name: doc.clientID,
         color: myColor
-    })
+    }) 
 }
 
 export const getActiveUserState = () => {
@@ -31,7 +27,6 @@ export const getActiveUserState = () => {
         if (state.userInfo) {
             userList.push(state);
         }
-    })
-
+    });
     return userList;
 }

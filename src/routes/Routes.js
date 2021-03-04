@@ -10,9 +10,16 @@ import Model from "../components/model/model";
 import Model_Detail from "../components/model/model_detail";
 import New_Model from "../components/model/new_model";
 
+/* explore - Photographer pages */
+import Photographer from "../components/photographer/photographer";
+import Photographer_Detail from "../components/photographer/photographer_detail";
+import New_Photographer from "../components/photographer/new_photographer";
+
 /* TCT pages */
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
 import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
+import TctModel from "../components/tct/model_tab/tct_model";
+import TctPhotographer from "../components/tct/photographer_tab/tct_photographer"
 
 /* my page (common) */
 import Overview from "../components/mypage/common/Overview";
@@ -53,9 +60,14 @@ function Routes() {
                         <Route path="/signup"><Signup /></Route>
                         <Route path="/whiteboard/:TcTnum"><WhiteBoard /></Route>
                         <Route path="/TctWorkflow"><TctWorkflow /></Route>
+                        <Route path="/TctModel/:skip"><TctModel /></Route>
+                        <Route path="/TctPhotographer/:skip"><TctPhotographer /></Route>
                         <Route path="/model/Model/:skip/:sort"><Model> <Header isLogin={isLogin}/> </Model></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
                         <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin} /> </New_Model></Route>
+                        <Route path="/Photographer/Photographer/:skip/:sort"><Photographer> <Header isLogin={isLogin}/> </Photographer></Route>
+                        <Route path="/Photographer/Photographer_Detail/:photographerId"><Photographer_Detail> <Header isLogin={isLogin}/> </Photographer_Detail></Route>
+                        <Route path="/Photographer/New_Photographer"><New_Photographer> <Header isLogin={isLogin} /> </New_Photographer></Route>
                         <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>
                 </Switch>
             </>
