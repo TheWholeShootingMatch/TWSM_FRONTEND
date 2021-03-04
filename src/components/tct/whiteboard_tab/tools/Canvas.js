@@ -11,6 +11,8 @@ function Canvas({toolType, activeSlide}){
 
     useEffect(() => {
         console.log("here");
+        console.log(activeSlide);
+        shared.slideNum.set(activeSlide);
         const canvas = canvasRef.current;
         canvas.width = 566 * 2;
         canvas.height = 283 * 2;
@@ -44,7 +46,7 @@ function Canvas({toolType, activeSlide}){
         drawElement.set('coordinate', coordinate);
         sharedLine = new Y.Array();
         drawElement.set('path', sharedLine);
-        shared.drawingContent.push([drawElement]);
+        shared.drawingContent.get().push([drawElement]);
     }
 
     const moveDraw = (event) => {
@@ -63,7 +65,7 @@ function Canvas({toolType, activeSlide}){
         sharedLine= null;
     }
 
-    shared.drawingContent.observe(function (event) {
+    shared.drawingContent.get().observe(function (event) {
         onStateChange();
     })
 
@@ -71,7 +73,7 @@ function Canvas({toolType, activeSlide}){
 
         const canvas = contextRef.current.canvas;
         const context = canvas.getContext('2d');
-        const yDrawingContent = shared.drawingContent;
+        const yDrawingContent = shared.drawingContent.get();
         const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
 
         const draw = () => {

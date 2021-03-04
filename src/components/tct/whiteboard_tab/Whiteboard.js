@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from "react";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import {doc, renderVersion, slideList, deleteSlide} from './tools/SharedTypes';
+import {renderVersion, slideList} from './tools/SharedTypes';
 import {deleteAllDrawing, undoDrawing, redoDrawing, showVersionList} from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
@@ -9,9 +9,6 @@ import axios from "axios";
 
 import "./styles/Whiteboard.scss";
 import "./styles/WhiteBoardHeader.scss";
-
-const ydoc = new Y.Doc();
-const type = ydoc.getArray("drawing");
 
 // const websocketProvider = new WebsocketProvider('localhost:3000', 'drawing', ydoc);
 
@@ -26,7 +23,7 @@ function WhiteBoard(){
 function WhiteBoardArea(){
     const [toolType, setType] = useState("");
     const historyArea = useRef(null);
-    const [activeSlide, setActiveSlide] = useState(null);
+    const [activeSlide, setActiveSlide] = useState(0);
 
     const onClickHistoy = () => {
         const displayState = historyArea.current.style.display;
@@ -120,7 +117,6 @@ function WhiteBoardContents({ toolType, historyArea, activeSlide }) {
 function WhiteBoardSlides({activeSlide, setActiveSlide}){
 
   const [slides, setSlides] = useState([]);
-  const slideNum = useRef(null);
 
   slideList.observe(function(event) {
     console.log("observe");
@@ -133,8 +129,6 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
       })
     }
     response();
-    console.log(slideList.get(0))
-    console.log(slideList.get(0).getArray("drawing"));
   })
 
   useEffect(() => {
@@ -150,7 +144,8 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
   }, [setSlides])
 
   const clickSlide = (index) => {  //슬라이드 클릭 시 현재 슬라이드 번호를 바꿔줌
-    setActiveSlide(index)
+    setActiveSlide(index);
+    console.log(activeSlide)
   }
 
   const addSlide = () => {  //새 슬라이드 추가
@@ -163,20 +158,20 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides([...slides, res.data]);
-        setActiveSlide(0);
+        const newDoc = new Y.Doc();
+        slideList.push([newDoc]);
+        setActiveSlide(slides.length-1);
+
       })
     }
     response();
-    const newDoc = new Y.Doc();
-    slideList.push([newDoc]);
-    console.log(newDoc)
   }
 
-  const deliteSlide = (index) => {  //슬라이드 삭제
+  const deliteSlide = (index, i) => {  //슬라이드 삭제
     // let id = slides[index]._id
     const slide = {
       TcTnum: "000",
-      _id: index
+      _id: i
     }
     const response = async() => {
       await axios.post('/api/whiteboard/delete', slide, {
@@ -187,7 +182,7 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
       })
     }
     response();
-    slideList.delete(index, index)
+    slideList.delete(index, index);
   }
 
   const onChange = (e) => {  //슬라이드 이름 변경
@@ -221,7 +216,7 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
                 <div onClick={() => clickSlide(index)}>
                   <input placeholder={slide.Sname} name={slide._id} onChange={onChange}/>
                 </div>
-                <button onClick={() => deliteSlide(slide._id)}>X</button>
+                <button onClick={() => deliteSlide(index, slide._id)}>X</button>
             </div>
           );
         }

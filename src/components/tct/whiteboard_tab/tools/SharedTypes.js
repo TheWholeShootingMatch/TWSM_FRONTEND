@@ -16,7 +16,7 @@ let lastSnapshot = null
 
 const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastSnapshot && (lastSnapshot.sv.get(item.id.client) || 0) <= item.id.clock)
 
-const suffix = '-v3'
+const suffix = '-v4'
 
 export const versionDoc = new Y.Doc();
 // this websocket provider doesn't connect
@@ -118,43 +118,27 @@ export const slideNum = {
 
 export const slideList = doc.getArray('doc-list');
 
-// export const drawingContent = doc.getArray("drawing");  //처음 상태
-
-// const currentTab  = {  //밖에서 정해줄 때
-//   currentTab : slideList.get(0),
-//   get() {
-//     return this.currentTab;
-//   },
-//   set(value) {
-//     this.currentTab = slideList.get(value)
-//   }
-// }
-// export const drawingContent = {
-//   drawingContet : currentTab.get().getArray("drawing"),
-//
-//   get() {
-//     return this.drawingContent;
-//   },
-//   set(value) {
-//     this.drawingContent = currentTab.get().getArray("drawing");
-//   }
-// }
-
-
 export const drawingContent = {  //
-  currentTab: slideList.get(0),
-  drawingContet : this.currentTab.getArray("drawing"),
+  drawingContent : doc.getArray("drawing"),
 
   get() {
     return this.drawingContent;
   },
+
   set(value) {
-    this.currentTab = slideList.get(value);
-    this.drawingContent = this.currentTab.getArray("drawing");
+    const list = slideList.doc.subdocs;
+    let i = 0;
+    list.forEach((subdoc) => {
+      if(i===value) {
+        this.drawingContent = subdoc.getArray('drawing');
+      }
+      i++;
+    });
+    console.log(this.drawingContent)
   }
 }
 
-export const whiteboardUndoManager = new Y.UndoManager(drawingContent);
+export const whiteboardUndoManager = new Y.UndoManager(drawingContent.get());
 
 let undoManager = null
 
