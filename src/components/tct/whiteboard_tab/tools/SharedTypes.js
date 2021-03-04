@@ -4,26 +4,65 @@ import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
 import {setLocalUserInfo} from "./activeUserInfo";
-const websocketUrl = 'http://localhost:3000'
 
+const websocketUrl = 'http://localhost:3000'
 let lastSnapshot = null
 
-/**
- * @param {Y.Item} item
- * @return {boolean}
- */
-
+export let originSuffix = null;
+export let versionWebsocketProvider = null;
+export let versionIndexeddbPersistence = null;
+export let indexeddbPersistence = null;
+export let webrtcProvider = null;
+export let awareness = null;
 const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastSnapshot && (lastSnapshot.sv.get(item.id.client) || 0) <= item.id.clock)
 
-const suffix = '/602d0c1801cdf45b14462599'
-
 export let versionDoc = new Y.Doc();
-// this websocket provider doesn't connect
-export const versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website-version' + suffix, versionDoc, { connect: false })
-versionWebsocketProvider.connectBc() // only connect via broadcastchannel
-export let versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
+export let doc = new Y.Doc({ gcFilter });
 export let versionType = versionDoc.getArray('versions');
 export const versionList = versionDoc.getArray('versionList');
+
+/* connect to room by shared link */
+export const connectToRoom = (suffix) => {
+
+  originSuffix = suffix;
+  //reset websocket and version db with suffix (tct num)
+  versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'tct-version-' + suffix, versionDoc, { connect: false });
+  versionWebsocketProvider.connectBc();
+  versionIndexeddbPersistence = new IndexeddbPersistence('tct-version-' + suffix, versionDoc);
+  webrtcProvider = new WebrtcProvider('tct-website-' + suffix, doc);
+  indexeddbPersistence = new IndexeddbPersistence('tct-website-' + suffix, doc);
+  
+  //detect active users
+  awareness = webrtcProvider.awareness;
+
+  awareness.on('update', ({ added, updated, removed }) => {
+  const localState = awareness.getLocalState();
+  if (localState === null || JSON.stringify(localState) === JSON.stringify({})) {
+    setLocalUserInfo();
+  }
+  })
+  
+  //connect to version db
+  versionIndexeddbPersistence.on('synced', () => {
+    lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
+    versionType.observe(() => {
+      if (versionType.length > 0) {
+        const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
+        undoManager.clear()
+        Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
+        lastSnapshot = nextSnapshot
+        storeState(indexeddbPersistence)
+      } 
+    })
+  })
+  
+  //when successfully connect to version db
+  versionIndexeddbPersistence.whenSynced.then(() => {
+    console.log(versionWebsocketProvider.roomname);
+    permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
+  })
+}
+
 
 export const getVersionList = () => {
   return versionList;
@@ -39,9 +78,6 @@ export const addVersion = () => {
 }
 
 export const renderVersion = (version) => {
-  // console.log(version);
-  // console.log(Y.encodeStateAsUpdate(doc));
-  // console.log(Y.encodeStateAsUpdate(versionDoc));
   doc = new Y.Doc({ gcFilter });
   restoreVersion(version);
 }
@@ -56,31 +92,7 @@ export const clearVersionList = () => {
   versionList.delete(0, versionList.length);
 }
 
-export let doc = new Y.Doc({ gcFilter });
-
-doc.on('update', () => {
-  console.log("update!");
-})
-
-// export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
-export const webrtcProvider = new WebrtcProvider('yjs-website' + suffix, doc)
-export const awareness = webrtcProvider.awareness // websocketProvider.awareness
-export let indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
 export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
-
-versionIndexeddbPersistence.on('synced', () => {
-
-  lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
-  versionType.observe(() => {
-    if (versionType.length > 0) {
-      const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
-      undoManager.clear()
-      Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
-      lastSnapshot = nextSnapshot
-      storeState(indexeddbPersistence)
-    }
-  })
-})
 
 class LocalRemoteUserData extends Y.PermanentUserData {
   /**
@@ -100,20 +112,6 @@ class LocalRemoteUserData extends Y.PermanentUserData {
 }
 
 export const permanentUserData = new LocalRemoteUserData(doc, versionDoc.getMap('userInfo'));
-
-awareness.on('update', ({ added, updated, removed }) => {
-  const localState = awareness.getLocalState();
-  if (localState === null || JSON.stringify(localState) === JSON.stringify({})) {
-    setLocalUserInfo();
-  }
-});
-
-// setLocalUserInfo(Array.from(awareness.states));
-
-/* indexed db 연결 성공 시 */
-versionIndexeddbPersistence.whenSynced.then(() => {
-  permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
-})
 
 /**
  * An array of draw element.

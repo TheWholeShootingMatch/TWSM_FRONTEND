@@ -3,7 +3,7 @@ import {Redirect, useParams} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { versionRender, externalContextRef } from "./tools/Canvas";
-import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
+import { connectToRoom, addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
 import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
 import * as Y from "yjs";
 import axios from "axios";
@@ -14,41 +14,39 @@ import "./styles/WhiteBoardHeader.scss";
 
 function WhiteBoard() {
 
-    const [loading, setLoading] = useState(true);
-    const [toMain, setToMain] = useState(false);
-     let { TcTnum } = useParams();
+    const { TcTnum } = useParams();
+    let [isExist, setExist] = useState(true);
+    let [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (TcTnum) {
-            setLoading(true);
-            axios.post('/api/tct', { TcTnum: TcTnum }, {
-                withCredentials: true,
-            }).then(res => {
-                if (!res.data) {
-                    alert("권한이 없습니다!");
-                    setToMain(true);
-                }
-                setLoading(false);
-            });
-        }
-    }, []);
+        setLoading(true);
+        /* TcTnum 존재 여부를 db로부터 확인 */
+        axios.post('/api/tct', { TcTnum: TcTnum }, {
+            withCredentials: true,
+        }).then(res => {
+            if (!res.data) {
+                alert("권한이 없습니다!");
+            }
+            setLoading(false);
+            setExist(res.data);
+        })
+    },[])
 
-    if (loading) {
-        return (
-            <TctComponant>
+    if (isExist === false) {
+        return (<Redirect to={{ pathname: "/" }} />);
+    }
+    else if (isLoading) {
+        return (<TctComponant>
                 <div>loading...</div>
-            </TctComponant>
-        )
+            </TctComponant>)
     }
     else {
-        if (toMain) {
-            return (<Redirect to={{ pathname: "/" }} />);
-        }
+        connectToRoom(TcTnum);
         return (
-            <TctComponant>
-                <WhiteBoardArea />
+            <TctComponant TcTnum={TcTnum}>
+                <WhiteBoardArea/>
             </TctComponant>
-        ) 
+        )
     }
 }
 

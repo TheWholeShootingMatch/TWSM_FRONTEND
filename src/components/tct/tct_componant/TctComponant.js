@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Link, useHistory } from "react-router-dom";
-import { awareness } from "../whiteboard_tab/tools/SharedTypes";
+import {awareness, originSuffix} from "../whiteboard_tab/tools/SharedTypes";
 import { getActiveUserState } from "../whiteboard_tab/tools/activeUserInfo";
 import "./TctComponant.scss";
 
@@ -14,7 +14,7 @@ function SideMenu() {
             <ul>
                 <li className="menu"><Link to="/TctModel/0">model</Link></li>
                 <li className="menu"><Link to="/TctPhotographer/0">photographer</Link></li>
-                <li className="menu"><Link to="/WhiteBoard">whiteboard</Link></li>
+                <li className="menu"><Link to={`/whiteboard/${originSuffix}`}>whiteboard</Link></li>
                 <li className="menu"><Link to="/TctWorkflow">workflow</Link></li>
             </ul>
         </nav>
@@ -30,11 +30,6 @@ function Header() {
   useEffect(() => {
     
     const activeUserList = getActiveUserState();
-    // const localState = awareness.getLocalState();
-    // if (localState !== null && JSON.stringify(localState) !== JSON.stringify({})) {
-    //   console.log(localState);
-    //   activeUserList.push(localState);
-    // }
     setActiveUserState(activeUserList);
   }, []);
 
@@ -74,9 +69,9 @@ function TctComponant({ children }) {
   
   return (
     <div className="whole_wrapper">
-      <SideMenu />
+      <SideMenu/>
       <div className="tct_wrapper">
-        <Header />
+        <Header/>
         {children}
       </div>
     </div>
