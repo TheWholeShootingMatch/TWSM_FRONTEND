@@ -24,12 +24,15 @@ function Myprojects({myProjects}) {
         </div>
         <div className="project_area">
                 <div>
-                    {myProjects.map(project => <div className="box_long">
-                        <p>{project.title}</p>
-                        <p>{project.description}</p>
-                </div>)}
+                    {myProjects.map(project =>
+                        <Link to={`/whiteboard/${project._id}`}>
+                            <div className="box_long">
+                                <p>{project.title}</p>
+                                <p>{project.description}</p>
+                            </div>
+                        </Link>)}
+                </div>
             </div>
-        </div>
         </>
     )
 }
