@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import {Link, useHistory, useParams} from 'react-router-dom';
 import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
+import axios from "axios";
 
 function NotificationDetail({isLogin, props}){
 
     let { notificationNum } = useParams();
 
+    /* GET notification detail */
     const param = {
         method: "POST",
         headers: {
@@ -16,15 +18,14 @@ function NotificationDetail({isLogin, props}){
     }
     const [notification, setNotification] = useFetch('/api/notification/fetch', param);
     const [msgTitle, setTitle] = useState("");
-
-    const { _id, TcTnum, sender, sendTime, type, status } = notification;
+    const { _id, TcTnum, sender, sendTime, type } = notification;
 
     useEffect(() => {
         if (type === "A") {
             setTitle(`${TcTnum} 프로젝트가 승인되었습니다.`);
         }
-    },[])
-
+    }, [])
+    
     return(
         <UserMyPage user="user" header={msgTitle} isLogin={isLogin}>
             <div className="mail_upper">
@@ -40,8 +41,13 @@ function NotificationDetail({isLogin, props}){
 }
 
 function MsgContent({ TcTnum }) {
-    return (
-        <p>프로젝트로 이동하시려면 아래 링크를 클릭하세요 <br /> <Link to={`/whiteboard/${TcTnum}`}>"http://localhost:3000/whiteboard/{TcTnum}"</Link></p>
-    )
+    if (TcTnum) {
+        return (
+            <p>프로젝트로 이동하시려면 아래 링크를 클릭하세요 <br /> <Link to={`/whiteboard/${TcTnum}`}>"http://localhost:3000/whiteboard/{TcTnum}"</Link></p>
+        ) 
+    }
+    else {
+        return(<p>loading...</p>)
+    }
 }
 export default NotificationDetail;
