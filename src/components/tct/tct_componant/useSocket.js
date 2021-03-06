@@ -38,9 +38,7 @@ const useSocket = (roomId) => {
       }
     });
 
-    // 이부분에서 DB에 저장
     return () => {
-      axios.post("")
       socketRef.current.disconnect();
     };
   }, [roomId]);

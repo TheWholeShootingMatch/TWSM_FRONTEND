@@ -196,9 +196,39 @@ function Main() {
   // for selected list
   const { selectedList, sendSelectedList } = useSocket(201);
 
+  const [prevSelectedList, setPrevSelectedList] = useState({models:[]});
+
+  async function fetchUrl() {
+    const response = await fetch("/api/tct/modelG",
+    {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+
+      })
+    });
+
+    const json = await response.json();
+    setPrevSelectedList(json);
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+
   return (
     <main>
       <div className="selectedArea">
+      {
+        prevSelectedList.models.map((elem,index)=> <Selected
+          id = {elem._id}
+          key={index}
+          sendSelectedList={sendSelectedList}
+        />)
+      }
+
       {
         selectedList.map((elem, index) => <Selected
           id = {elem.body}
