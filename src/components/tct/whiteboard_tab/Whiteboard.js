@@ -2,9 +2,10 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import {useHistory} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import { versionRender, externalContextRef } from "./tools/Canvas";
+import { versionRender, externalCanvas } from "./tools/Canvas";
 import {addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
-import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
+import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage, setToolOption
+ } from "./tools/Tools";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -50,7 +51,7 @@ function WhiteBoardArea(){
     const onChangeImageInput = (e) => {
         if (e.target.files) {
             const fileUploaded = e.target.files[0];
-            const canvas = externalContextRef.current.canvas;
+            const canvas = externalCanvas.current.canvas;
             const context = canvas.getContext('2d');
             uploadImage(fileUploaded, context);
         }
@@ -71,11 +72,14 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
         <div className="whiteboard_header">
             <div className="tools">
                 <ul>
-                    <li id="select">select</li>
-                    <li id="figure" onClick={() => setType("figure")}>figure</li>
+                    <li id="select" onClick={() => {
+                        setToolOption("select", externalCanvas);
+                    }}>select</li>
+                    <li id="figure" onClick={() => {
+                        setToolOption("figure", externalCanvas);
+                    }}>figure</li>
                     <li id="text" onClick={() => setType("text")}>text</li>
                     <li id="image" onClick={() => {;
-                        setType("image");
                         onClickImageInput();
                     }}>image</li>
                     <input
@@ -84,7 +88,9 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
                         ref={hiddenFileInput}
                         onChange={onChangeImageInput}
                         style={{ display: 'none' }} />
-                    <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
+                    <li id="drawing" onClick={() => {
+                        setToolOption("drawing", externalCanvas);
+                    }}>drawing</li>
                     <li id="undo" onClick={() => {
                         setType("undo");
                         undoDrawing();
@@ -120,7 +126,7 @@ function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu
                     {versions.map((version, index) => (
                         <section key={index} onClick={() => {
                             renderVersion(version);
-                            versionRender(externalContextRef);
+                            versionRender(externalCanvas);
                         }}>{new Date(version.date).toLocaleString()}</section>
                     ))}
                     <li className="version_info"></li>
