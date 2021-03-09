@@ -3,7 +3,7 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
-import {setLocalUserInfo} from "./activeUserInfo";
+import {getActiveUserState, setActiveUserInfo} from "./activeUserInfo";
 
 const websocketUrl = 'http://localhost:3000'
 let lastSnapshot = null
@@ -13,17 +13,16 @@ export let versionWebsocketProvider = null;
 export let versionIndexeddbPersistence = null;
 export let indexeddbPersistence = null;
 export let webrtcProvider = null;
-export let awareness = null;
 const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastSnapshot && (lastSnapshot.sv.get(item.id.client) || 0) <= item.id.clock)
 
 export let versionDoc = new Y.Doc();
 export let doc = new Y.Doc({ gcFilter });
+export let activeUserList = doc.getMap("activeUserList");
 export let versionType = versionDoc.getArray('versions');
 export const versionList = versionDoc.getArray('versionList');
 
 /* connect to room by shared link */
 export const connectToRoom = (suffix) => {
-
   originSuffix = suffix;
   //reset websocket and version db with suffix (tct num)
   versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'tct-version-' + suffix, versionDoc, { connect: false });
@@ -31,17 +30,28 @@ export const connectToRoom = (suffix) => {
   versionIndexeddbPersistence = new IndexeddbPersistence('tct-version-' + suffix, versionDoc);
   webrtcProvider = new WebrtcProvider('tct-website-' + suffix, doc);
   indexeddbPersistence = new IndexeddbPersistence('tct-website-' + suffix, doc);
-  
+    
   //detect active users
-  awareness = webrtcProvider.awareness;
+  let awareness = webrtcProvider.awareness;
+  let localUserState = false;
 
-  awareness.on('update', ({ added, updated, removed }) => {
-  const localState = awareness.getLocalState();
-  if (localState === null || JSON.stringify(localState) === JSON.stringify({})) {
-    setLocalUserInfo();
-  }
+  awareness.on('change', ({ added, updated, removed }) => {
+    const currentUsers = getActiveUserState(awareness);
+    if (!localUserState) {
+      setActiveUserInfo(currentUsers, awareness);
+      localUserState = true;
+    }
+    activeUserList.set('activeUserList', currentUsers);
   })
-  
+
+  // awareness.on('update', ({ added, updated, removed }) => {
+  //   // if (removed.length !== 0) {
+  //   //   const currentUsers = getActiveUserState(awareness);
+  //   //   activeUserList.set('activeUserList', currentUsers);
+  //   // }
+  //   console.log("update", activeUserList.get('activeUserList'));
+  // });
+
   //connect to version db
   versionIndexeddbPersistence.on('synced', () => {
     lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
@@ -58,11 +68,9 @@ export const connectToRoom = (suffix) => {
   
   //when successfully connect to version db
   versionIndexeddbPersistence.whenSynced.then(() => {
-    console.log(versionWebsocketProvider.roomname);
     permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
   })
 }
-
 
 export const getVersionList = () => {
   return versionList;
@@ -160,7 +168,7 @@ window.ydoc = doc
 // @ts-ignore
 window.versionDoc = versionDoc
 // @ts-ignore
-window.awareness = awareness
+// window.awareness = awareness
 // @ts-ignore
 window.webrtcProvider = webrtcProvider
 // @ts-ignore

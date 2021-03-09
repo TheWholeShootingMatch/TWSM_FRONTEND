@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import { Link, useHistory } from "react-router-dom";
-import {awareness, originSuffix} from "../whiteboard_tab/tools/SharedTypes";
-import { getActiveUserState } from "../whiteboard_tab/tools/activeUserInfo";
+import {originSuffix, activeUserList, awareness, doc} from "../whiteboard_tab/tools/SharedTypes";
+import { setActiveUserInfo } from "../whiteboard_tab/tools/activeUserInfo";
+import useSocket from "./useSocket";
 import "./TctComponant.scss";
 
 function SideMenu() {
@@ -24,29 +25,15 @@ function SideMenu() {
 }
 
 function Header() {
-  
   const [activeUserState, setActiveUserState] = useState([]);
 
-  useEffect(() => {
-    
-    const activeUserList = getActiveUserState();
-    setActiveUserState(activeUserList);
-  }, []);
-
-  awareness.on('update', () => {
-    const localState = awareness.getLocalState();
-    if (localState !== null && JSON.stringify(localState) !== JSON.stringify({})) {
-      if (activeUserState.length > 0 && !activeUserState.includes(localState)) {
-        const userList = getActiveUserState();
-        console.log(activeUserState, userList);
-        setActiveUserState(userList);
+  activeUserList.observe((ymapEvent) => {
+    ymapEvent.changes.keys.forEach((change, key) => {
+      const currentActiveUserList = activeUserList.get('activeUserList');
+      if (change.action === "update") {
+        setActiveUserState(currentActiveUserList);
       }
-    }
-  })
-
-  awareness.on('change', () => {
-    const userList = getActiveUserState();
-    setActiveUserState(userList);
+    })
   })
 
   return (
@@ -66,7 +53,6 @@ function Header() {
 }
 
 function TctComponant({ children }) {
-  
   return (
     <div className="whole_wrapper">
       <SideMenu/>

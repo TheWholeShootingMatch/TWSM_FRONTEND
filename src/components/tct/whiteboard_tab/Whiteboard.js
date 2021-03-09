@@ -18,19 +18,19 @@ function WhiteBoard() {
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
 
-    useEffect(() => {
-        setLoading(true);
-        /* TcTnum 존재 여부를 db로부터 확인 */
-        axios.post('/api/tct', { TcTnum: TcTnum }, {
-            withCredentials: true,
-        }).then(res => {
-            if (!res.data) {
-                alert("권한이 없습니다!");
-            }
-            setLoading(false);
-            setExist(res.data);
-        })
-    },[])
+    // useEffect(() => {
+    //     setLoading(true);
+    //     /* TcTnum 존재 여부를 db로부터 확인 */
+    //     axios.post('/api/tct', { TcTnum: TcTnum }, {
+    //         withCredentials: true,
+    //     }).then(res => {
+    //         if (!res.data) {
+    //             alert("권한이 없습니다!");
+    //         }
+    //         setLoading(false);
+    //         setExist(res.data);
+    //     })
+    // },[])
 
     if (isExist === false) {
         return (<Redirect to={{ pathname: "/" }} />);
