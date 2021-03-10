@@ -141,7 +141,7 @@ function GetModel({location, sort, skip, setModelLeng}) {
           return (
             <div className="model" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <Like />
+              <Like id={elem._id} />
             </div>
           );
         }

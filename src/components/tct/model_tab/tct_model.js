@@ -1,6 +1,5 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
-import { useFetch } from "../../common/useFetch"
 import useSocket from "../tct_componant/useSocket";
 import TctComponant from "../tct_componant/TctComponant";
 
@@ -131,30 +130,12 @@ function Compcard() {
   );
 }
 
-function Selected({id, sendSelectedList}) {
+function Selected({id, profile_img, Name, sendSelectedList}) {
   const [model, setModel] = useState([]);
-
-  async function fetchUrl() {
-    const response = await fetch("/api/model/fetch",
-    {
-      method: "POST",
-      headers: {
-              'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ _id : id })
-    });
-
-    const json = await response.json();
-    setModel(json);
-  };
-
-  useEffect(() => {
-    fetchUrl();
-  }, [id]);
 
   return (
     <>
-    <img src={model.profile_img} alt={model.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
+    <img src={profile_img} alt={Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
     </>
   );
 }
@@ -196,42 +177,36 @@ function Main() {
   // for selected list
   const { selectedList, sendSelectedList } = useSocket(201);
 
-  const [prevSelectedList, setPrevSelectedList] = useState({models:[]});
+  const [noteList, setNoteList] = useState([]);
 
   async function fetchUrl() {
-    const response = await fetch("/api/tct/modelG",
+    const response = await fetch("/api/tct/model",
     {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-
-      })
+      body: JSON.stringify({})
     });
 
     const json = await response.json();
-    setPrevSelectedList(json);
+    setNoteList(json);
   }
 
   useEffect(() => {
     fetchUrl();
-  }, []);
+  }, [selectedList]);
+
+  console.log(noteList);
 
   return (
     <main>
       <div className="selectedArea">
       {
-        prevSelectedList.models.map((elem,index)=> <Selected
+        noteList.map((elem, index) => <Selected
           id = {elem._id}
-          key={index}
-          sendSelectedList={sendSelectedList}
-        />)
-      }
-
-      {
-        selectedList.map((elem, index) => <Selected
-          id = {elem.body}
+          profile_img = {elem.profile_img}
+          Name = {elem.Name}
           key={index}
           sendSelectedList={sendSelectedList}
         />)
@@ -312,4 +287,5 @@ function TctModel() {
     </>
   );
 }
+
 export default TctModel;
