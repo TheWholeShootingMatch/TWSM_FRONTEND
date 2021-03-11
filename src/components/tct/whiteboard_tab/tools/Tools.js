@@ -29,14 +29,24 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
     reader.onload = function (e) {
         let img = new Image();
         img.src = e.target.result;
+        let id = shared.drawingContent.get().length;
         img.onload = function () {
-            let id = shared.drawingContent.get().length;
-            img.id = id;
-            let uploadedImg = new fabric.Image(img, {
+            let uploadedImg = new fabric.Image(img);
+            uploadedImg.set({
                 width: 200,
                 height: 200,
                 angle: 0,
-            });
+            })
+
+            uploadedImg.toObject = (function (toObject) {
+                return function () {
+                    return fabric.util.object.extend(toObject.call(this), {
+                        id: this.id
+                    });
+                }
+            })(uploadedImg.toObject);
+
+            uploadedImg.id = id;
             externalCanvas.centerObject(uploadedImg);
             const jsonObject = JSON.stringify(uploadedImg);
             const yArray = new Y.Array();
@@ -45,7 +55,6 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             drawElement.set('type', 'image');
             drawElement.set("options", yArray);
             shared.drawingContent.get().push([drawElement]);
-            externalCanvas.add(uploadedImg);
             externalCanvas.renderAll();
         }
     }
@@ -114,10 +123,12 @@ export const mouseMove = (o, canvas) => {
 //http://jsfiddle.net/softvar/Nt8f7/
 const getObject = (o) => {
     if (sharedLine !== null) {
-        const jsonObject = JSON.stringify(circle);
-        sharedLine.push([jsonObject]);
-        drawElement.set("options", sharedLine);
-        shared.drawingContent.get().push([drawElement]);
+        if (currentType === "figure") {
+            const jsonObject = JSON.stringify(circle);
+            sharedLine.push([jsonObject]);
+            drawElement.set("options", sharedLine);
+            shared.drawingContent.get().push([drawElement]);   
+        }
     }
     if (currentType === "drawing") {
         sharedLine.push([o.path.path]);
@@ -184,7 +195,7 @@ export const setToolOption = (type, canvas) => {
         canvas.on('mouse:down', function (o) { mouseDown(o, canvas) });
         canvas.on('mouse:move', function (o) { mouseMove(o, canvas) })
         canvas.on('mouse:up', function (o) { mouseUp(o, canvas) });
-        canvas.on('path:created', function (o) { getObject(o, canvas) });
+        // canvas.on('path:created', function (o) { getObject(o, canvas) });
     }
     else {
         canvas.selection = true;

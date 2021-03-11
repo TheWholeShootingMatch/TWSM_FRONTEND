@@ -49,6 +49,7 @@ function WhiteBoardArea(){
     }
 
     const onChangeImageInput = (e) => {
+        e.preventDefault()
         if (e.target.files) {
             const fileUploaded = e.target.files[0];
             uploadImage(fileUploaded, externalCanvas);

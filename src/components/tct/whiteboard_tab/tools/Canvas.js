@@ -52,12 +52,18 @@ export default function Canvas({ activeSlide }) {
                 }
             }
         }
-    })  
-
+    })
+    
+    let needTodraw = true;
     /* handle for every changes : initial rendering and drawing element(retain, add, delete) */
     shared.drawingContent.get().observe(function (event) {
         if (canvas) {
-            onCanvasUpdate(event.changes.delta, canvas);
+            if (needTodraw) {
+                onCanvasUpdate(event.changes.delta, canvas);
+            }
+            else {
+                needTodraw = true;
+            }
             initialState = false;
         }
     })
@@ -103,29 +109,35 @@ export default function Canvas({ activeSlide }) {
                             if (!getObjectById(parseFigure.id, canvas)) {
                                 const circle = new fabric.Circle(parseFigure);
                                 canvas.add(circle);
-                                canvas.renderAll();                               
                             }
                         }
                     }
-                    if (type === "image") {
+                    else if (type === "image") {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseImage = JSON.parse(options);
                             if (!getObjectById(parseImage.id, canvas)) {
-                                console.log(parseImage);
                                 let img = new Image();
                                 img.src = parseImage.src;
-                                img.id = parseImage.id;
                                 img.onload = function () {
                                     let uploadedImg = new fabric.Image(img, {
                                         width: parseImage.width,
                                         height: parseImage.height,
-                                        angle: parseImage.angle
+                                        angle: parseImage.angle,
+                                        top: parseImage.top,
+                                        left: parseImage.left,
+                                        scaleX: parseImage.scaleX,
+                                        scaleY: parseImage.scaleY,
                                     })
-                                    externalCanvas.centerObject(uploadedImg);
-                                    console.log(parseImage.id);
+                                    uploadedImg.toObject = (function (toObject) {
+                                        return function () {
+                                            return fabric.util.object.extend(toObject.call(this), {
+                                                id: this.id
+                                            });
+                                        }
+                                    })(uploadedImg.toObject);
+                                    uploadedImg.id = parseImage.id;
                                     canvas.add(uploadedImg);
-                                    canvas.renderAll();
                                 }
                             }
                         }
@@ -133,11 +145,13 @@ export default function Canvas({ activeSlide }) {
                 })
             }
             /* delete all objects */
-            if (drawElements.delete) {
+            else if (drawElements.delete) {
                 canvas.remove(...canvas._objects);
                 shared.coordinate.delete(0, shared.coordinate.length);
+                needTodraw = false;
             }
         })
+        canvas.renderAll();
     }
 
     /* render canvas */
