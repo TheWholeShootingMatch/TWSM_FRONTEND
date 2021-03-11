@@ -51,9 +51,7 @@ function WhiteBoardArea(){
     const onChangeImageInput = (e) => {
         if (e.target.files) {
             const fileUploaded = e.target.files[0];
-            const canvas = externalCanvas.current.canvas;
-            const context = canvas.getContext('2d');
-            uploadImage(fileUploaded, context);
+            uploadImage(fileUploaded, externalCanvas);
         }
     }
     
@@ -79,8 +77,9 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
                         setToolOption("figure", externalCanvas);
                     }}>figure</li>
                     <li id="text" onClick={() => setType("text")}>text</li>
-                    <li id="image" onClick={() => {;
+                    <li id="image" onClick={() => {
                         onClickImageInput();
+                        setToolOption("image", externalCanvas);
                     }}>image</li>
                     <input
                         type="file"

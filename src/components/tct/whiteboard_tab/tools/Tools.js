@@ -23,15 +23,30 @@ export const getVersionList = () => {
     return versions;
 }
 
-export const uploadImage = (fileUploaded, context) => {
+export const uploadImage = (fileUploaded, externalCanvas) => {
     let reader = new FileReader();
     reader.readAsDataURL(fileUploaded);
     reader.onload = function (e) {
         let img = new Image();
         img.src = e.target.result;
-        console.log(img);
         img.onload = function () {
-            context.drawImage(img, 0, 0);
+            let id = shared.drawingContent.get().length;
+            img.id = id;
+            let uploadedImg = new fabric.Image(img, {
+                width: 200,
+                height: 200,
+                angle: 0,
+            });
+            externalCanvas.centerObject(uploadedImg);
+            const jsonObject = JSON.stringify(uploadedImg);
+            const yArray = new Y.Array();
+            const drawElement = new Y.Map();
+            yArray.push([jsonObject]);
+            drawElement.set('type', 'image');
+            drawElement.set("options", yArray);
+            shared.drawingContent.get().push([drawElement]);
+            externalCanvas.add(uploadedImg);
+            externalCanvas.renderAll();
         }
     }
 }
@@ -122,13 +137,38 @@ export const changeStatus = (value, canvas) => {
     canvas.renderAll();
 }
 
-export const objectModified = (o, canvas) => {
+export const objectModified = (o) => {
     if (o.target) {
-        console.log("modified", o);
+        let actObj = o.target;
+        shared.coordinate.push([{
+            id: actObj.id,
+            left: actObj.left,
+            top: actObj.top,
+            scaleX: actObj.scaleX,
+            scaleY: actObj.scaleY,
+            angle: actObj.angle,
+        }]);
     }
 }
 
-
+export const afterObjectModified = (o) => {
+    let actObj = o.target;
+    if (actObj) {
+        shared.drawingContent.get().map((drawElement) => 
+        {
+            const options = drawElement.get('options').toArray()[0];
+            if (options) {
+                const parseObject = JSON.parse(options);
+                if (parseObject.id === actObj.id) {
+                    const newYarray = new Y.Array();
+                    const jsonModifiedObject = JSON.stringify(actObj);
+                    newYarray.push([jsonModifiedObject]);
+                    drawElement.set('options', newYarray);
+                }
+            }
+        })
+    }
+}
 
 export const setToolOption = (type, canvas) => {
     
@@ -137,7 +177,10 @@ export const setToolOption = (type, canvas) => {
         canvas.selection = false;
         canvas.isDrawingMode = false;
         changeStatus(false, canvas);
-        canvas.off('mouse:down', function (o) { objectModified(o) });
+        canvas.off('object:moving', function (o) { objectModified(o) });
+        canvas.off('object:scaling', function (o) { objectModified(o) });
+        canvas.off('object:rotating', function (o) { objectModified(o) });
+        canvas.off('object:modified', function (o) { afterObjectModified(o) });
         canvas.on('mouse:down', function (o) { mouseDown(o, canvas) });
         canvas.on('mouse:move', function (o) { mouseMove(o, canvas) })
         canvas.on('mouse:up', function (o) { mouseUp(o, canvas) });
@@ -149,6 +192,9 @@ export const setToolOption = (type, canvas) => {
         canvas.off('mouse:down', function (o) { mouseDown(o, canvas) });
         canvas.off('mouse:move', function (o) { mouseMove(o, canvas) });
         canvas.off('mouse:up', function (o) { mouseUp(o, canvas) });
-        canvas.on('mouse:down', function (o) { objectModified(o, canvas) });
+        canvas.on('object:moving', function (o) { objectModified(o) });
+        canvas.on('object:scaling', function (o) { objectModified(o) });
+        canvas.on('object:rotating', function (o) { objectModified(o) });
+        canvas.on('object:modified', function (o) { afterObjectModified(o) });
     }
 };
