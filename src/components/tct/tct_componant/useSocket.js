@@ -46,7 +46,8 @@ const useSocket = (roomId) => {
   const sendSelectedList = (input) => {
     socketRef.current.emit(NEW_SELECT_EVENT, {
       body: input.id,
-      func: input.func
+      func: input.func,
+      type: input.type
     });
   };
 

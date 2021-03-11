@@ -91,7 +91,7 @@ function GetModel({location, skip, setModelLeng, sendSelectedList}) {
           return (
             <div className="model" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <button onClick={() => sendSelectedList({id:elem._id, func:"P"})}>ADD</button>
+              <button onClick={() => sendSelectedList({id:elem._id, func:"P", type:"M"})}>ADD</button>
             </div>
           );
         }
@@ -127,16 +127,6 @@ function Compcard() {
       </div>
     </div>
     </Modal>
-  );
-}
-
-function Selected({id, profile_img, Name, sendSelectedList}) {
-  const [model, setModel] = useState([]);
-
-  return (
-    <>
-    <img src={profile_img} alt={Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
-    </>
   );
 }
 
@@ -177,7 +167,7 @@ function Main() {
   // for selected list
   const { selectedList, sendSelectedList } = useSocket(201);
 
-  const [noteList, setNoteList] = useState([]);
+  const [selectedDB, setSelectedDB] = useState([]);
 
   async function fetchUrl() {
     const response = await fetch("/api/tct/model",
@@ -190,27 +180,19 @@ function Main() {
     });
 
     const json = await response.json();
-    setNoteList(json);
+    setSelectedDB(json);
   }
 
   useEffect(() => {
     fetchUrl();
   }, [selectedList]);
 
-  console.log(noteList);
-
   return (
     <main>
       <div className="selectedArea">
-      {
-        noteList.map((elem, index) => <Selected
-          id = {elem._id}
-          profile_img = {elem.profile_img}
-          Name = {elem.Name}
-          key={index}
-          sendSelectedList={sendSelectedList}
-        />)
-      }
+      {selectedDB.map((elem, index) =>
+        <img src={elem.profile_img} alt={elem.Name} onClick={() => sendSelectedList({id:elem._id, func:"D", type:"M"})}/>
+      )}
       </div>
 
       <GetModel

@@ -87,7 +87,7 @@ function GetPhotographer ({location, skip, setPhotographerLeng, sendSelectedList
           return (
             <div className="photographer" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <button onClick={() => sendSelectedList({id:elem._id, func:"P"})}>ADD</button>
+              <button onClick={() => sendSelectedList({id:elem._id, func:"P", type:"P"})}>ADD</button>
             </div>
           );
         }
@@ -119,32 +119,6 @@ function Compcard() {
       </div>
     </div>
     </Modal>
-  );
-}
-
-function Selected({id, sendSelectedList}) {
-  const [photographer, setPhotographer] = useState([]);
-
-  async function fetchUrl() {
-    const response = await fetch("/api/photographer/fetch",
-    {
-      method: "POST",
-      headers: {
-              'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ _id : id })
-    });
-
-    const json = await response.json();
-    setPhotographer(json);
-  };
-
-  useEffect(() => {
-    fetchUrl();
-  }, [id]);
-
-  return (
-    <img src={photographer.profile_img} alt={photographer.Name} onClick={() => sendSelectedList({id:id, func:"D"})}/>
   );
 }
 
@@ -185,16 +159,32 @@ function Main() {
   // for selected list
   const { selectedList, sendSelectedList } = useSocket(101);
 
+  const [selectedDB, setSelectedDB] = useState([]);
+
+  async function fetchUrl() {
+    const response = await fetch("/api/tct/photographer",
+    {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({})
+    });
+
+    const json = await response.json();
+    setSelectedDB(json);
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, [selectedList]);
+
   return (
     <main>
       <div className="selectedArea">
-      {
-        selectedList.map((elem, index) => <Selected
-          id = {elem.body}
-          key={index}
-          sendSelectedList={sendSelectedList}
-        />)
-      }
+      {selectedDB.map((elem, index) =>
+        <img src={elem.profile_img} alt={elem.Name} onClick={() => sendSelectedList({id:elem._id, func:"D", type:"P"})}/>
+      )}
       </div>
 
       <GetPhotographer
