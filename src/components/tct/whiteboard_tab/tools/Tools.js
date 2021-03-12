@@ -33,11 +33,10 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
         img.onload = function () {
             let uploadedImg = new fabric.Image(img);
             uploadedImg.set({
-                width: 200,
-                height: 200,
                 angle: 0,
+                scaleX: 0.2,
+                scaleY: 0.2
             })
-
             uploadedImg.toObject = (function (toObject) {
                 return function () {
                     return fabric.util.object.extend(toObject.call(this), {
@@ -133,6 +132,7 @@ const getObject = (o) => {
     if (currentType === "drawing") {
         sharedLine.push([o.path.path]);
     }
+    //image loading 넣기
 }
 
 export const mouseUp = (o, canvas) => {
