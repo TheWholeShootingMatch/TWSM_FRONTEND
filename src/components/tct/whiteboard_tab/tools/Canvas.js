@@ -12,7 +12,7 @@ function Canvas({toolType, activeSlide}){
     useEffect(() => {
         console.log("here");
         console.log(activeSlide);
-        shared.slideNum.set(activeSlide);
+        shared.drawingContent.set(activeSlide);
         const canvas = canvasRef.current;
         canvas.width = 566 * 2;
         canvas.height = 283 * 2;

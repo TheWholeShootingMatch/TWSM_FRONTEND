@@ -137,7 +137,7 @@ function WhiteBoardSlides({activeSlide, setActiveSlide}){
         withCredentials: true,
       }).then((res) => {
         setSlides(res.data);
-        setActiveSlide(0)
+        setActiveSlide(null)
       })
     }
     response();

@@ -106,16 +106,6 @@ versionIndexeddbPersistence.whenSynced.then(() => {
  * @type {Y.Array<Y.Map<Y.Array|String|object>>}
  */
 
-export const slideNum = {
-  get() {
-    return this.active;
-  },
-  set(value) {
-    this.active = value;
-    drawingContent.set(value);
-  }
-}
-
 export const slideList = doc.getArray('doc-list');
 
 export const drawingContent = {  //
@@ -126,6 +116,9 @@ export const drawingContent = {  //
   },
 
   set(value) {
+    if(value===null) {
+      return this.drawingContent;
+    }
     const list = slideList.doc.subdocs;
     let i = 0;
     list.forEach((subdoc) => {
@@ -134,7 +127,6 @@ export const drawingContent = {  //
       }
       i++;
     });
-    console.log(this.drawingContent)
   }
 }
 
