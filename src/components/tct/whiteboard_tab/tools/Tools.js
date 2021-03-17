@@ -6,7 +6,7 @@ import * as Y from 'yjs'
 /* delete all (trash action) */
 export const deleteAllDrawing = () => {
     shared.drawingContent.clear();
-} 
+}
 
 /* undo drawing (undo action) */
 export const undoDrawing = () => {
@@ -75,7 +75,7 @@ export const mouseDown = (o, canvas) => {
         canvas.freeDrawingBrush.color = "#000";
         canvas.freeDrawingBrush.width = 4;
         drawElement.set('type', 'path');
-        canvas.freeDrawingBrush = new fabric.PencilBrush(externalCanvas.current); 
+        canvas.freeDrawingBrush = new fabric.PencilBrush(externalCanvas.current);
     }
     else if (currentType === "figure") {
         isDown = true;
@@ -105,6 +105,19 @@ export const mouseDown = (o, canvas) => {
         canvas.add(circle);
         drawElement.set('type', 'figure');
     }
+    else if (currentType === "text") {
+      isDown = true;
+      currentType = "select";
+      let pointer = canvas.getPointer(o.e);
+      var textbox = new fabric.Textbox('', {
+        left: pointer.x,
+        top: pointer.y,
+        width : 100,
+      });
+      canvas.add(textbox);
+      canvas.setActiveObject(textbox);
+      textbox.enterEditing();
+    }
 }
 
 export const mouseMove = (o, canvas) => {
@@ -126,7 +139,9 @@ const getObject = (o) => {
             const jsonObject = JSON.stringify(circle);
             sharedLine.push([jsonObject]);
             drawElement.set("options", sharedLine);
-            shared.drawingContent.get().push([drawElement]);   
+            shared.drawingContent.get().push([drawElement]);
+        }
+        else if (currentType === "text") {
         }
     }
     if (currentType === "drawing") {
@@ -165,7 +180,7 @@ export const objectModified = (o) => {
 export const afterObjectModified = (o) => {
     let actObj = o.target;
     if (actObj) {
-        shared.drawingContent.get().map((drawElement) => 
+        shared.drawingContent.get().map((drawElement) =>
         {
             const options = drawElement.get('options').toArray()[0];
             if (options) {
@@ -182,7 +197,7 @@ export const afterObjectModified = (o) => {
 }
 
 export const setToolOption = (type, canvas) => {
-    
+
     currentType = type;
     if (type !== "select") {
         canvas.selection = false;

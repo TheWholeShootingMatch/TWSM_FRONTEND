@@ -10,7 +10,7 @@ let initialState = true;
 let prevCanvas = null;
 
 export default function Canvas({ activeSlide }) {
-    
+
     const [canvas, setCanvas] = useState('');
     const canvasRef = useRef(null);
 
@@ -45,7 +45,7 @@ export default function Canvas({ activeSlide }) {
                     if (yaEvent[0].retain) {
                         movingObject(yaEvent[1].insert[0], canvas);
                     }
-                    // if not exist previous coordinate 
+                    // if not exist previous coordinate
                     else if (yaEvent[0].insert) {
                         movingObject(yaEvent[0].insert[0], canvas);
                     }
@@ -53,7 +53,7 @@ export default function Canvas({ activeSlide }) {
             }
         }
     })
-    
+
     let needTodraw = true;
     /* handle for every changes : initial rendering and drawing element(retain, add, delete) */
     shared.drawingContent.get().observe(function (event) {
@@ -76,7 +76,7 @@ export default function Canvas({ activeSlide }) {
             }
         }
     }
-    
+
     const movingObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
@@ -206,23 +206,23 @@ export const onStateChange = (canvasRef, setCanvas) => {
                         }
                     })
                 }
-            }) 
+            })
         }
         canvasRef.current = canvas;
         console.log(canvasRef.current, canvas);
         canvasRef.current.renderAll();
     }
-    
+
     const requestDrawAnimationFrame = () => {
         requestAnimationFrame(draw);
     }
-    
+
     yDrawingContent.observeDeep(requestDrawAnimationFrame);
     requestDrawAnimationFrame();
 }
 
 export const versionRender = (externalContextRef) => {
-    
+
     console.log(externalContextRef);
     onStateChange(externalContextRef);
 

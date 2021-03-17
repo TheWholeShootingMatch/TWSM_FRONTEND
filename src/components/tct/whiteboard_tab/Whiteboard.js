@@ -30,7 +30,7 @@ function WhiteBoardArea(){
     const [toolType, setType] = useState("");
     const [toggleHistoryMenu, setToggle] = useState(false);
     const [versions, setVersion] = useState([]);
-    
+
     const hiddenFileInput = useRef(null);
     const historyArea = useRef(null);
 
@@ -55,7 +55,7 @@ function WhiteBoardArea(){
             uploadImage(fileUploaded, externalCanvas);
         }
     }
-    
+
     return (
         <div className="whiteboard_area">
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy} hiddenFileInput={hiddenFileInput} onClickImageInput={onClickImageInput} onChangeImageInput={onChangeImageInput}/>
@@ -77,14 +77,14 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
                     <li id="figure" onClick={() => {
                         setToolOption("figure", externalCanvas);
                     }}>figure</li>
-                    <li id="text" onClick={() => setType("text")}>text</li>
+                    <li id="text" onClick={() => {setToolOption("text", externalCanvas);}}>text</li>
                     <li id="image" onClick={() => {
                         onClickImageInput();
                         setToolOption("image", externalCanvas);
                     }}>image</li>
                     <input
                         type="file"
-                        accept="image/*" 
+                        accept="image/*"
                         ref={hiddenFileInput}
                         onChange={onChangeImageInput}
                         style={{ display: 'none' }} />
@@ -113,7 +113,7 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
 }
 
 function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
-    
+
     return(
         <div className="whiteboard_contents">
             <div className="current_whiteboard">

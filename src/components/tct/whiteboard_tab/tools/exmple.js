@@ -6,7 +6,7 @@ import { fabric } from "fabric";
 export let externalContextRef = null;
 
 export default function Canvas({ toolType, activeSlide }) {
-    
+
     const [tool, setTool] = useState('');
     const [canvas, setCanvas] = useState('');
     const canvasRef = useRef(null);
@@ -51,7 +51,7 @@ export default function Canvas({ toolType, activeSlide }) {
         drawElement.set("options", sharedLine);
         shared.drawingContent.get().push([drawElement]);
     }
-    
+
     const getObject = (options) => {
         if (sharedLine !== null) {
             sharedLine.push([options.path.path]);
@@ -102,21 +102,21 @@ export const onStateChange = (externalContextRef) => {
                         }
                     });
                 }
-            }) 
+            })
         }
         externalContextRef.current = canvas;
     }
-    
+
     const requestDrawAnimationFrame = () => {
         requestAnimationFrame(draw);
     }
-    
+
     yDrawingContent.observeDeep(requestDrawAnimationFrame);
     requestDrawAnimationFrame();
 }
 
 export const versionRender = (externalContextRef) => {
-    
+
     console.log(externalContextRef);
     onStateChange(externalContextRef);
 
