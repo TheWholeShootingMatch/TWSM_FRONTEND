@@ -79,7 +79,7 @@ function MakeParam({find, sort, skip}) {
 }
 
 // photographer listing
-function GetPhotographer ({location, sort, skip, setPhotographerLeng}) {
+function GetPhotographer ({location, sort, skip, setPhotographerLeng, isLogin}) {
   //for get photographers
   const find = new URLSearchParams(location.search);
 
@@ -126,7 +126,9 @@ function GetPhotographer ({location, sort, skip, setPhotographerLeng}) {
           return (
             <div className="photographer" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <Like id={elem._id} />
+              {
+                isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
+              }
             </div>
           );
         }
@@ -167,17 +169,9 @@ function Compcard() {
   );
 }
 
-function NewButton() {
+function NewButton({isLogin}) {
   //check is user logined
-  const [isLogin, setIsLogin] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
-  axios
-    .get('/api/users/login')
-    .then(res => {
-      if(res.data === true ) {
-          setIsLogin(true);
-      }
-    })
 
   if (isLogin) {
     axios
@@ -197,6 +191,15 @@ function NewButton() {
 }
 
 function Main() {
+  const [isLogin, setIsLogin] = useState(false);
+  axios
+    .get('/api/users/login')
+    .then(res => {
+      if(res.data === true ) {
+          setIsLogin(true);
+      }
+    })
+
   let location = useLocation();
   let history = useHistory();
   const {skip, sort} = useParams();
@@ -242,10 +245,10 @@ function Main() {
           </select>
         </div>
 
-        <NewButton />
+        <NewButton isLogin={isLogin}/>
       </div>
 
-      <GetPhotographer location={location} skip={skip} sort ={sort} setPhotographerLeng={setPhotographerLeng} />
+      <GetPhotographer location={location} skip={skip} sort ={sort} setPhotographerLeng={setPhotographerLeng} isLogin={isLogin}/>
 
       <ul className="pageControll">
         {page}
