@@ -82,7 +82,6 @@ export const mouseDown = (o, canvas) => {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
         let id = shared.drawingContent.get().length;
-        console.log("ID HERE",id);
         origX = pointer.x;
         circle = new fabric.Circle({
             left: pointer.x,
@@ -117,7 +116,6 @@ export const mouseDown = (o, canvas) => {
       });
 
       let id = shared.drawingContent.get().length;
-      console.log("ID HERE",id);
       textbox.toObject = (function (toObject) {
           return function () {
               return fabric.util.object.extend(toObject.call(this), {
@@ -154,17 +152,13 @@ const getObject = (o) => {
         if (currentType === "figure") {
             const jsonObject = JSON.stringify(circle);
             sharedLine.push([jsonObject]);
-            console.log(sharedLine);
             drawElement.set("options", sharedLine);
             shared.drawingContent.get().push([drawElement]);
-            console.log("drwing",shared.drawingContent.get());
         }
         else if (currentType === "text") {
           // currentType = "select";
           const jsonObject = JSON.stringify(textbox);
-          console.log("json",jsonObject);
           sharedLine.push([jsonObject]);
-          console.log(sharedLine);
           drawElement.set("options", sharedLine);
           shared.drawingContent.get().push([drawElement]);
         }
@@ -201,6 +195,7 @@ export const objectModified = (o) => {
             scaleY: actObj.scaleY,
             angle: actObj.angle,
         }]);
+        console.log("check",actObj);
     }
 }
 
