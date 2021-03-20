@@ -64,6 +64,7 @@ let drawElement = null;
 let isDown = false;
 let origX;
 let circle;
+let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
@@ -81,6 +82,7 @@ export const mouseDown = (o, canvas) => {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
         let id = shared.drawingContent.get().length;
+        console.log("ID HERE",id);
         origX = pointer.x;
         circle = new fabric.Circle({
             left: pointer.x,
@@ -109,14 +111,29 @@ export const mouseDown = (o, canvas) => {
       isDown = true;
       currentType = "select";
       let pointer = canvas.getPointer(o.e);
-      var textbox = new fabric.Textbox('', {
+      textbox = new fabric.Textbox('', {
         left: pointer.x,
         top: pointer.y,
         width : 100,
       });
+
+      let id = shared.drawingContent.get().length;
+      console.log("ID HERE",id);
+      textbox.toObject = (function (toObject) {
+          return function () {
+              return fabric.util.object.extend(toObject.call(this), {
+                  id: this.id
+              });
+          }
+      })(textbox.toObject);
+      textbox.id = id;
+
       canvas.add(textbox);
+      drawElement.set('type', 'text');
+
       canvas.setActiveObject(textbox);
       textbox.enterEditing();
+      canvas.renderAll();
     }
 }
 
@@ -138,10 +155,17 @@ const getObject = (o) => {
         if (currentType === "figure") {
             const jsonObject = JSON.stringify(circle);
             sharedLine.push([jsonObject]);
+            console.log(sharedLine);
             drawElement.set("options", sharedLine);
             shared.drawingContent.get().push([drawElement]);
+            console.log("drwing",shared.drawingContent.get());
         }
         else if (currentType === "text") {
+          const jsonObject = JSON.stringify(textbox);
+          sharedLine.push([jsonObject]);
+          console.log(sharedLine);
+          drawElement.set("options", sharedLine);
+          shared.drawingContent.get().push([drawElement]);
         }
     }
     if (currentType === "drawing") {

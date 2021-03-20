@@ -112,6 +112,16 @@ export default function Canvas({ activeSlide }) {
                             }
                         }
                     }
+                    else if (type === "text") {
+                      const options = drawElement.get('options').toArray()[0];
+                      if (options) {
+                        const parseFigure = JSON.parse(options);
+                        if (!getObjectById(parseFigure.id, canvas)) {
+                            const circle = new fabric.Textbox(parseFigure);
+                            canvas.add(circle);
+                        }
+                      }
+                    }
                     else if (type === "image") {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
