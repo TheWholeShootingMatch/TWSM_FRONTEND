@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
-import './model.scss';
+import './model.css';
 
 import SideNav from "./sidenav"
 import Like from "./like_btn";
@@ -10,7 +10,7 @@ import Like from "./like_btn";
 import Modal from '@material-ui/core/Modal';
 
 // post in one page && page
-const postNum = 3;
+const postNum = 20;
 const pageNum = 3;
 
 const ModalContext = createContext({

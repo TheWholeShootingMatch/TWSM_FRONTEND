@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
-import './photographer.scss';
+import './photographer.css';
 
 import SideNav from "./sidenav"
 import Like from "./like_btn";
