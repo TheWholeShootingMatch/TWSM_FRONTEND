@@ -106,6 +106,7 @@ export default function Canvas({ activeSlide }) {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseFigure = JSON.parse(options);
+                            console.log("here",parseFigure);
                             if (!getObjectById(parseFigure.id, canvas)) {
                                 const circle = new fabric.Circle(parseFigure);
                                 canvas.add(circle);
@@ -116,9 +117,10 @@ export default function Canvas({ activeSlide }) {
                       const options = drawElement.get('options').toArray()[0];
                       if (options) {
                         const parseFigure = JSON.parse(options);
+                        console.log("here",parseFigure);
                         if (!getObjectById(parseFigure.id, canvas)) {
-                            const circle = new fabric.Textbox(parseFigure);
-                            canvas.add(circle);
+                            const textbox = new fabric.Textbox("aaa",parseFigure);
+                            canvas.add(textbox);
                         }
                       }
                     }

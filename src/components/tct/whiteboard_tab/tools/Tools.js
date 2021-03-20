@@ -109,7 +109,6 @@ export const mouseDown = (o, canvas) => {
     }
     else if (currentType === "text") {
       isDown = true;
-      currentType = "select";
       let pointer = canvas.getPointer(o.e);
       textbox = new fabric.Textbox('', {
         left: pointer.x,
@@ -133,7 +132,7 @@ export const mouseDown = (o, canvas) => {
 
       canvas.setActiveObject(textbox);
       textbox.enterEditing();
-      canvas.renderAll();
+      // canvas.renderAll();
     }
 }
 
@@ -161,7 +160,9 @@ const getObject = (o) => {
             console.log("drwing",shared.drawingContent.get());
         }
         else if (currentType === "text") {
+          // currentType = "select";
           const jsonObject = JSON.stringify(textbox);
+          console.log("json",jsonObject);
           sharedLine.push([jsonObject]);
           console.log(sharedLine);
           drawElement.set("options", sharedLine);
