@@ -176,8 +176,10 @@ const getObject = (o) => {
 }
 
 export const mouseUp = (o, canvas) => {
-    getObject(o);
-    isDown = false;
+    if (o && isDown) {
+        getObject(o);
+        isDown = false;
+    }
 }
 
 export const changeStatus = (value, canvas) => {
