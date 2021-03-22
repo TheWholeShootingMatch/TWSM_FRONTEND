@@ -70,13 +70,20 @@ let currentType;
 export const mouseDown = (o, canvas) => {
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
-    console.log("mouse down");
     if (currentType === "drawing") {
+        isDown = true;
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.color = "#000";
         canvas.freeDrawingBrush.width = 4;
-        drawElement.set('type', 'path');
-        canvas.freeDrawingBrush = new fabric.PencilBrush(externalCanvas.current);
+        let pointer = canvas.getPointer(o.e);
+        drawElement.set('color', 'black');
+        drawElement.set('type', 'drawing');
+        drawElement.set('start', {
+            x: pointer.x,
+            y: pointer.y
+        });
+        drawElement.set('move', sharedLine);
+        shared.drawingContent.get().push([drawElement]);
     }
     else if (currentType === "figure") {
         isDown = true;
@@ -135,7 +142,6 @@ export const mouseDown = (o, canvas) => {
 }
 
 export const mouseMove = (o, canvas) => {
-    console.log("mouse move");
     if (currentType === "figure") {
         if (!isDown) {
             return;
@@ -143,6 +149,18 @@ export const mouseMove = (o, canvas) => {
         let pointer = canvas.getPointer(o.e);
         circle.set({ radius: Math.abs(origX - pointer.x) });
         canvas.renderAll();
+    }
+    else if (currentType === "drawing") {
+        if (!isDown) {
+            return;
+        }
+        else if (sharedLine !== null) {
+            let pointer = canvas.getPointer(o.e);
+            sharedLine.push([{
+                x: pointer.x,
+                y: pointer.y
+            }]);
+        }
     }
 }
 
@@ -162,11 +180,11 @@ const getObject = (o) => {
           drawElement.set("options", sharedLine);
           shared.drawingContent.get().push([drawElement]);
         }
+        else if (currentType === "drawing") {
+            console.log("get object drawing");
+            sharedLine = null;
+        }
     }
-    if (currentType === "drawing") {
-        sharedLine.push([o.path.path]);
-    }
-    //image loading 넣기
 }
 
 export const mouseUp = (o, canvas) => {
@@ -221,6 +239,7 @@ export const afterObjectModified = (o) => {
 export const setToolOption = (type, canvas) => {
 
     currentType = type;
+    console.log(currentType);
     if (type !== "select") {
         canvas.selection = false;
         canvas.isDrawingMode = false;

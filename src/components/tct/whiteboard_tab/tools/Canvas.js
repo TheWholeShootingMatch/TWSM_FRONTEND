@@ -59,6 +59,7 @@ export default function Canvas({ activeSlide }) {
     shared.drawingContent.get().observe(function (event) {
         if (canvas) {
             if (needTodraw) {
+                console.log(event.changes.delta);
                 onCanvasUpdate(event.changes.delta, canvas);
             }
             else {
@@ -151,6 +152,23 @@ export default function Canvas({ activeSlide }) {
                                     canvas.add(uploadedImg);
                                 }
                             }
+                        }
+                    }
+                    else if (type === "drawing") {
+                        canvas.isDrawingMode = true;
+                        canvas.freeDrawingBrush.width = 5;
+                        canvas.freeDrawingBrush.color = 'black';
+                        const startCoordinate = drawElement.get('start');
+                        canvas.freeDrawingBrush.onMouseDown({ x: startCoordinate.x, y: startCoordinate.y });
+                        const path = drawElement.get('move');
+                        if (path) {
+                            console.log(path.toJSON());
+                            path.forEach(c => {
+                                canvas.freeDrawingBrush.onMouseMove({
+                                    x: c.x,
+                                    y: c.y
+                                });
+                            })
                         }
                     }
                 })
