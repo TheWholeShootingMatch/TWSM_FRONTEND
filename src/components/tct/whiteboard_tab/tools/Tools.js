@@ -59,8 +59,8 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
     }
 }
 
-let sharedLine = null;
-let drawElement = null;
+let sharedLine = null; //yarray
+let drawElement = null; //ymap
 let isDown = false;
 let origX;
 let circle;
@@ -75,15 +75,9 @@ export const mouseDown = (o, canvas) => {
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.color = "#000";
         canvas.freeDrawingBrush.width = 4;
-        let pointer = canvas.getPointer(o.e);
-        drawElement.set('color', 'black');
         drawElement.set('type', 'drawing');
-        drawElement.set('start', {
-            x: pointer.x,
-            y: pointer.y
-        });
-        drawElement.set('move', sharedLine);
-        shared.drawingContent.get().push([drawElement]);
+        drawElement.set('color', '#000');
+        drawElement.set('width', 4);
     }
     else if (currentType === "figure") {
         isDown = true;
@@ -150,18 +144,6 @@ export const mouseMove = (o, canvas) => {
         circle.set({ radius: Math.abs(origX - pointer.x) });
         canvas.renderAll();
     }
-    else if (currentType === "drawing") {
-        if (!isDown) {
-            return;
-        }
-        else if (sharedLine !== null) {
-            let pointer = canvas.getPointer(o.e);
-            sharedLine.push([{
-                x: pointer.x,
-                y: pointer.y
-            }]);
-        }
-    }
 }
 
 //http://jsfiddle.net/softvar/Nt8f7/
@@ -181,16 +163,38 @@ const getObject = (o) => {
           shared.drawingContent.get().push([drawElement]);
         }
         else if (currentType === "drawing") {
-            console.log("get object drawing");
-            sharedLine = null;
+            let id = shared.drawingContent.get().length;
+            const drawing = o.path;
+            drawing.toObject = (function (toObject) {
+                return function () {
+                    return fabric.util.object.extend(toObject.call(this), {
+                        id: this.id
+                    });
+                }
+            })(drawing.toObject);
+            drawing.id = id;
+            const jsonObject = JSON.stringify(drawing);
+            sharedLine.push([jsonObject]);
+            drawElement.set("options", sharedLine);
+            shared.drawingContent.get().push([drawElement]);
         }
     }
 }
 
 export const mouseUp = (o, canvas) => {
     if (o && isDown) {
-        getObject(o);
         isDown = false;
+        if (currentType === "text" || currentType === "figure") {
+            getObject(o);
+        }
+        else if (currentType === "drawing") {
+            let pointer = canvas.getPointer(o.e);
+            sharedLine.push([{
+                x: pointer.x,
+                y: pointer.y,
+                event: "up"
+            }]);
+        }
     }
 }
 
@@ -213,7 +217,6 @@ export const objectModified = (o) => {
             scaleY: actObj.scaleY,
             angle: actObj.angle,
         }]);
-        console.log("check",actObj);
     }
 }
 
@@ -228,6 +231,7 @@ export const afterObjectModified = (o) => {
                 if (parseObject.id === actObj.id) {
                     const newYarray = new Y.Array();
                     const jsonModifiedObject = JSON.stringify(actObj);
+                    console.log(actObj.height, parseObject.height);
                     newYarray.push([jsonModifiedObject]);
                     drawElement.set('options', newYarray);
                 }
@@ -251,10 +255,11 @@ export const setToolOption = (type, canvas) => {
         canvas.on('mouse:down', function (o) { mouseDown(o, canvas) });
         canvas.on('mouse:move', function (o) { mouseMove(o, canvas) })
         canvas.on('mouse:up', function (o) { mouseUp(o, canvas) });
-        // canvas.on('path:created', function (o) { getObject(o, canvas) });
+        canvas.on('path:created', function (o) { getObject(o) });
     }
     else {
         canvas.selection = true;
+        canvas.isDrawingMode = false;
         changeStatus(true, canvas);
         canvas.off('mouse:down', function (o) { mouseDown(o, canvas) });
         canvas.off('mouse:move', function (o) { mouseMove(o, canvas) });
