@@ -1,9 +1,13 @@
+import socketIOClient from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
 
 import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { WebsocketProvider } from 'y-websocket'
 import { IndexeddbPersistence, storeState } from 'y-indexeddb'
 import {getActiveUserState, setActiveUserInfo} from "./activeUserInfo";
+
+const SOCKET_SERVER_URL = ":3001";
 
 const websocketUrl = 'http://localhost:3000'
 let lastSnapshot = null
@@ -30,7 +34,7 @@ export const connectToRoom = (suffix) => {
   versionIndexeddbPersistence = new IndexeddbPersistence('tct-version-' + suffix, versionDoc);
   webrtcProvider = new WebrtcProvider('tct-website-' + suffix, doc);
   indexeddbPersistence = new IndexeddbPersistence('tct-website-' + suffix, doc);
-    
+
   //detect active users
   let awareness = webrtcProvider.awareness;
   let localUserState = false;
@@ -62,10 +66,10 @@ export const connectToRoom = (suffix) => {
         Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
         lastSnapshot = nextSnapshot
         storeState(indexeddbPersistence)
-      } 
+      }
     })
   })
-  
+
   //when successfully connect to version db
   versionIndexeddbPersistence.whenSynced.then(() => {
     permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
@@ -153,6 +157,27 @@ export const drawingContent = {
     this.drawingContent.delete(0, this.drawingContent.length);
   }
 }
+
+// Emit Changes to server (using socket-io)
+const emitYDoc = (data) => {
+  socketClient.current.emit("canvasEvent", data);
+};
+
+// Client will get the update and apply those changes
+const socketClient = socketIOClient("http://localhost:3001");
+
+// tmp room id
+const roomId = 303;
+
+socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
+  query: { roomId },
+});
+
+socketClient.current.on("canvasEvent", req => {
+  console.log(req);
+});
+
+emitYDoc("hello world");
 
 export const whiteboardUndoManager = new Y.UndoManager(drawingContent.get());
 
