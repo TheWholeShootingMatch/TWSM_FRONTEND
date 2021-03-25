@@ -40,7 +40,7 @@ input[type=submit], .form-style-1 input[type=button]{
 	color: #fff;
 }
 
-button {
+.save-btn {
 	background: black;
 	padding: 8px 15px 8px 15px;
 	border: none;

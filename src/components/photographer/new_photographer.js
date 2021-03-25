@@ -213,7 +213,7 @@ function ProfileForm() {
         <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
       </div>
 
-      <button type="submit">save</button>
+      <button className="save-btn" type="submit">save</button>
     </form>
   );
 }
