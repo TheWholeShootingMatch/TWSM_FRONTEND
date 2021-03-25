@@ -34,8 +34,8 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             let uploadedImg = new fabric.Image(img);
             uploadedImg.set({
                 angle: 0,
-                scaleX: 0.2,
-                scaleY: 0.2
+                scaleX: 0.1,
+                scaleY: 0.1
             })
             uploadedImg.toObject = (function (toObject) {
                 return function () {

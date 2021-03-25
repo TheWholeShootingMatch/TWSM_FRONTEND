@@ -28,6 +28,16 @@ export default function Canvas({ activeSlide }) {
             const renderList = canvasRender();
             onCanvasUpdate(renderList, newCanvas)
         }
+        newCanvas.on('mouse:wheel', function (opt) {
+            var delta = opt.e.deltaY;
+            var zoom = newCanvas.getZoom();
+            zoom *= 0.999 ** delta;
+            if (zoom > 20) zoom = 20;
+            if (zoom < 0.01) zoom = 0.01;
+            newCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+        });
         canvasRef.current = newCanvas;
         externalCanvas = canvasRef.current;
         return newCanvas;
