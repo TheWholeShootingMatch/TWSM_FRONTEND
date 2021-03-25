@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import {Redirect, useParams} from 'react-router-dom';
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
-import { versionRender, externalContextRef } from "./tools/Canvas";
 import { connectToRoom, addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
-import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage } from "./tools/Tools";
+import { deleteAllDrawing, undoDrawing, redoDrawing, getVersionList, uploadImage, setToolOption } from "./tools/Tools";
+import { versionRender, externalCanvas } from "./tools/Canvas";
 import * as Y from "yjs";
 import axios from "axios";
 
@@ -18,19 +18,19 @@ function WhiteBoard() {
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
 
-    // useEffect(() => {
-    //     setLoading(true);
-    //     /* TcTnum 존재 여부를 db로부터 확인 */
-    //     axios.post('/api/tct', { TcTnum: TcTnum }, {
-    //         withCredentials: true,
-    //     }).then(res => {
-    //         if (!res.data) {
-    //             alert("권한이 없습니다!");
-    //         }
-    //         setLoading(false);
-    //         setExist(res.data);
-    //     })
-    // },[])
+    useEffect(() => {
+        setLoading(true);
+        /* TcTnum 존재 여부를 db로부터 확인 */
+        axios.post('/api/tct', { TcTnum: TcTnum }, {
+            withCredentials: true,
+        }).then(res => {
+            if (!res.data) {
+                alert("권한이 없습니다!");
+            }
+            setLoading(false);
+            setExist(res.data);
+        })
+    },[])
 
     if (isExist === false) {
         return (<Redirect to={{ pathname: "/" }} />);
@@ -55,7 +55,7 @@ function WhiteBoardArea(){
     const [toolType, setType] = useState("");
     const [toggleHistoryMenu, setToggle] = useState(false);
     const [versions, setVersion] = useState([]);
-    
+
     const hiddenFileInput = useRef(null);
     const historyArea = useRef(null);
 
@@ -74,19 +74,18 @@ function WhiteBoardArea(){
     }
 
     const onChangeImageInput = (e) => {
+        e.preventDefault()
         if (e.target.files) {
             const fileUploaded = e.target.files[0];
-            const canvas = externalContextRef.current.canvas;
-            const context = canvas.getContext('2d');
-            uploadImage(fileUploaded, context);
+            uploadImage(fileUploaded, externalCanvas);
         }
     }
-    
+
     return (
         <div className="whiteboard_area">
             <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy} hiddenFileInput={hiddenFileInput} onClickImageInput={onClickImageInput} onChangeImageInput={onChangeImageInput}/>
             <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
-            <WhiteBoardSlides/>
+            {/* <WhiteBoardSlides/> */}
         </div>
     )
 }
@@ -97,20 +96,26 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
         <div className="whiteboard_header">
             <div className="tools">
                 <ul>
-                    <li id="select">select</li>
-                    <li id="figure" onClick={() => setType("figure")}>figure</li>
-                    <li id="text" onClick={() => setType("text")}>text</li>
-                    <li id="image" onClick={() => {;
-                        setType("image");
+                    <li id="select" onClick={() => {
+                        setToolOption("select", externalCanvas);
+                    }}>select</li>
+                    <li id="figure" onClick={() => {
+                        setToolOption("figure", externalCanvas);
+                    }}>figure</li>
+                    <li id="text" onClick={() => {setToolOption("text", externalCanvas);}}>text</li>
+                    <li id="image" onClick={() => {
                         onClickImageInput();
+                        setToolOption("image", externalCanvas);
                     }}>image</li>
                     <input
                         type="file"
-                        accept="image/*" 
+                        accept="image/*"
                         ref={hiddenFileInput}
                         onChange={onChangeImageInput}
                         style={{ display: 'none' }} />
-                    <li id="drawing" onClick={() => setType("drawing")}>drawing</li>
+                    <li id="drawing" onClick={() => {
+                        setToolOption("drawing", externalCanvas);
+                    }}>drawing</li>
                     <li id="undo" onClick={() => {
                         setType("undo");
                         undoDrawing();
@@ -133,7 +138,7 @@ function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImag
 }
 
 function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
-    
+
     return(
         <div className="whiteboard_contents">
             <div className="current_whiteboard">
@@ -146,7 +151,7 @@ function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu
                     {versions.map((version, index) => (
                         <section key={index} onClick={() => {
                             renderVersion(version);
-                            versionRender(externalContextRef);
+                            versionRender(externalCanvas);
                         }}>{new Date(version.date).toLocaleString()}</section>
                     ))}
                     <li className="version_info"></li>
@@ -159,7 +164,7 @@ function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu
 function WhiteBoardSlides(){
     return(
     <div className="whiteboard_slides">
-        <div className="slide" id="current_slide">
+        {/* <div className="slide" id="current_slide">
             슬라이드3 (현재 슬라이드)
         </div>
         <div className="slide">
@@ -170,7 +175,7 @@ function WhiteBoardSlides(){
         </div>
         <div className="slide add_slide_btn">
             슬라이드 더하기
-        </div>
+        </div> */}
     </div>
     )
 }

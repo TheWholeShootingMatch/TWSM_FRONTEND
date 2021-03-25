@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, NavLink } from "react-router-dom";
 import {originSuffix, activeUserList, awareness, doc} from "../whiteboard_tab/tools/SharedTypes";
 import { setActiveUserInfo } from "../whiteboard_tab/tools/activeUserInfo";
 import useSocket from "./useSocket";
@@ -13,10 +13,14 @@ function SideMenu() {
         </div>
         <nav className="menu_area">
             <ul>
-                <li className="menu"><Link to="/TctModel/0">model</Link></li>
-                <li className="menu"><Link to="/TctPhotographer/0">photographer</Link></li>
-                <li className="menu"><Link to={`/whiteboard/${originSuffix}`}>whiteboard</Link></li>
-                <li className="menu"><Link to="/TctWorkflow">workflow</Link></li>
+          <li className="menu"><NavLink to="/TctModel/0"
+            activeClassName="tct-menu-active">model</NavLink></li>
+          <li className="menu"><NavLink to="/TctPhotographer/0"
+            activeClassName="tct-menu-active">photographer</NavLink></li>
+          <li className="menu"><NavLink to={`/whiteboard/${originSuffix}`}
+            activeClassName="tct-menu-active">whiteboard</NavLink></li>
+          <li className="menu"><NavLink to="/TctWorkflow"
+            activeClassName="tct-menu-active">workflow</NavLink></li>
             </ul>
         </nav>
         <div className="back_btn"><a></a></div>

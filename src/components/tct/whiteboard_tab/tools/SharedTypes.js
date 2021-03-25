@@ -138,6 +138,8 @@ export const slideNum = {
   }
 }
 
+export const coordinate = doc.getArray("coordinate");
+
 export const drawingContent = {
   drawingContent: doc.getArray(slideNum.get()),
   get() {
