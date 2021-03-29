@@ -4,17 +4,7 @@ import { Link } from "react-router-dom";
 import { useFetch } from "../../common/useFetch";
 
 function MyProject({ isLogin }) {
-  const [myProjects, setMyProjects] = useState([]);
-
-  async function fetchUrl() {
-    const response = await fetch("/api/tctmember/");
-    const json = await response.json();
-    setMyProjects(json);
-  }
-
-  useEffect(() => {
-    fetchUrl();
-  }, []);
+  const [myProjects] = useFetch('/api/project/my-project');
 
     return(
         <UserMyPage user="user" header="My Project" isLogin={isLogin}>
