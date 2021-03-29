@@ -14,7 +14,7 @@ function MyProject({ isLogin }) {
     )
 }
 
-function Myprojects({myProjects}) {
+function Myprojects({ myProjects }) {
     return(
         <>
         <div className="contents_upper_flex">
@@ -24,13 +24,15 @@ function Myprojects({myProjects}) {
         </div>
         <div className="project_area">
                 <div>
-                    {myProjects.map(project =>
-                        <Link to={`/whiteboard/${project._id}`}>
+                    {
+                        myProjects.map(project =>
+                        <Link to={`/whiteboard/${project.TcTnum._id}`}>
                             <div className="box_long">
-                                <p>{project.title}</p>
-                                <p>{project.description}</p>
+                                <p>{project.TcTnum.title}</p>
+                                <p>{project.TcTnum.description}</p>
                             </div>
-                        </Link>)}
+                        </Link>)
+                    }
                 </div>
             </div>
         </>
