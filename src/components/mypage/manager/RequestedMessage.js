@@ -43,7 +43,7 @@ function RequestedProject({ message }) {
                 <td className="username">{owner}</td>
                 <td className="title">{title}</td>
                 <td className="description">{description}</td>
-                <td className="date">{new Date(Number(request_time)).toLocaleDateString()}</td>
+                <td className="date">{new Date(request_time).toLocaleDateString()}</td>
                 <td className="status">{newStatus}</td>
                 <td className="approve_btn"><button onClick={() => onApprove()} disabled={approveToggleBtn}>approve btn</button></td>
                 <td className="deny_btn">deny btn</td>
