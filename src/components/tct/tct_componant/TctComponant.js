@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
-import { Link, useHistory, NavLink } from "react-router-dom";
+import { Link, useHistory, useParams, NavLink } from "react-router-dom";
 import {originSuffix, activeUserList, awareness, doc} from "../whiteboard_tab/tools/SharedTypes";
 import { setActiveUserInfo } from "../whiteboard_tab/tools/activeUserInfo";
 import useSocket from "./useSocket";
 import "./TctComponant.scss";
+import axios from "axios";
 
 function SideMenu() {
   return (
@@ -40,6 +41,27 @@ function Header() {
     })
   })
 
+  // for post
+  const {TcTnum} = useParams();
+
+  const [inputs, setInputs] = useState({ TcTnum: TcTnum });
+
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post('/api/notification/invite', inputs)
+      .then (res => {  })
+      .catch(err => { console.error(err); });
+  };
+
   return (
     <header className="tct_header">
         <div className="project_title"><input placeholder="project#1" /></div>
@@ -48,6 +70,10 @@ function Header() {
         <span className="invite_btn">
                 <details>
                     <summary>plus</summary>
+                    <form onSubmit={handleSubmit}>
+                      <input type="text" name="id" placeholder="Enter the ID" onChange={handleChange}/>
+                      <button type="submit">Invite</button>
+                    </form>
                     <div>user list</div>
                 </details>
         </span>
