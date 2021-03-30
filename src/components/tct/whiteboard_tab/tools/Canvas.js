@@ -1,7 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, useCallback} from "react";
 import * as shared from './SharedTypes';
 import * as Y from 'yjs'
 import { fabric } from "fabric";
+import { deleteObject } from "./Tools";
 
 export let externalContextRef = null;
 export let externalCanvas = null;
@@ -14,11 +15,21 @@ export default function Canvas({ activeSlide }) {
     const [canvas, setCanvas] = useState('');
     const canvasRef = useRef(null);
 
-    useEffect(() => {
-        setCanvas(initCanvas());
+    const handleUserKeyPress = useCallback(event => {
+        const { keyCode } = event;
+        if (keyCode === 8) {
+            deleteObject();
+        }
     }, []);
 
-    const initCanvas = () => {
+    useEffect(() => {
+        window.addEventListener('keydown', handleUserKeyPress);
+        return () => {
+            window.removeEventListener('keydown', handleUserKeyPress);
+        };
+    }, [handleUserKeyPress]);
+    
+    const initCanvas = useCallback(() => {
         const newCanvas = new fabric.Canvas("canvas", {
             height: 283 * 2,
             width: 566 * 2,
@@ -41,8 +52,13 @@ export default function Canvas({ activeSlide }) {
         canvasRef.current = newCanvas;
         externalCanvas = canvasRef.current;
         return newCanvas;
-    };
+    },[]);
 
+
+    useEffect(() => {
+        setCanvas(initCanvas());
+    }, []);
+    
     let needToAnimate = false;
     /* detect coordinate for moving object  */
     shared.coordinate.observe(function (event) {
@@ -69,6 +85,7 @@ export default function Canvas({ activeSlide }) {
     shared.drawingContent.get().observe(function (event) {
         if (canvas) {
             if (needTodraw) {
+                console.log(event);
                 onCanvasUpdate(event.changes.delta, canvas);
             }
             else {
@@ -215,10 +232,20 @@ export default function Canvas({ activeSlide }) {
                     }
                 })
             }
-            /* delete all objects */
+            /* delete specific objects */
             else if (drawElements.delete) {
-                canvas.remove(...canvas._objects);
-                shared.coordinate.delete(0, shared.coordinate.length);
+                const currentObjectIds = Array.from(shared.drawingContent.get()).map((drawElement) => {
+                    const options = drawElement.get('options').toArray()[0];
+                    const parseOptions = JSON.parse(options);
+                    return parseOptions.id
+                })
+                
+                for (let i = 0; i < canvas._objects.length; i++){
+                    if (!currentObjectIds.includes(canvas._objects[i].id)) {
+                        console.log(canvas._objects[i]);
+                        canvas.remove(canvas._objects[i]);
+                    }
+                }                
                 needTodraw = false;
             }
         })
@@ -241,60 +268,9 @@ export default function Canvas({ activeSlide }) {
     )
 }
 
-/* ignore */
-export const onStateChange = (canvasRef, setCanvas) => {
-
-    const canvas = new fabric.Canvas("canvas", {
-            height: 283 * 2,
-            width: 566 * 2,
-            backgroundColor: "pink"
-    });
-    const yDrawingContent = shared.drawingContent.get();
-    const requestAnimationFrame = window.requestAnimationFrame || setTimeout;
-
-    let needTodraw = true;
-    const draw = () => {
-        if (needTodraw) {
-            console.log("draw");
-            needTodraw = false;
-            yDrawingContent.forEach(drawElement => {
-                if (drawElement.get('type') === 'path') {
-                    const options = drawElement.get('options');
-                    options.forEach(option => {
-                        if (option) {
-                            const drawing = new fabric.Path(option, { stroke: "red", fill: false });
-                            canvas.add(drawing);
-                        }
-                    });
-                }
-                if (drawElement.get('type') === 'figure') {
-                    const options = drawElement.get('options');
-                    options.forEach(option => {
-                        if (option) {
-                            const parseFigure = JSON.parse(option);
-                            const circle = new fabric.Circle(parseFigure);
-                            canvas.add(circle);
-                        }
-                    })
-                }
-            })
-        }
-        canvasRef.current = canvas;
-        console.log(canvasRef.current, canvas);
-        canvasRef.current.renderAll();
-    }
-
-    const requestDrawAnimationFrame = () => {
-        requestAnimationFrame(draw);
-    }
-
-    yDrawingContent.observeDeep(requestDrawAnimationFrame);
-    requestDrawAnimationFrame();
-}
-
 export const versionRender = (externalContextRef) => {
 
     console.log(externalContextRef);
-    onStateChange(externalContextRef);
+    // onStateChange(externalContextRef);
 
 }

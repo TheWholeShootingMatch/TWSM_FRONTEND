@@ -239,6 +239,22 @@ export const afterObjectModified = (o) => {
     }
 }
 
+export const deleteObject = () => {
+    const actObj = externalCanvas.getActiveObject();
+    console.log(actObj);
+    shared.drawingContent.get().map((drawElement, index) =>
+    {
+        const options = drawElement.get('options').toArray()[0];
+        if (options) {
+            const parseObject = JSON.parse(options);
+            if (parseObject.id === actObj.id) {
+                shared.drawingContent.get().delete(index);
+            }
+        }
+    })
+    externalCanvas.remove(externalCanvas.getActiveObject());
+}
+
 export const setToolOption = (type, canvas) => {
 
     currentType = type;
