@@ -95,7 +95,6 @@ export default function Canvas({ activeSlide }) {
         }
     })
 
-
     const getObjectById = (id, canvas) => {
         for (let i = 0; i < canvas._objects.length; i++){
             if (canvas._objects[i].id === id) {
@@ -107,6 +106,9 @@ export default function Canvas({ activeSlide }) {
     const movingObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
+            if (activeObj.type === "textbox") {
+              activeObj.text = yaEvent.text;
+            }
             activeObj.animate({
                 left: yaEvent.left,
                 top: yaEvent.top,
@@ -143,9 +145,8 @@ export default function Canvas({ activeSlide }) {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseFigure = JSON.parse(options);
-                            console.log("here", parseFigure);
                             if (!getObjectById(parseFigure.id, canvas)) {
-                                const textbox = new fabric.Textbox("aaa", parseFigure);
+                                const textbox = new fabric.Textbox("", parseFigure);
                                 canvas.add(textbox);
                             }
                         }
@@ -198,8 +199,8 @@ export default function Canvas({ activeSlide }) {
                                 canvas.add(drawing);
                             }
                         }
-                        
-                        
+
+
                         // const options = drawElement.get('options').toArray()[0];
                         // const path = drawElement.get('path').toJSON();
                         // console.log(path);

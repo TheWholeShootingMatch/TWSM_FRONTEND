@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UserMyPage from "../common/MyPage";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../common/useFetch";
 
 function MyProject({ isLogin }) {
-    
-    const [myProjects] = useFetch('/api/project/my-project');
-    
+  const [myProjects] = useFetch('/api/project/my-project');
+
     return(
         <UserMyPage user="user" header="My Project" isLogin={isLogin}>
             <Myprojects myProjects={myProjects}/>

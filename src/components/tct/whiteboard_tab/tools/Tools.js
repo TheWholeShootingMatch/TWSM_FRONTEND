@@ -110,7 +110,7 @@ export const mouseDown = (o, canvas) => {
     else if (currentType === "text") {
       isDown = true;
       let pointer = canvas.getPointer(o.e);
-      textbox = new fabric.Textbox('', {
+      textbox = new fabric.Textbox('type', {
         left: pointer.x,
         top: pointer.y,
         width : 100,
@@ -128,8 +128,8 @@ export const mouseDown = (o, canvas) => {
       canvas.add(textbox);
       drawElement.set('type', 'text');
 
-      canvas.setActiveObject(textbox);
-      textbox.enterEditing();
+      // canvas.setActiveObject(textbox);
+      // textbox.enterEditing();
       // canvas.renderAll();
     }
 }
@@ -228,6 +228,17 @@ export const afterObjectModified = (o) => {
             if (options) {
                 const parseObject = JSON.parse(options);
                 if (parseObject.id === actObj.id) {
+                  if (actObj.type === "textbox") {
+                    shared.coordinate.push([{
+                        id: actObj.id,
+                        left: actObj.left,
+                        top: actObj.top,
+                        scaleX: actObj.scaleX,
+                        scaleY: actObj.scaleY,
+                        angle: actObj.angle,
+                        text:actObj.text
+                    }]);
+                  }
                     const newYarray = new Y.Array();
                     const jsonModifiedObject = JSON.stringify(actObj);
                     console.log(actObj.height, parseObject.height);
@@ -266,7 +277,7 @@ export const setToolOption = (type, canvas) => {
         canvas.off('object:moving', function (o) { objectModified(o) });
         canvas.off('object:scaling', function (o) { objectModified(o) });
         canvas.off('object:rotating', function (o) { objectModified(o) });
-        canvas.off('object:modified', function (o) { afterObjectModified(o) });
+        canvas.on('object:modified', function (o) { afterObjectModified(o) });
         canvas.on('mouse:down', function (o) { mouseDown(o, canvas) });
         canvas.on('mouse:move', function (o) { mouseMove(o, canvas) })
         canvas.on('mouse:up', function (o) { mouseUp(o, canvas) });
