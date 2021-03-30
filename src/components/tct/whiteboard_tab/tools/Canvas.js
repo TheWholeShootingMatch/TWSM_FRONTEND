@@ -15,19 +15,19 @@ export default function Canvas({ activeSlide }) {
     const [canvas, setCanvas] = useState('');
     const canvasRef = useRef(null);
 
-    const handleUserKeyPress = useCallback(event => {
-        const { keyCode } = event;
-        if (keyCode === 8) {
-            deleteObject();
-        }
-    }, []);
+    // const handleUserKeyPress = useCallback(event => {
+    //     const { keyCode } = event;
+    //     if (keyCode === 8) {
+    //         deleteObject();
+    //     }
+    // }, []);
 
-    useEffect(() => {
-        window.addEventListener('keydown', handleUserKeyPress);
-        return () => {
-            window.removeEventListener('keydown', handleUserKeyPress);
-        };
-    }, [handleUserKeyPress]);
+    // useEffect(() => {
+    //     window.addEventListener('keydown', handleUserKeyPress);
+    //     return () => {
+    //         window.removeEventListener('keydown', handleUserKeyPress);
+    //     };
+    // }, [handleUserKeyPress]);
     
     const initCanvas = useCallback(() => {
         const newCanvas = new fabric.Canvas("canvas", {
