@@ -24,7 +24,6 @@ function SideMenu() {
             activeClassName="tct-menu-active">workflow</NavLink></li>
             </ul>
         </nav>
-        <div className="back_btn"><a></a></div>
     </div>
   );
 }

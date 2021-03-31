@@ -7,13 +7,15 @@ $--menubox-border-color: #808080;
 }
 
 .tct_wrapper{
-    width: 100%;
+    overflow: hidden;
+    width: 87%;
 }
 
 /*TCT side menu*/
 .tct_sidemenu{
-    width: 200px;
-    border: 1px solid  $--menubox-border-color;
+    border-right: 1px solid  $--menubox-border-color;
+    width: 13%;
+    box-sizing: border-box;
 
     .logo_area{
         border-bottom: 1px solid $--menubox-border-color;
