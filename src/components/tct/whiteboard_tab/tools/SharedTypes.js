@@ -27,26 +27,28 @@ export const versionList = versionDoc.getArray('versionList');
 
 /* connect to room by shared link */
 export const connectToRoom = (suffix) => {
-  originSuffix = suffix;
-  //reset websocket and version db with suffix (tct num)
-  versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'tct-version-' + suffix, versionDoc, { connect: false });
-  versionWebsocketProvider.connectBc();
-  versionIndexeddbPersistence = new IndexeddbPersistence('tct-version-' + suffix, versionDoc);
-  webrtcProvider = new WebrtcProvider('tct-website-' + suffix, doc);
-  indexeddbPersistence = new IndexeddbPersistence('tct-website-' + suffix, doc);
+  
+  if (webrtcProvider === null) {
+    originSuffix = suffix;
+    //reset websocket and version db with suffix (tct num)
+    versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'tct-version-' + suffix, versionDoc, { connect: false });
+    versionWebsocketProvider.connectBc();
+    versionIndexeddbPersistence = new IndexeddbPersistence('tct-version-' + suffix, versionDoc);
+    webrtcProvider = new WebrtcProvider('tct-website-' + suffix, doc);
+    indexeddbPersistence = new IndexeddbPersistence('tct-website-' + suffix, doc);
+    
+    //detect active users
+    let awareness = webrtcProvider.awareness;
+    let localUserState = false;
 
-  //detect active users
-  let awareness = webrtcProvider.awareness;
-  let localUserState = false;
-
-  awareness.on('change', ({ added, updated, removed }) => {
-    const currentUsers = getActiveUserState(awareness);
-    if (!localUserState) {
-      setActiveUserInfo(currentUsers, awareness);
-      localUserState = true;
-    }
-    activeUserList.set('activeUserList', currentUsers);
-  })
+    awareness.on('change', ({ added, updated, removed }) => {
+      const currentUsers = getActiveUserState(awareness);
+      if (!localUserState) {
+        setActiveUserInfo(currentUsers, awareness);
+        localUserState = true;
+      }
+      activeUserList.set('activeUserList', currentUsers);
+    })
 
   // awareness.on('update', ({ added, updated, removed }) => {
   //   // if (removed.length !== 0) {
@@ -57,23 +59,24 @@ export const connectToRoom = (suffix) => {
   // });
 
   //connect to version db
-  versionIndexeddbPersistence.on('synced', () => {
-    lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
-    versionType.observe(() => {
-      if (versionType.length > 0) {
-        const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
-        undoManager.clear()
-        Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
-        lastSnapshot = nextSnapshot
-        storeState(indexeddbPersistence)
-      }
+    versionIndexeddbPersistence.on('synced', () => {
+      lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
+      versionType.observe(() => {
+        if (versionType.length > 0) {
+          const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
+          undoManager.clear()
+          Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
+          lastSnapshot = nextSnapshot
+          storeState(indexeddbPersistence)
+       }
+      })
     })
-  })
 
-  //when successfully connect to version db
-  versionIndexeddbPersistence.whenSynced.then(() => {
-    permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
-  })
+    //when successfully connect to version db
+    versionIndexeddbPersistence.whenSynced.then(() => {
+      permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
+    })
+  }
 }
 
 export const getVersionList = () => {
