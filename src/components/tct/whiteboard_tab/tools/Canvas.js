@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState, useCallback} from "react";
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as shared from './SharedTypes';
-import * as Y from 'yjs'
-import { fabric } from "fabric";
-import { deleteObject } from "./Tools";
+import * as Y from 'yjs';
+import { fabric } from 'fabric';
+import FabricProto from '../extension/FabricProto';
 
 export let externalContextRef = null;
 export let externalCanvas = null;
@@ -11,19 +11,18 @@ let initialState = true;
 let prevCanvas = null;
 
 export default function Canvas({ activeSlide }) {
-
     const [canvas, setCanvas] = useState('');
     const canvasRef = useRef(null);
 
     const initCanvas = useCallback(() => {
-        const newCanvas = new fabric.Canvas("canvas", {
+        const newCanvas = new fabric.Canvas('canvas', {
             width: window.innerWidth,
             height: window.innerHeight,
-            backgroundColor: "#F3F3F3"
+            backgroundColor: '#F3F3F3',
         });
         if (!initialState) {
             const renderList = canvasRender();
-            onCanvasUpdate(renderList, newCanvas)
+            onCanvasUpdate(renderList, newCanvas);
         }
         newCanvas.on('mouse:wheel', function (opt) {
             var delta = opt.e.deltaY;
@@ -35,21 +34,22 @@ export default function Canvas({ activeSlide }) {
             opt.e.preventDefault();
             opt.e.stopPropagation();
         });
+        newCanvas.toggleDragMode(false);
         canvasRef.current = newCanvas;
         externalCanvas = canvasRef.current;
         return newCanvas;
-    },[]);
-
+    }, []);
 
     useEffect(() => {
         setCanvas(initCanvas());
     }, []);
-    
+
     let needToAnimate = false;
     /* detect coordinate for moving object  */
     shared.coordinate.observe(function (event) {
-        if (!needToAnimate) { needToAnimate = true }
-        else {
+        if (!needToAnimate) {
+            needToAnimate = true;
+        } else {
             if (canvas) {
                 const yaEvent = event.changes.delta;
                 if (yaEvent.length > 0) {
@@ -64,7 +64,7 @@ export default function Canvas({ activeSlide }) {
                 }
             }
         }
-    })
+    });
 
     let needTodraw = true;
     /* handle for every changes : initial rendering and drawing element(retain, add, delete) */
@@ -73,71 +73,78 @@ export default function Canvas({ activeSlide }) {
             if (needTodraw) {
                 console.log(event);
                 onCanvasUpdate(event.changes.delta, canvas);
-            }
-            else {
+            } else {
                 needTodraw = true;
             }
             initialState = false;
         }
-    })
+    });
 
     const getObjectById = (id, canvas) => {
-        for (let i = 0; i < canvas._objects.length; i++){
+        for (let i = 0; i < canvas._objects.length; i++) {
             if (canvas._objects[i].id === id) {
                 return canvas._objects[i];
             }
         }
-    }
+    };
 
     const movingObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
-            if (activeObj.type === "textbox") {
-              activeObj.text = yaEvent.text;
+            if (activeObj.type === 'textbox') {
+                activeObj.text = yaEvent.text;
             }
-            activeObj.animate({
-                left: yaEvent.left,
-                top: yaEvent.top,
-                scaleX: yaEvent.scaleX,
-                scaleY: yaEvent.scaleY,
-                angle: yaEvent.angle
-            }, {
-                duration: 500,
-                onChange: function () {
-                    activeObj.setCoords();
-                    canvas.renderAll();
+            activeObj.animate(
+                {
+                    left: yaEvent.left,
+                    top: yaEvent.top,
+                    scaleX: yaEvent.scaleX,
+                    scaleY: yaEvent.scaleY,
+                    angle: yaEvent.angle,
+                },
+                {
+                    duration: 500,
+                    onChange: function () {
+                        activeObj.setCoords();
+                        canvas.renderAll();
+                    },
                 }
-            });
+            );
         }
-    }
+    };
 
     const onCanvasUpdate = (newObject, canvas) => {
         console.log(newObject);
-        newObject.forEach(drawElements => {
+        newObject.forEach((drawElements) => {
             if (drawElements.insert) {
-                drawElements.insert.forEach(drawElement => {
-                    const type = drawElement.get("type");
-                    if (type === "figure") {
+                drawElements.insert.forEach((drawElement) => {
+                    const type = drawElement.get('type');
+                    if (type === 'figure') {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseFigure = JSON.parse(options);
                             if (!getObjectById(parseFigure.id, canvas)) {
                                 const circle = new fabric.Circle(parseFigure);
+                                circle.selectable = false;
+                                circle.evented = false;
                                 canvas.add(circle);
                             }
                         }
-                    }
-                    else if (type === "text") {
+                    } else if (type === 'text') {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseFigure = JSON.parse(options);
                             if (!getObjectById(parseFigure.id, canvas)) {
-                                const textbox = new fabric.Textbox("", parseFigure);
+                                const textbox = new fabric.Textbox(
+                                    '',
+                                    parseFigure
+                                );
+                                textbox.selectable = false;
+                                textbox.evented = false;
                                 canvas.add(textbox);
                             }
                         }
-                    }
-                    else if (type === "image") {
+                    } else if (type === 'image') {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseImage = JSON.parse(options);
@@ -153,111 +160,68 @@ export default function Canvas({ activeSlide }) {
                                         left: parseImage.left,
                                         scaleX: parseImage.scaleX,
                                         scaleY: parseImage.scaleY,
-                                    })
-                                    uploadedImg.toObject = (function (toObject) {
-                                        return function () {
-                                            return fabric.util.object.extend(toObject.call(this), {
-                                                id: this.id
-                                            });
-                                        }
-                                    })(uploadedImg.toObject);
+                                    });
                                     uploadedImg.id = parseImage.id;
+                                    uploadedImg.selectable = false;
+                                    uploadedImg.evented = false;
                                     canvas.add(uploadedImg);
-                                }
+                                };
                             }
                         }
-                    }
-                    else if (type === "drawing") {
+                    } else if (type === 'drawing') {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseOptions = JSON.parse(options);
                             if (!getObjectById(parseOptions.id, canvas)) {
                                 const paths = parseOptions.path;
-                                const drawing = new fabric.Path(paths, parseOptions);
-                                drawing.toObject = (function (toObject) {
-                                    return function () {
-                                        return fabric.util.object.extend(toObject.call(this), {
-                                            id: this.id
-                                        });
-                                    }
-                                })(drawing.toObject);
+                                const drawing = new fabric.Path(
+                                    paths,
+                                    parseOptions
+                                );
                                 drawing.id = parseOptions.id;
+                                drawing.selectable = false;
+                                drawing.evented = false;
                                 canvas.add(drawing);
                             }
                         }
-
-
-                        // const options = drawElement.get('options').toArray()[0];
-                        // const path = drawElement.get('path').toJSON();
-                        // console.log(path);
-                        // console.log(options);
-                        // if (options) {
-                        //     const parseDrawing = JSON.parse(options);
-                        //     if (!getObjectById(parseDrawing.id, canvas)) {
-                        //         console.log(parseDrawing);
-                        //     }
-
-                        // }
-                        // canvas.isDrawingMode = true;
-                        // canvas.freeDrawingBrush.width = 4;
-                        // canvas.freeDrawingBrush.color = 'black';
-                        // let path = drawElement.get('path');
-                        // if (path) {
-                        //     path.forEach((c, index) => {
-                        //         let o = { c, e: {} };
-                        //         if (c.event === "start") {
-                        //             canvas.freeDrawingBrush.onMouseDown({x: c.x, y:c.y}, o);
-                        //         }
-                        //         else if (index === (path.length - 1)) {
-                        //             canvas.freeDrawingBrush.onMouseUp(o);
-                        //         }
-                        //         else {
-                        //             canvas.freeDrawingBrush.onMouseMove({x: c.x, y:c.y}, o);
-                        //         }
-                        //     })
-                        // }
                     }
-                })
-            }
-            /* delete specific objects */
-            else if (drawElements.delete) {
-                const currentObjectIds = Array.from(shared.drawingContent.get()).map((drawElement) => {
+                });
+            } else if (drawElements.delete) {
+                /* delete specific objects */
+                const currentObjectIds = Array.from(
+                    shared.drawingContent.get()
+                ).map((drawElement) => {
                     const options = drawElement.get('options').toArray()[0];
                     const parseOptions = JSON.parse(options);
-                    return parseOptions.id
-                })
-                
-                for (let i = 0; i < canvas._objects.length; i++){
+                    return parseOptions.id;
+                });
+
+                for (let i = 0; i < canvas._objects.length; i++) {
                     if (!currentObjectIds.includes(canvas._objects[i].id)) {
                         console.log(canvas._objects[i]);
                         canvas.remove(canvas._objects[i]);
                     }
-                }                
+                }
                 needTodraw = false;
             }
-        })
+        });
         canvas.renderAll();
-    }
+    };
 
     /* render canvas */
     const canvasRender = () => {
         const renderList = [];
         const yDrawingContent = shared.drawingContent.get();
-        yDrawingContent.forEach(drawElement => {
+        yDrawingContent.forEach((drawElement) => {
             renderList.push(drawElement);
-        })
-        return [{ "insert": renderList }];
-    }
+        });
+        return [{ insert: renderList }];
+    };
 
-    return(
-        <canvas ref={canvasRef}
-        id="canvas"/>
-    )
+    return <canvas ref={canvasRef} id="canvas" />;
 }
 
 export const versionRender = (externalContextRef) => {
-
     console.log(externalContextRef);
     // onStateChange(externalContextRef);
-
-}
+};

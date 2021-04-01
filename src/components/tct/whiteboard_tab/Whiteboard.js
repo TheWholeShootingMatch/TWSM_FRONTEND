@@ -1,19 +1,22 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import {Redirect, useParams} from 'react-router-dom';
-import TctComponant from "../tct_componant/TctComponant";
-import Canvas from "./tools/Canvas";
-import { connectToRoom, addVersion, renderVersion, clearVersionList } from './tools/SharedTypes';
-import * as Tools from "./tools/Tools";
-import { versionRender, externalCanvas } from "./tools/Canvas";
-import * as Y from "yjs";
-import axios from "axios";
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Redirect, useParams } from 'react-router-dom';
+import TctComponant from '../tct_componant/TctComponant';
+import Canvas from './tools/Canvas';
+import {
+    connectToRoom,
+    addVersion,
+    renderVersion,
+    clearVersionList,
+} from './tools/SharedTypes';
+import * as Tools from './tools/Tools';
+import { versionRender, externalCanvas } from './tools/Canvas';
+import * as Y from 'yjs';
+import axios from 'axios';
 
-import "./styles/Whiteboard.scss";
-import "./styles/WhiteBoardHeader.scss";
-
+import './styles/Whiteboard.scss';
+import './styles/WhiteBoardHeader.scss';
 
 function WhiteBoard() {
-
     const { TcTnum } = useParams();
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
@@ -21,38 +24,43 @@ function WhiteBoard() {
     useEffect(() => {
         setLoading(true);
         /* TcTnum 존재 여부를 db로부터 확인 */
-        axios.post('/api/tct', { TcTnum: TcTnum }, {
-            withCredentials: true,
-        }).then(res => {
-            if (!res.data) {
-                alert("권한이 없습니다!");
-            }
-            setLoading(false);
-            setExist(res.data);
-        })
-    },[])
+        axios
+            .post(
+                '/api/tct',
+                { TcTnum: TcTnum },
+                {
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                if (!res.data) {
+                    alert('권한이 없습니다!');
+                }
+                setLoading(false);
+                setExist(res.data);
+            });
+    }, []);
 
     if (isExist === false) {
-        return (<Redirect to={{ pathname: "/" }} />);
-    }
-    else if (isLoading) {
-        return (<TctComponant>
+        return <Redirect to={{ pathname: '/' }} />;
+    } else if (isLoading) {
+        return (
+            <TctComponant>
                 <div>loading...</div>
-            </TctComponant>)
-    }
-    else {
+            </TctComponant>
+        );
+    } else {
         connectToRoom(TcTnum);
         return (
             <TctComponant TcTnum={TcTnum}>
-                <WhiteBoardArea/>
+                <WhiteBoardArea />
             </TctComponant>
-        )
+        );
     }
 }
 
-function WhiteBoardArea(){
-
-    const [toolType, setType] = useState("");
+function WhiteBoardArea() {
+    const [toolType, setType] = useState('');
     const [toggleHistoryMenu, setToggle] = useState(false);
     const [versions, setVersion] = useState([]);
 
@@ -67,110 +75,194 @@ function WhiteBoardArea(){
 
     const onClickHistoy = () => {
         setToggle(!toggleHistoryMenu);
-    }
+    };
 
     const onClickImageInput = () => {
         hiddenFileInput.current.click();
-    }
+    };
 
     const onChangeImageInput = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (e.target.files) {
             const fileUploaded = e.target.files[0];
             Tools.uploadImage(fileUploaded, externalCanvas);
         }
-    }
+    };
 
     return (
         <div className="whiteboard_area">
-            <WhiteBoardHeader setType={setType} onClickHistoy={onClickHistoy} hiddenFileInput={hiddenFileInput} onClickImageInput={onClickImageInput} onChangeImageInput={onChangeImageInput}/>
-            <WhiteBoardContents toggleHistoryMenu={toggleHistoryMenu} toolType={toolType} historyArea={historyArea} versions={versions} />
+            <WhiteBoardHeader
+                setType={setType}
+                onClickHistoy={onClickHistoy}
+                hiddenFileInput={hiddenFileInput}
+                onClickImageInput={onClickImageInput}
+                onChangeImageInput={onChangeImageInput}
+            />
+            <WhiteBoardContents
+                toggleHistoryMenu={toggleHistoryMenu}
+                toolType={toolType}
+                historyArea={historyArea}
+                versions={versions}
+            />
             {/* <WhiteBoardSlides/> */}
         </div>
-    )
+    );
 }
 
-function WhiteBoardHeader({ setType, onClickHistoy, hiddenFileInput, onClickImageInput, onChangeImageInput}) {
-
-    return(
+function WhiteBoardHeader({
+    setType,
+    onClickHistoy,
+    hiddenFileInput,
+    onClickImageInput,
+    onChangeImageInput,
+}) {
+    return (
         <div className="whiteboard_header">
             <div className="tools">
                 <ul>
-                    <li id="select" onClick={() => {
-                        Tools.setToolOption("select", externalCanvas);
-                    }}>select</li>
-                    <li id="figure" onClick={() => {
-                        Tools.setToolOption("figure", externalCanvas);
-                    }}>figure</li>
-                    <li id="text" onClick={() => {
-                        Tools.setToolOption("text", externalCanvas);
-                    }}>text</li>
-                    <li id="image" onClick={() => {
-                        onClickImageInput();
-                        Tools.setToolOption("image", externalCanvas);
-                    }}>image</li>
+                    <li
+                        id="select"
+                        onClick={() => {
+                            Tools.setToolOption('select', externalCanvas);
+                        }}
+                    >
+                        select
+                    </li>
+                    <li
+                        id="panning"
+                        onClick={() => {
+                            Tools.setToolOption('panning', externalCanvas);
+                        }}
+                    >
+                        panning
+                    </li>
+                    <li
+                        id="figure"
+                        onClick={() => {
+                            Tools.setToolOption('figure', externalCanvas);
+                        }}
+                    >
+                        figure
+                    </li>
+                    <li
+                        id="text"
+                        onClick={() => {
+                            Tools.setToolOption('text', externalCanvas);
+                        }}
+                    >
+                        text
+                    </li>
+                    <li
+                        id="image"
+                        onClick={() => {
+                            onClickImageInput();
+                            Tools.setToolOption('image', externalCanvas);
+                        }}
+                    >
+                        image
+                    </li>
                     <input
                         type="file"
                         accept="image/*"
                         ref={hiddenFileInput}
                         onChange={onChangeImageInput}
-                        style={{ display: 'none' }} />
-                    <li id="drawing" onClick={() => {
-                        Tools.setToolOption("drawing", externalCanvas);
-                    }}>drawing</li>
-                    <li id="undo" onClick={() => {
-                        setType("undo");
-                        Tools.undoDrawing();
-                    }}>undo</li>
-                    <li id="redo" onClick={() => {
-                        setType("redo");
-                        Tools.redoDrawing();
-                    }}>redo</li>
-                    <li id="delete" onClick={() => {
-                        setType("delete");
-                        Tools.deleteObject();
-                    }}>delete</li>
-                    <li id="trash" onClick={() => {
-                        setType("trash");
-                        Tools.deleteAllDrawing();
-                    }}>trash</li>
+                        style={{ display: 'none' }}
+                    />
+                    <li
+                        id="drawing"
+                        onClick={() => {
+                            Tools.setToolOption('drawing', externalCanvas);
+                        }}
+                    >
+                        drawing
+                    </li>
+                    <li
+                        id="undo"
+                        onClick={() => {
+                            setType('undo');
+                            Tools.undoDrawing();
+                        }}
+                    >
+                        undo
+                    </li>
+                    <li
+                        id="redo"
+                        onClick={() => {
+                            setType('redo');
+                            Tools.redoDrawing();
+                        }}
+                    >
+                        redo
+                    </li>
+                    <li
+                        id="delete"
+                        onClick={() => {
+                            setType('delete');
+                            Tools.deleteObject();
+                        }}
+                    >
+                        delete
+                    </li>
+                    <li
+                        id="trash"
+                        onClick={() => {
+                            setType('trash');
+                            Tools.deleteAllDrawing();
+                        }}
+                    >
+                        trash
+                    </li>
                 </ul>
             </div>
             <div className="history_btn">
                 <button onClick={() => onClickHistoy()}>history</button>
             </div>
         </div>
-    )
+    );
 }
 
-function WhiteBoardContents({ toolType, historyArea, versions, toggleHistoryMenu }) {
-
-    return(
+function WhiteBoardContents({
+    toolType,
+    historyArea,
+    versions,
+    toggleHistoryMenu,
+}) {
+    return (
         <div className="whiteboard_contents">
             <div className="current_whiteboard">
                 <Canvas toolType={toolType} />
             </div>
-            <div ref={historyArea} className={toggleHistoryMenu ? "history_area active" : "history_area"}>
+            <div
+                ref={historyArea}
+                className={
+                    toggleHistoryMenu ? 'history_area active' : 'history_area'
+                }
+            >
                 <ul className="history_list">
                     <button onClick={() => addVersion()}>add</button>
                     <button onClick={() => clearVersionList()}>clear</button>
                     {versions.map((version, index) => (
-                        <section key={index} onClick={() => {
-                            renderVersion(version);
-                            versionRender(externalCanvas);
-                        }}>{new Date(version.date).toLocaleString()}</section>
+                        <section
+                            key={index}
+                            onClick={() => {
+                                renderVersion(version);
+                                versionRender(externalCanvas);
+                            }}
+                        >
+                            {new Date(version.date).toLocaleString()}
+                        </section>
                     ))}
                     <li className="version_info"></li>
                 </ul>
             </div>
         </div>
-    )
+    );
 }
 
-function WhiteBoardSlides(){
-    return(
-    <div className="whiteboard_slides">
-        {/* <div className="slide" id="current_slide">
+function WhiteBoardSlides() {
+    return (
+        <div className="whiteboard_slides">
+            {/* <div className="slide" id="current_slide">
             슬라이드3 (현재 슬라이드)
         </div>
         <div className="slide">
@@ -182,8 +274,8 @@ function WhiteBoardSlides(){
         <div className="slide add_slide_btn">
             슬라이드 더하기
         </div> */}
-    </div>
-    )
+        </div>
+    );
 }
 
 export default WhiteBoard;
