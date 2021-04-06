@@ -3,8 +3,6 @@ import { fabric } from 'fabric';
 import { externalCanvas } from './Canvas';
 import * as Y from 'yjs';
 import FabricProto from '../extension/FabricProto';
-import { LeveldbPersistence } from 'y-leveldb';
-const persistence = new LeveldbPersistence('./currentDoc');
 
 /* delete all (trash action) */
 export const deleteAllDrawing = () => {
@@ -134,7 +132,6 @@ const getObject = (o) => {
             drawElement.set('options', sharedLine);
             shared.drawingContent.get().push([drawElement]);
             const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-            persistence.storeUpdate('doc', encodeDoc);
             shared.emitYDoc(encodeDoc);
         } else if (currentType === 'text') {
             // currentType = "select";

@@ -1,9 +1,6 @@
 import socketIOClient from 'socket.io-client';
 import * as Y from 'yjs';
-import { WebrtcProvider } from 'y-webrtc';
-import { IndexeddbPersistence } from 'y-indexeddb';
 import { LeveldbPersistence } from 'y-leveldb';
-import { getActiveUserState, setActiveUserInfo } from './activeUserInfo';
 import { toUint8Array } from 'js-base64';
 
 const SOCKET_SERVER_URL = ':3001';
@@ -13,7 +10,6 @@ export const persistence = new LeveldbPersistence('./currentDoc');
 
 export let originSuffix = null;
 export let indexeddbPersistence = null;
-export let webrtcProvider = null;
 export let versionDoc = new Y.Doc();
 export let doc = new Y.Doc();
 export let testDoc = new Y.Doc();
@@ -40,7 +36,9 @@ export const connectToRoom = async (suffix, Ydoc) => {
         console.log(req);
     });
 
-    if (webrtcProvider === null) {
+    socketClient.current.emit('newPeer');
+
+    if (originSuffix === null) {
         originSuffix = suffix;
         const persistedYdoc = await persistence.getYDoc('doc');
         const binaryEncoded = toUint8Array(Ydoc);
@@ -181,12 +179,6 @@ export const setUndoManager = (nextUndoManager) => {
 window.ydoc = doc;
 // @ts-ignore
 window.versionDoc = versionDoc;
-// @ts-ignore
-// window.awareness = awareness
-// @ts-ignore
-window.webrtcProvider = webrtcProvider;
-// @ts-ignore
-// window.websocketProvider = websocketProvider
 // @ts-ignore
 window.indexeddbPersistence = indexeddbPersistence;
 // @ts-ignore
