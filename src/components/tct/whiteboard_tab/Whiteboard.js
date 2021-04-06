@@ -2,14 +2,9 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import TctComponant from '../tct_componant/TctComponant';
 import Canvas from './tools/Canvas';
-import {
-    connectToRoom,
-    addVersion,
-    renderVersion,
-    clearVersionList,
-} from './tools/SharedTypes';
+import { connectToRoom } from './tools/SharedTypes';
 import * as Tools from './tools/Tools';
-import { versionRender, externalCanvas } from './tools/Canvas';
+import { externalCanvas } from './tools/Canvas';
 import * as Y from 'yjs';
 import axios from 'axios';
 
@@ -33,11 +28,14 @@ function WhiteBoard() {
                 }
             )
             .then((res) => {
-                if (!res.data) {
+                if (res.data === false) {
                     alert('권한이 없습니다!');
+                    setExist(false);
+                } else {
+                    connectToRoom(TcTnum, res.data);
                 }
                 setLoading(false);
-                setExist(res.data);
+                setExist(true);
             });
     }, []);
 
@@ -50,7 +48,6 @@ function WhiteBoard() {
             </TctComponant>
         );
     } else {
-        connectToRoom(TcTnum);
         return (
             <TctComponant TcTnum={TcTnum}>
                 <WhiteBoardArea />
@@ -69,7 +66,6 @@ function WhiteBoardArea() {
 
     useEffect(() => {
         const versionList = Tools.getVersionList();
-        console.log(versionList);
         setVersion(versionList);
     }, []);
 
@@ -102,7 +98,6 @@ function WhiteBoardArea() {
                 toggleHistoryMenu={toggleHistoryMenu}
                 toolType={toolType}
                 historyArea={historyArea}
-                versions={versions}
             />
             {/* <WhiteBoardSlides/> */}
         </div>
@@ -221,12 +216,7 @@ function WhiteBoardHeader({
     );
 }
 
-function WhiteBoardContents({
-    toolType,
-    historyArea,
-    versions,
-    toggleHistoryMenu,
-}) {
+function WhiteBoardContents({ toolType, historyArea, toggleHistoryMenu }) {
     return (
         <div className="whiteboard_contents">
             <div className="current_whiteboard">
@@ -239,19 +229,8 @@ function WhiteBoardContents({
                 }
             >
                 <ul className="history_list">
-                    <button onClick={() => addVersion()}>add</button>
-                    <button onClick={() => clearVersionList()}>clear</button>
-                    {versions.map((version, index) => (
-                        <section
-                            key={index}
-                            onClick={() => {
-                                renderVersion(version);
-                                versionRender(externalCanvas);
-                            }}
-                        >
-                            {new Date(version.date).toLocaleString()}
-                        </section>
-                    ))}
+                    <button>add</button>
+                    <button>clear</button>
                     <li className="version_info"></li>
                 </ul>
             </div>

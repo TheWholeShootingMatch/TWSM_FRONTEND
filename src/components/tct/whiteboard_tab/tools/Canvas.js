@@ -42,7 +42,21 @@ export default function Canvas({ activeSlide }) {
 
     useEffect(() => {
         setCanvas(initCanvas());
+        /* handle for every changes : initial rendering and drawing element(retain, add, delete) */
     }, []);
+
+    let needTodraw = true;
+    shared.drawingContent.get().observe(function (event) {
+        if (canvas) {
+            if (needTodraw) {
+                console.log(event);
+                onCanvasUpdate(event.changes.delta, canvas);
+            } else {
+                needTodraw = true;
+            }
+            initialState = false;
+        }
+    });
 
     let needToAnimate = false;
     /* detect coordinate for moving object  */
@@ -63,20 +77,6 @@ export default function Canvas({ activeSlide }) {
                     }
                 }
             }
-        }
-    });
-
-    let needTodraw = true;
-    /* handle for every changes : initial rendering and drawing element(retain, add, delete) */
-    shared.drawingContent.get().observe(function (event) {
-        if (canvas) {
-            if (needTodraw) {
-                console.log(event);
-                onCanvasUpdate(event.changes.delta, canvas);
-            } else {
-                needTodraw = true;
-            }
-            initialState = false;
         }
     });
 
