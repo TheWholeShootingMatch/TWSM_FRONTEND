@@ -47,6 +47,8 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             drawElement.set('type', 'image');
             drawElement.set('options', yArray);
             shared.drawingContent.get().push([drawElement]);
+            const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+            shared.emitYDoc(encodeDoc);
             externalCanvas.renderAll();
         };
     };
@@ -123,6 +125,12 @@ export const mouseMove = (o, canvas) => {
     }
 };
 
+const emitObject = (drawElement) => {
+    shared.drawingContent.get().push([drawElement]);
+    const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+    shared.emitYDoc(encodeDoc);
+};
+
 //http://jsfiddle.net/softvar/Nt8f7/
 const getObject = (o) => {
     if (sharedLine !== null) {
@@ -130,15 +138,13 @@ const getObject = (o) => {
             const jsonObject = JSON.stringify(circle);
             sharedLine.push([jsonObject]);
             drawElement.set('options', sharedLine);
-            shared.drawingContent.get().push([drawElement]);
-            const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-            shared.emitYDoc(encodeDoc);
+            emitObject(drawElement);
         } else if (currentType === 'text') {
             // currentType = "select";
             const jsonObject = JSON.stringify(textbox);
             sharedLine.push([jsonObject]);
             drawElement.set('options', sharedLine);
-            shared.drawingContent.get().push([drawElement]);
+            emitObject(drawElement);
         } else if (currentType === 'drawing') {
             let id = new Date().getTime().toString();
             const drawing = o.path;
@@ -146,7 +152,7 @@ const getObject = (o) => {
             const jsonObject = JSON.stringify(drawing);
             sharedLine.push([jsonObject]);
             drawElement.set('options', sharedLine);
-            shared.drawingContent.get().push([drawElement]);
+            emitObject(drawElement);
         }
     }
 };
@@ -188,8 +194,11 @@ export const objectModified = (o) => {
                 scaleX: actObj.scaleX,
                 scaleY: actObj.scaleY,
                 angle: actObj.angle,
+                text: actObj.text,
             },
         ]);
+        const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+        shared.emitYDoc(encodeDoc);
     }
 };
 
@@ -201,19 +210,19 @@ export const afterObjectModified = (o) => {
             if (options) {
                 const parseObject = JSON.parse(options);
                 if (parseObject.id === actObj.id) {
-                    if (actObj.type === 'textbox') {
-                        shared.coordinate.push([
-                            {
-                                id: actObj.id,
-                                left: actObj.left,
-                                top: actObj.top,
-                                scaleX: actObj.scaleX,
-                                scaleY: actObj.scaleY,
-                                angle: actObj.angle,
-                                text: actObj.text,
-                            },
-                        ]);
-                    }
+                    // if (actObj.type === 'textbox') {
+                    //     shared.coordinate.push([
+                    //         {
+                    //             id: actObj.id,
+                    //             left: actObj.left,
+                    //             top: actObj.top,
+                    //             scaleX: actObj.scaleX,
+                    //             scaleY: actObj.scaleY,
+                    //             angle: actObj.angle,
+                    //             text: actObj.text,
+                    //         },
+                    //     ]);
+                    // }
                     const newYarray = new Y.Array();
                     const jsonModifiedObject = JSON.stringify(actObj);
                     newYarray.push([jsonModifiedObject]);
@@ -221,6 +230,9 @@ export const afterObjectModified = (o) => {
                 }
             }
         });
+        console.log('emitlastDoc');
+        const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+        shared.emitLastYDoc(encodeDoc);
     }
 };
 
@@ -256,7 +268,7 @@ export const setToolOption = (type, canvas) => {
         canvas.off('object:rotating', function (o) {
             objectModified(o);
         });
-        canvas.on('object:modified', function (o) {
+        canvas.off('object:modified', function (o) {
             afterObjectModified(o);
         });
         canvas.on('mouse:down', function (o) {
@@ -292,6 +304,9 @@ export const setToolOption = (type, canvas) => {
             objectModified(o);
         });
         canvas.on('object:rotating', function (o) {
+            objectModified(o);
+        });
+        canvas.on('object:modified', function (o) {
             objectModified(o);
         });
         canvas.on('object:modified', function (o) {

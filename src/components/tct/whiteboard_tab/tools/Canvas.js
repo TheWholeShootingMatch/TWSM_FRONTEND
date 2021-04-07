@@ -92,6 +92,7 @@ export default function Canvas({ activeSlide }) {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
             if (activeObj.type === 'textbox') {
+                console.log(yaEvent.text);
                 activeObj.text = yaEvent.text;
             }
             activeObj.animate(
