@@ -3,13 +3,10 @@ import { Link, useHistory, useParams, NavLink } from 'react-router-dom';
 import {
     originSuffix,
     activeUserList,
-    awareness,
-    doc,
 } from '../whiteboard_tab/tools/SharedTypes';
-import { setActiveUserInfo } from '../whiteboard_tab/tools/activeUserInfo';
-import useSocket from './useSocket';
 import './TctComponant.scss';
 import axios from 'axios';
+import { YMapEvent } from 'yjs';
 
 function SideMenu() {
     return (
@@ -56,16 +53,22 @@ function SideMenu() {
 }
 
 function Header() {
-    // const [activeUserState, setActiveUserState] = useState([]);
-
-    // activeUserList.observe((ymapEvent) => {
-    //   ymapEvent.changes.keys.forEach((change, key) => {
-    //     const currentActiveUserList = activeUserList.get('activeUserList');
-    //     if (change.action === "update") {
-    //       setActiveUserState(currentActiveUserList);
-    //     }
-    //   })
-    // })
+    const [activeUsers, setActiveUsers] = useState([]);
+    activeUserList.observe((ymapEvent) => {
+        ymapEvent.changes.keys.forEach((change, key) => {
+            if (change.action === 'add') {
+                if (!activeUsers.includes(key)) {
+                    console.log('add', key);
+                    setActiveUsers([...activeUsers, key]);
+                }
+            } else if (change.action === 'delete') {
+                if (activeUsers.includes(key)) {
+                    console.log('delete', key);
+                    setActiveUsers(activeUsers.filter((user) => user !== key));
+                }
+            }
+        });
+    });
 
     // for post
     const { TcTnum } = useParams();
@@ -96,7 +99,9 @@ function Header() {
                 <input placeholder="project#1" />
             </div>
             <div className="connected_users">
-                {/* {activeUserState.map(state => <span className="user_icon" style={{ color: state.userInfo.color }}>{state.userInfo.name}</span>)} */}
+                {activeUsers.map((user) => (
+                    <span className="user_icon">{user}</span>
+                ))}
                 <span className="invite_btn">
                     <details>
                         <summary>plus</summary>

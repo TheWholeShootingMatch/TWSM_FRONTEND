@@ -4,7 +4,7 @@ import { LeveldbPersistence } from 'y-leveldb';
 import { toUint8Array } from 'js-base64';
 
 const SOCKET_SERVER_URL = ':3001';
-const socketClient = socketIOClient('http://localhost:3001');
+export const socketClient = socketIOClient('http://localhost:3001');
 
 export const persistence = new LeveldbPersistence('./currentDoc');
 
@@ -12,14 +12,14 @@ export let originSuffix = null;
 export let indexeddbPersistence = null;
 export let versionDoc = new Y.Doc();
 export let doc = new Y.Doc();
-export let testDoc = new Y.Doc();
-export let activeUserList = doc.getMap('activeUserList');
+let userDoc = new Y.Doc();
+export let activeUserList = userDoc.getMap('activeUserList');
 export const versionList = versionDoc.getArray('versionList');
 
 /* connect to room by shared link */
 export const connectToRoom = async (suffix, Ydoc) => {
     // tmp room id
-    const roomId = 303;
+    const roomId = suffix;
 
     //enter the room
     socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
@@ -28,21 +28,28 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
     socketClient.current.on('canvasEvent', (req) => {
         const docUint8Array = new Uint8Array(req);
-        console.log(docUint8Array);
         Y.applyUpdate(doc, docUint8Array);
     });
 
-    socketClient.current.on('newPeer', (req) => {
-        console.log(req);
+    socketClient.current.emit('peerConnectEvent');
+
+    socketClient.current.on('peerConnectEvent', (client) => {
+        client.forEach((client) => {
+            if (!activeUserList.has(client)) {
+                activeUserList.set(client, [client]);
+            }
+        });
     });
 
-    socketClient.current.emit('newPeer');
+    socketClient.current.on('peerDisconnectEvent', (client) => {
+        console.log(client);
+        activeUserList.delete(client);
+    });
 
     if (originSuffix === null) {
         originSuffix = suffix;
         const persistedYdoc = await persistence.getYDoc('doc');
         const binaryEncoded = toUint8Array(Ydoc);
-        console.log(binaryEncoded);
         Y.applyUpdate(doc, binaryEncoded);
         // if (persistedYdoc.share.size) {
         //     // console.log(Y.encodeStateAsUpdate(persistedYdoc));
@@ -58,12 +65,15 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
 doc.on('update', (update) => {
     drawingContent.init(doc.getArray(''));
-    console.log(drawingContent.get());
 });
 
 // Emit Changes to server (using socket-io)
 export const emitYDoc = (data) => {
     socketClient.current.emit('canvasEvent', data);
+};
+
+export const emitLastYDoc = (data) => {
+    socketClient.current.emit('emitLastYDoc', data);
 };
 
 export const getVersionList = () => {
