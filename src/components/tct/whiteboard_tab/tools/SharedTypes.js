@@ -10,16 +10,15 @@ export const persistence = new LeveldbPersistence('./currentDoc');
 
 export let originSuffix = null;
 export let indexeddbPersistence = null;
-export let versionDoc = new Y.Doc();
 export let doc = new Y.Doc();
 let userDoc = new Y.Doc();
 export let activeUserList = userDoc.getMap('activeUserList');
-export const versionList = versionDoc.getArray('versionList');
 
 /* connect to room by shared link */
 export const connectToRoom = async (suffix, Ydoc) => {
     // tmp room id
     const roomId = suffix;
+    console.log(roomId);
 
     //enter the room
     socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
@@ -68,40 +67,15 @@ doc.on('update', (update) => {
 });
 
 // Emit Changes to server (using socket-io)
-export const emitYDoc = (data) => {
-    socketClient.current.emit('canvasEvent', data);
+export const emitYDoc = (data, type) => {
+    socketClient.current.emit('canvasEvent', {
+        data: data,
+        type: type,
+    });
 };
 
 export const emitLastYDoc = (data) => {
     socketClient.current.emit('emitLastYDoc', data);
-};
-
-export const getVersionList = () => {
-    return versionList;
-};
-
-export const addVersion = () => {
-    versionList.push([
-        {
-            date: new Date().getTime(),
-            drawingDocState: Y.encodeStateAsUpdate(doc),
-            versionDocState: Y.encodeStateAsUpdate(versionDoc),
-            clientID: versionDoc.clientID,
-        },
-    ]);
-};
-
-export const renderVersion = (version) => {
-    restoreVersion(version);
-};
-
-const restoreVersion = (version) => {
-    Y.applyUpdate(doc, version.drawingDocState); //doc state update
-    Y.applyUpdate(versionDoc, version.versionDocState); //version doc state update
-};
-
-export const clearVersionList = () => {
-    versionList.delete(0, versionList.length);
 };
 
 export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror');
@@ -123,10 +97,7 @@ class LocalRemoteUserData extends Y.PermanentUserData {
     }
 }
 
-export const permanentUserData = new LocalRemoteUserData(
-    doc,
-    versionDoc.getMap('userInfo')
-);
+export const permanentUserData = new LocalRemoteUserData(doc);
 
 /**
  * An array of draw element.
@@ -187,8 +158,6 @@ export const setUndoManager = (nextUndoManager) => {
 
 // @ts-ignore
 window.ydoc = doc;
-// @ts-ignore
-window.versionDoc = versionDoc;
 // @ts-ignore
 window.indexeddbPersistence = indexeddbPersistence;
 // @ts-ignore
