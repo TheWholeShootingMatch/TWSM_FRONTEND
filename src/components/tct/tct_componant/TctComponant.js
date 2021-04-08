@@ -52,11 +52,8 @@ function SideMenu({TcTnum}) {
     );
 }
 
-<<<<<<< HEAD
-function Header({TcTnum}) {
-=======
-function Header({ title }) {
->>>>>>> 6d4797a39901919e0abdcf2c1c9c749a51f6f470
+
+function Header({TcTnum, title}) {
     const [activeUsers, setActiveUsers] = useState([]);
     activeUserList.observe((ymapEvent) => {
         ymapEvent.changes.keys.forEach((change, key) => {
@@ -148,22 +145,14 @@ function Header({ title }) {
     );
 }
 
-<<<<<<< HEAD
-function TctComponant({ children }) {
-    const { TcTnum } = useParams();
 
-=======
 function TctComponant({ children, title }) {
->>>>>>> 6d4797a39901919e0abdcf2c1c9c749a51f6f470
+    const { TcTnum } = useParams();
     return (
         <div className="whole_wrapper">
             <SideMenu TcTnum={TcTnum} />
             <div className="tct_wrapper">
-<<<<<<< HEAD
-                <Header TcTnum={TcTnum} />
-=======
-                <Header title={title} />
->>>>>>> 6d4797a39901919e0abdcf2c1c9c749a51f6f470
+                <Header TcTnum={TcTnum} title={title}/>
                 {children}
             </div>
         </div>
