@@ -241,9 +241,12 @@ export const deleteObject = () => {
             const parseObject = JSON.parse(options);
             if (parseObject.id === actObj.id) {
                 shared.drawingContent.get().delete(index);
+                const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+                shared.emitYDoc(encodeDoc, 'clearDoc');
             }
         }
     });
+
     externalCanvas.remove(externalCanvas.getActiveObject());
 };
 
