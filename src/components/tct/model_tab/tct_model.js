@@ -222,7 +222,8 @@ function Main() {
     };
 
     // for selected list
-    const { selectedList, sendSelectedList } = useSocket(originSuffix);
+    const { TcTnum } = useParams();
+    const { selectedList, sendSelectedList } = useSocket(TcTnum*1);
 
     const [selectedDB, setSelectedDB] = useState([]);
 

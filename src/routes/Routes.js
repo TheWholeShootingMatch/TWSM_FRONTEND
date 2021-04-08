@@ -55,16 +55,20 @@ function Routes() {
                         <Route path="/mypage/project"><MyProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/create-project"><CreateProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/requested-message"><RequestedMessage isLogin={isLogin} userType={userType}/></Route>
+                        
                         <Route path="/login"><Login setIsLogin={setIsLogin} isLogin={isLogin} setUserType={setUserType}/></Route>
                         <Route path="/logout"><Logout setIsLogin={setIsLogin} setUserType={setUserType}/></Route>
                         <Route path="/signup"><Signup /></Route>
+
                         <Route path="/whiteboard/:TcTnum"><WhiteBoard /></Route>
-                        <Route path="/TctWorkflow"><TctWorkflow /></Route>
-                        <Route path="/TctModel/:skip"><TctModel /></Route>
-                        <Route path="/TctPhotographer/:skip"><TctPhotographer /></Route>
+                        <Route path="/TctWorkflow/:TcTnum"><TctWorkflow /></Route>
+                        <Route path="/TctModel/:skip/:TcTnum"><TctModel /></Route>
+                        <Route path="/TctPhotographer/:skip/:TcTnum"><TctPhotographer /></Route>
+
                         <Route path="/model/Model/:skip/:sort"><Model> <Header isLogin={isLogin}/> </Model></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
                         <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin} /> </New_Model></Route>
+
                         <Route path="/Photographer/Photographer/:skip/:sort"><Photographer> <Header isLogin={isLogin}/> </Photographer></Route>
                         <Route path="/Photographer/Photographer_Detail/:photographerId"><Photographer_Detail> <Header isLogin={isLogin}/> </Photographer_Detail></Route>
                         <Route path="/Photographer/New_Photographer"><New_Photographer> <Header isLogin={isLogin} /> </New_Photographer></Route>

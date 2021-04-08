@@ -8,7 +8,7 @@ import './TctComponant.scss';
 import axios from 'axios';
 import { YMapEvent } from 'yjs';
 
-function SideMenu() {
+function SideMenu({TcTnum}) {
     return (
         <div className="tct_sidemenu">
             <div className="logo_area">logo</div>
@@ -16,7 +16,7 @@ function SideMenu() {
                 <ul>
                     <li className="menu">
                         <NavLink
-                            to="/TctModel/0"
+                            to={`/TctModel/0/${TcTnum}`}
                             activeClassName="tct-menu-active"
                         >
                             model
@@ -24,7 +24,7 @@ function SideMenu() {
                     </li>
                     <li className="menu">
                         <NavLink
-                            to="/TctPhotographer/0"
+                            to={`/TctPhotographer/0/${TcTnum}`}
                             activeClassName="tct-menu-active"
                         >
                             photographer
@@ -52,7 +52,7 @@ function SideMenu() {
     );
 }
 
-function Header() {
+function Header({TcTnum}) {
     const [activeUsers, setActiveUsers] = useState([]);
     activeUserList.observe((ymapEvent) => {
         ymapEvent.changes.keys.forEach((change, key) => {
@@ -71,8 +71,6 @@ function Header() {
     });
 
     // for post
-    const { TcTnum } = useParams();
-
     const [inputs, setInputs] = useState({ TcTnum: TcTnum });
 
     const handleChange = (e) => {
@@ -123,11 +121,13 @@ function Header() {
 }
 
 function TctComponant({ children }) {
+    const { TcTnum } = useParams();
+
     return (
         <div className="whole_wrapper">
-            <SideMenu />
+            <SideMenu TcTnum={TcTnum} />
             <div className="tct_wrapper">
-                <Header />
+                <Header TcTnum={TcTnum} />
                 {children}
             </div>
         </div>
