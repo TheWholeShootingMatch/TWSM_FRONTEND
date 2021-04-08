@@ -52,18 +52,16 @@ function SideMenu() {
     );
 }
 
-function Header() {
+function Header({ title }) {
     const [activeUsers, setActiveUsers] = useState([]);
     activeUserList.observe((ymapEvent) => {
         ymapEvent.changes.keys.forEach((change, key) => {
             if (change.action === 'add') {
                 if (!activeUsers.includes(key)) {
-                    console.log('add', key);
                     setActiveUsers([...activeUsers, key]);
                 }
             } else if (change.action === 'delete') {
                 if (activeUsers.includes(key)) {
-                    console.log('delete', key);
                     setActiveUsers(activeUsers.filter((user) => user !== key));
                 }
             }
@@ -74,6 +72,25 @@ function Header() {
     const { TcTnum } = useParams();
 
     const [inputs, setInputs] = useState({ TcTnum: TcTnum });
+    const [titleInputs, setTitleInputs] = useState('');
+
+    const titleHandleChanges = (e) => {
+        const title = e.target.value;
+        setTitleInputs(title);
+    };
+
+    const titleSubmit = (e) => {
+        e.preventDefault();
+        axios
+            .post('/api/tct/title', {
+                titleInputs: titleInputs,
+                TcTnum: TcTnum,
+            })
+            .then((res) => console.log(res.data))
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     const handleChange = (e) => {
         const { value, name } = e.target;
@@ -96,7 +113,14 @@ function Header() {
     return (
         <header className="tct_header">
             <div className="project_title">
-                <input placeholder="project#1" />
+                <input
+                    placeholder={title}
+                    type="text"
+                    name="title"
+                    value={titleInputs}
+                    onChange={titleHandleChanges}
+                    onBlur={titleSubmit}
+                />
             </div>
             <div className="connected_users">
                 {activeUsers.map((user) => (
@@ -122,12 +146,12 @@ function Header() {
     );
 }
 
-function TctComponant({ children }) {
+function TctComponant({ children, title }) {
     return (
         <div className="whole_wrapper">
             <SideMenu />
             <div className="tct_wrapper">
-                <Header />
+                <Header title={title} />
                 {children}
             </div>
         </div>
