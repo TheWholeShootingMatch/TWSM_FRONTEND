@@ -40,7 +40,7 @@ function SideMenu({TcTnum}) {
                     </li>
                     <li className="menu">
                         <NavLink
-                            to="/TctWorkflow"
+                            to={`/TctWorkflow/${TcTnum}`}
                             activeClassName="tct-menu-active"
                         >
                             workflow
