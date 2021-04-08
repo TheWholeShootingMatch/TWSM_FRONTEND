@@ -20,6 +20,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
     const roomId = suffix;
     console.log(roomId);
 
+    console.log(Ydoc);
     //enter the room
     socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
         query: { roomId },
@@ -27,8 +28,23 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
     socketClient.current.on('canvasEvent', (req) => {
         const docUint8Array = new Uint8Array(req);
+        console.log('canvasEvent', docUint8Array);
         Y.applyUpdate(doc, docUint8Array);
     });
+
+    socketClient.current.on('versionEvent', (req) => {
+        const docUint8Array = new Uint8Array(req);
+        doc = new Y.Doc();
+        doc.gc = true;
+        restoreVersion(docUint8Array);
+        console.log('versionEvent', docUint8Array);
+    });
+
+    const restoreVersion = (docUint8Array) => {
+        Y.applyUpdate(doc, docUint8Array);
+        console.log(doc.getArray('').toJSON());
+        drawingContent.init(doc.getArray(''));
+    };
 
     socketClient.current.emit('peerConnectEvent');
 
@@ -63,6 +79,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
 };
 
 doc.on('update', (update) => {
+    console.log('update');
     drawingContent.init(doc.getArray(''));
 });
 
@@ -72,6 +89,10 @@ export const emitYDoc = (data, type) => {
         data: data,
         type: type,
     });
+};
+
+export const emitVersionDoc = (docName) => {
+    socketClient.current.emit('emitVersionDoc', docName);
 };
 
 export const emitLastYDoc = (data) => {
