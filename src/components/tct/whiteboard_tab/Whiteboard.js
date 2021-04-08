@@ -8,13 +8,13 @@ import React, {
 } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import TctComponant from '../tct_componant/TctComponant';
-import CropOriginalIcon from '@material-ui/icons/CropOriginal';
-import TextFieldsIcon from '@material-ui/icons/TextFields';
-import GestureIcon from '@material-ui/icons/Gesture';
-import PanToolIcon from '@material-ui/icons/PanTool';
-import DeleteIcon from '@material-ui/icons/Delete';
-import NearMeIcon from '@material-ui/icons/NearMe';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+// import CropOriginalIcon from '@material-ui/icons/CropOriginal';
+// import TextFieldsIcon from '@material-ui/icons/TextFields';
+// import GestureIcon from '@material-ui/icons/Gesture';
+// import PanToolIcon from '@material-ui/icons/PanTool';
+// import DeleteIcon from '@material-ui/icons/Delete';
+// import NearMeIcon from '@material-ui/icons/NearMe';
+// import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 // import UndoIcon from '@material-ui/icons/Undo';
 // import RedoIcon from '@material-ui/icons/Redo';
 import Canvas from './tools/Canvas';
@@ -136,7 +136,8 @@ function WhiteBoardHeader({
                             Tools.setToolOption('select', externalCanvas);
                         }}
                     >
-                        <NearMeIcon />
+                        Select
+                        {/* <NearMeIcon /> */}
                     </li>
                     <li
                         id="panning"
@@ -144,7 +145,8 @@ function WhiteBoardHeader({
                             Tools.setToolOption('panning', externalCanvas);
                         }}
                     >
-                        <PanToolIcon />
+                        Panning
+                        {/* <PanToolIcon /> */}
                     </li>
                     <li
                         id="figure"
@@ -152,7 +154,8 @@ function WhiteBoardHeader({
                             Tools.setToolOption('figure', externalCanvas);
                         }}
                     >
-                        <RadioButtonUncheckedIcon />
+                        Figure
+                        {/* <RadioButtonUncheckedIcon /> */}
                     </li>
                     <li
                         id="text"
@@ -160,7 +163,8 @@ function WhiteBoardHeader({
                             Tools.setToolOption('text', externalCanvas);
                         }}
                     >
-                        <TextFieldsIcon />
+                        Text
+                        {/* <TextFieldsIcon /> */}
                     </li>
                     <li
                         id="image"
@@ -169,7 +173,8 @@ function WhiteBoardHeader({
                             Tools.setToolOption('image', externalCanvas);
                         }}
                     >
-                        <CropOriginalIcon />
+                        Image
+                        {/* <CropOriginalIcon /> */}
                     </li>
                     <input
                         type="file"
@@ -184,7 +189,8 @@ function WhiteBoardHeader({
                             Tools.setToolOption('drawing', externalCanvas);
                         }}
                     >
-                        <GestureIcon />
+                        Drawing
+                        {/* <GestureIcon /> */}
                     </li>
                     {/* <li
                         id="undo"
@@ -211,7 +217,8 @@ function WhiteBoardHeader({
                             Tools.deleteObject();
                         }}
                     >
-                        <DeleteIcon />
+                        Delete
+                        {/* <DeleteIcon /> */}
                     </li>
                     {/* <li
                         id="trash"
