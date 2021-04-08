@@ -10,17 +10,17 @@ export const persistence = new LeveldbPersistence('./currentDoc');
 
 export let originSuffix = null;
 export let indexeddbPersistence = null;
-export let versionDoc = new Y.Doc();
 export let doc = new Y.Doc();
 let userDoc = new Y.Doc();
 export let activeUserList = userDoc.getMap('activeUserList');
-export const versionList = versionDoc.getArray('versionList');
 
 /* connect to room by shared link */
 export const connectToRoom = async (suffix, Ydoc) => {
     // tmp room id
     const roomId = suffix;
+    console.log(roomId);
 
+    console.log(Ydoc);
     //enter the room
     socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
         query: { roomId },
@@ -28,8 +28,23 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
     socketClient.current.on('canvasEvent', (req) => {
         const docUint8Array = new Uint8Array(req);
+        console.log('canvasEvent', docUint8Array);
         Y.applyUpdate(doc, docUint8Array);
     });
+
+    socketClient.current.on('versionEvent', (req) => {
+        const docUint8Array = new Uint8Array(req);
+        doc = new Y.Doc();
+        doc.gc = true;
+        restoreVersion(docUint8Array);
+        console.log('versionEvent', docUint8Array);
+    });
+
+    const restoreVersion = (docUint8Array) => {
+        Y.applyUpdate(doc, docUint8Array);
+        console.log(doc.getArray('').toJSON());
+        drawingContent.init(doc.getArray(''));
+    };
 
     socketClient.current.emit('peerConnectEvent');
 
@@ -64,44 +79,24 @@ export const connectToRoom = async (suffix, Ydoc) => {
 };
 
 doc.on('update', (update) => {
+    console.log('update');
     drawingContent.init(doc.getArray(''));
 });
 
 // Emit Changes to server (using socket-io)
-export const emitYDoc = (data) => {
-    socketClient.current.emit('canvasEvent', data);
+export const emitYDoc = (data, type) => {
+    socketClient.current.emit('canvasEvent', {
+        data: data,
+        type: type,
+    });
+};
+
+export const emitVersionDoc = (docName) => {
+    socketClient.current.emit('emitVersionDoc', docName);
 };
 
 export const emitLastYDoc = (data) => {
     socketClient.current.emit('emitLastYDoc', data);
-};
-
-export const getVersionList = () => {
-    return versionList;
-};
-
-export const addVersion = () => {
-    versionList.push([
-        {
-            date: new Date().getTime(),
-            drawingDocState: Y.encodeStateAsUpdate(doc),
-            versionDocState: Y.encodeStateAsUpdate(versionDoc),
-            clientID: versionDoc.clientID,
-        },
-    ]);
-};
-
-export const renderVersion = (version) => {
-    restoreVersion(version);
-};
-
-const restoreVersion = (version) => {
-    Y.applyUpdate(doc, version.drawingDocState); //doc state update
-    Y.applyUpdate(versionDoc, version.versionDocState); //version doc state update
-};
-
-export const clearVersionList = () => {
-    versionList.delete(0, versionList.length);
 };
 
 export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror');
@@ -123,10 +118,7 @@ class LocalRemoteUserData extends Y.PermanentUserData {
     }
 }
 
-export const permanentUserData = new LocalRemoteUserData(
-    doc,
-    versionDoc.getMap('userInfo')
-);
+export const permanentUserData = new LocalRemoteUserData(doc);
 
 /**
  * An array of draw element.
@@ -187,8 +179,6 @@ export const setUndoManager = (nextUndoManager) => {
 
 // @ts-ignore
 window.ydoc = doc;
-// @ts-ignore
-window.versionDoc = versionDoc;
 // @ts-ignore
 window.indexeddbPersistence = indexeddbPersistence;
 // @ts-ignore

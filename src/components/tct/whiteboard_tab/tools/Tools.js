@@ -7,6 +7,8 @@ import FabricProto from '../extension/FabricProto';
 /* delete all (trash action) */
 export const deleteAllDrawing = () => {
     shared.drawingContent.clear();
+    const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+    shared.emitYDoc(encodeDoc, 'clearDoc');
 };
 
 /* undo drawing (undo action) */
@@ -17,11 +19,6 @@ export const undoDrawing = () => {
 /* redo drawing (redo action) */
 export const redoDrawing = () => {
     shared.whiteboardUndoManager.redo();
-};
-
-export const getVersionList = () => {
-    const versions = shared.getVersionList();
-    return versions;
 };
 
 export const uploadImage = (fileUploaded, externalCanvas) => {
@@ -48,7 +45,7 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             drawElement.set('options', yArray);
             shared.drawingContent.get().push([drawElement]);
             const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-            shared.emitYDoc(encodeDoc);
+            shared.emitYDoc(encodeDoc, 'addObj');
             externalCanvas.renderAll();
         };
     };
@@ -128,7 +125,7 @@ export const mouseMove = (o, canvas) => {
 const emitObject = (drawElement) => {
     shared.drawingContent.get().push([drawElement]);
     const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-    shared.emitYDoc(encodeDoc);
+    shared.emitYDoc(encodeDoc, 'addObj');
 };
 
 //http://jsfiddle.net/softvar/Nt8f7/
@@ -198,7 +195,7 @@ export const objectModified = (o) => {
             },
         ]);
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-        shared.emitYDoc(encodeDoc);
+        shared.emitYDoc(encodeDoc, 'moveObj');
     }
 };
 
@@ -244,9 +241,12 @@ export const deleteObject = () => {
             const parseObject = JSON.parse(options);
             if (parseObject.id === actObj.id) {
                 shared.drawingContent.get().delete(index);
+                const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+                shared.emitYDoc(encodeDoc, 'clearDoc');
             }
         }
     });
+
     externalCanvas.remove(externalCanvas.getActiveObject());
 };
 
