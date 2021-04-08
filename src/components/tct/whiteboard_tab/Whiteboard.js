@@ -15,8 +15,8 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import DeleteIcon from '@material-ui/icons/Delete';
 import NearMeIcon from '@material-ui/icons/NearMe';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import UndoIcon from '@material-ui/icons/Undo';
-import RedoIcon from '@material-ui/icons/Redo';
+// import UndoIcon from '@material-ui/icons/Undo';
+// import RedoIcon from '@material-ui/icons/Redo';
 import Canvas from './tools/Canvas';
 import {
     connectToRoom,
