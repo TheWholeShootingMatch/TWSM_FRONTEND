@@ -28,7 +28,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
     socketClient.current.on('canvasEvent', (req) => {
         const docUint8Array = new Uint8Array(req);
-        console.log('canvasEvent', docUint8Array);
+        // console.log('canvasEvent', docUint8Array);
         Y.applyUpdate(doc, docUint8Array);
     });
 
@@ -37,7 +37,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
         doc = new Y.Doc();
         doc.gc = true;
         restoreVersion(docUint8Array);
-        console.log('versionEvent', docUint8Array);
+        // console.log('versionEvent', docUint8Array);
     });
 
     const restoreVersion = (docUint8Array) => {
