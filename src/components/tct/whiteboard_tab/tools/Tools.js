@@ -60,7 +60,9 @@ let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
-  canvas.off('mouse:down', function (o) { console.log("aaaaaaaaaaaaa") });
+    canvas.off('mouse:down', function (o) {
+        console.log('aaaaaaaaaaaaa');
+    });
     console.log(o);
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
@@ -99,7 +101,7 @@ export const mouseDown = (o, canvas) => {
             left: pointer.x,
             top: pointer.y,
             width: 10,
-            backgroundColor : "white",
+            backgroundColor: 'white',
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
@@ -121,16 +123,15 @@ export const mouseMove = (o, canvas) => {
         let pointer = canvas.getPointer(o.e);
         circle.set({ radius: Math.abs(origX - pointer.x) });
         canvas.renderAll();
-    }
-    else if (currentType === 'text') {
-      if (!isDown) {
-          return;
-      }
-      let pointer = canvas.getPointer(o.e);
-      textbox.set({
-        width: Math.abs(textbox.left - pointer.x)
-      });
-      canvas.renderAll();
+    } else if (currentType === 'text') {
+        if (!isDown) {
+            return;
+        }
+        let pointer = canvas.getPointer(o.e);
+        textbox.set({
+            width: Math.abs(textbox.left - pointer.x),
+        });
+        canvas.renderAll();
     }
 };
 
@@ -237,12 +238,19 @@ export const deleteObject = () => {
         const options = drawElement.get('options').toArray()[0];
         if (options) {
             const parseObject = JSON.parse(options);
-            if (parseObject!== undefined && parseObject!== 'undefined' && parseObject !== null && actObj !== undefined && actObj !== 'undefined' && actObj !== null) {
-              if (parseObject.id === actObj.id) {
-                shared.drawingContent.get().delete(index);
-                const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-                shared.emitYDoc(encodeDoc, 'clearDoc');
-              }
+            if (
+                parseObject !== undefined &&
+                parseObject !== 'undefined' &&
+                parseObject !== null &&
+                actObj !== undefined &&
+                actObj !== 'undefined' &&
+                actObj !== null
+            ) {
+                if (parseObject.id === actObj.id) {
+                    shared.drawingContent.get().delete(index);
+                    const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+                    shared.emitYDoc(encodeDoc, 'clearDoc');
+                }
             }
         }
     });
@@ -284,10 +292,10 @@ export const setToolOption = (type, canvas) => {
             getObject(o);
         });
     } else {
+        externalCanvas.toggleDragMode(false);
         canvas.selection = true;
         canvas.isDrawingMode = false;
         changeStatus(true, canvas);
-        externalCanvas.toggleDragMode(false);
         canvas.off('mouse:down', function (o) {
             mouseDown(o, canvas);
         });
