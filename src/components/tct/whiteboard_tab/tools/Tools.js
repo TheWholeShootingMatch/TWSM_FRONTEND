@@ -60,7 +60,6 @@ let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
-  canvas.off('mouse:down', function (o) { console.log("aaaaaaaaaaaaa") });
     console.log(o);
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
