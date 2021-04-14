@@ -46,12 +46,14 @@ export const connectToRoom = async (suffix, Ydoc) => {
         drawingContent.init(doc.getArray(''));
     };
 
-    socketClient.current.emit('peerConnectEvent');
+    socketClient.current.emit('peerConnectEvent', {
+        id: window.localStorage.getItem('id'),
+    });
 
     socketClient.current.on('peerConnectEvent', (client) => {
         client.forEach((client) => {
-            if (!activeUserList.has(client)) {
-                activeUserList.set(client, [client]);
+            if (!activeUserList.has(client.socketId)) {
+                activeUserList.set(client.socketId, [client]);
             }
         });
     });
@@ -64,8 +66,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
     if (originSuffix === null) {
         originSuffix = suffix;
         const persistedYdoc = await persistence.getYDoc('doc');
-        const binaryEncoded = toUint8Array(Ydoc);
-        Y.applyUpdate(doc, binaryEncoded);
+        Y.applyUpdate(doc, toUint8Array(Ydoc));
         // if (persistedYdoc.share.size) {
         //     // console.log(Y.encodeStateAsUpdate(persistedYdoc));
         //     // Y.applyUpdate(doc, Y.encodeStateAsUpdate(persistedYdoc));

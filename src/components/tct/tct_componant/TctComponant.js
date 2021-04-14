@@ -8,7 +8,7 @@ import './TctComponant.scss';
 import axios from 'axios';
 import { YMapEvent } from 'yjs';
 
-function SideMenu({TcTnum}) {
+function SideMenu({ TcTnum }) {
     return (
         <div className="tct_sidemenu">
             <div className="logo_area">logo</div>
@@ -52,18 +52,22 @@ function SideMenu({TcTnum}) {
     );
 }
 
-
-function Header({TcTnum, title}) {
+function Header({ TcTnum, title }) {
     const [activeUsers, setActiveUsers] = useState([]);
     activeUserList.observe((ymapEvent) => {
         ymapEvent.changes.keys.forEach((change, key) => {
             if (change.action === 'add') {
-                if (!activeUsers.includes(key)) {
-                    setActiveUsers([...activeUsers, key]);
+                const socketId = activeUsers.map((e) => e.socketId);
+                if (!socketId.includes(key)) {
+                    const user = activeUserList.get(key);
+                    setActiveUsers([...activeUsers, user[0]]);
                 }
             } else if (change.action === 'delete') {
-                if (activeUsers.includes(key)) {
-                    setActiveUsers(activeUsers.filter((user) => user !== key));
+                const socketId = activeUsers.map((e) => e.socketId);
+                if (socketId.includes(key)) {
+                    setActiveUsers(
+                        activeUsers.filter((user) => user.socketId !== key)
+                    );
                 }
             }
         });
@@ -123,7 +127,9 @@ function Header({TcTnum, title}) {
             </div>
             <div className="connected_users">
                 {activeUsers.map((user) => (
-                    <span className="user_icon">{user}</span>
+                    <span className="user_icon" style={{ color: user.color }}>
+                        {user.id}
+                    </span>
                 ))}
                 <span className="invite_btn">
                     <details>
@@ -145,14 +151,13 @@ function Header({TcTnum, title}) {
     );
 }
 
-
 function TctComponant({ children, title }) {
     const { TcTnum } = useParams();
     return (
         <div className="whole_wrapper">
             <SideMenu TcTnum={TcTnum} />
             <div className="tct_wrapper">
-                <Header TcTnum={TcTnum} title={title}/>
+                <Header TcTnum={TcTnum} title={title} />
                 {children}
             </div>
         </div>
