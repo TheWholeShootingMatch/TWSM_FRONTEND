@@ -1,10 +1,11 @@
-.model_area{
-    &.active{
-        min-height: 200px;
+.model_form {
+  display: none;
+}
 
-    }
+.photographer_form {
+  display: none;
+}
 
-    &.model_area{
-        max-height: 0;
-    }
+.active {
+  display: block;
 }

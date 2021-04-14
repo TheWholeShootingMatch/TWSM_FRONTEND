@@ -1,189 +1,231 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 import Header from "../common/header";
 import "./NewCollaboration.scss";
-
-function NewCollaborate({isLogin}) {
-
-  return (
-  
-    <div>
-      <Header isLogin={isLogin} />
-      <div className="collaboration_wrapper">
-        <main>
-          <CollaborationForm />
-        </main>
-      </div>
-    </div>
-  );
-}
 
 function CollaborationForm() {
 
   const [isModel, setModel] = useState(false);
   const [isPhotographer, setPhotographer] = useState(false);
 
-  const handleSubmit = () => {
+  const onClickArea = (type) => {
+    if (type === "model") {
+      setModel(!isModel);
+      console.log("model button", isModel);
+      if(isModel) {
+
+      }
+    }
+    else if(type==="photographer"){
+      setPhotographer(!isPhotographer);
+      console.log("photographer button", isPhotographer)
+    }
 
   }
 
-  const handleCollaborate = () => {
+  const [collaborate, setCollaborate] = useState({
+    Model : false,
+    Photographer : false,
+    title : "",
+    corporation_name : "",
+    about_project : "",
+    location : "",
+    date : "",
+    gender: "",
+    age_min: "",
+    age_max: "",
+    height_min: "",
+    height_max: "",
+    weight_min: "",
+    weight_max: "",
+    busto_min: "",
+    busto_max: "",
+    quadril_min: "",
+    quadril_max: "",
+    cintura_min: "",
+    cintura_max: "",
+    ethnicity: "",
+    eye_color: "",
+    hair_color: "",
+    model_field: "",
+    model_detail: "",
+    photographer_field: "",
+    retouch: "",
+    photographer_detail: ""
+  });
 
+  let history = useHistory();
+
+  useEffect(() => {
+    setCollaborate({
+      ...collaborate,
+      Model: isModel
+    })
+  }, [isModel])
+
+  useEffect(() => {
+    setCollaborate({
+      ...collaborate,
+      Photographer: isPhotographer
+    })
+  }, [isPhotographer])
+
+  const handleChange = (e) => {
+    const {value, name}  = e.target;
+    setCollaborate({
+      ...collaborate,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log(collaborate)
+    axios.post("/api/collaboration/new", collaborate)
+    .then((res) => {history.push('/collaboration/project')});
   }
-
-  const handleModel = () => {
-
-  }
-
-  const handlePhotographer = () => {
-
-  }
-
-  // const onClickArea = (type) => {
-  //   if (type === "model") {
-  //     setModel(!isModel);
-  //   }
-  //   else {
-  //     setPhotographer(!isPhotographer);
-  //   }
-  // }
 
   return (
-        <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="overview">
         <div className="title_area">
           <label htmlFor="title">Title</label>
-          <input type="text" name="title" onChange={handleCollaborate}/>
+          <input type="text" name="title" onChange={handleChange}/>
         </div>
         <div className="corporation_name_area">
           <label htmlFor="corporation_name">Corporation name</label>
-          <input type="text" name="corporation_name" onChange={handleCollaborate}/>
+          <input type="text" name="corporation_name" onChange={handleChange}/>
         </div>
         <div className="about_project_area">
           <label htmlFor="about_project"></label>
-          <input type="text" name="about_project" onChange={handleCollaborate}/>
+          <input type="text" name="about_project" onChange={handleChange}/>
         </div>
-        <div className="shooting_location_area">
-          <label htmlFor="shooting_location">Shooting Location</label>
-          <input type="text" name="shooting_location" onChange={handleCollaborate}/>
+        <div className="location_area">
+          <label htmlFor="location">Shooting Location</label>
+          <input type="text" name="location" onChange={handleChange}/>
         </div>
-        <div className="language_area">
-          <label htmlFor="language"></label>
-          <input type="text" name="language" onChange={handleCollaborate}/>
-        </div>
-        <div className="shooting_date_area">
-          <label htmlFor="shooting_date"></label>
-          <input type="date" name="shootingdate" onChange={handleCollaborate}/>
+        <div className="date_area">
+          <label htmlFor="date"></label>
+          <input type="date" name="date" onChange={handleChange}/>
         </div>
       </div>
 
-        {/* photographer_area */}
       <div className="model">
-        <div className="title_area">
-          <button>Model</button>
+        <div className="model_button">
+          <button type="button" onClick={()=>onClickArea('model')}>Model</button>
         </div>
-        <div>
+        <div className={isModel ? "model_form active" : "model_form"}>
           <div className="gender_area">
             <label htmlFor="gender">Gender</label>
-            <radio name="gender" value="A" onChange={handleModel}/>All
-            <radio name="gender" value="M" onChange={handleModel}/>Male
-            <radio name="gender" value="F" onChange={handleModel}/>Female
+            <input type="radio" name="gender" value="A" onChange={handleChange}/>All
+            <input type="radio" name="gender" value="M" onChange={handleChange}/>Male
+            <input type="radio" name="gender" value="F" onChange={handleChange}/>Female
           </div>
           <div className="model_age_area">
-            <label >Age</label>
-            <input type="number" name="age_min" min="0" onChange={handleModel}/> - <input type="number" name="age_max"  onChange={handleModel}/>years
+            <label htmlFor='age'>Age</label>
+            <input type="number" name="age_min" min="0" onChange={handleChange}/> - <input type="number" name="age_max"  onChange={handleChange}/>years
           </div>
           <div className="model_height_area">
-            <label >Height</label>
-            <input type="number" name="height_min" min="0" onChange={handleModel}/> - <input type="number" name="height_max" onChange={handleModel}/>cm
+            <label htmlFor="height">Height</label>
+            <input type="number" name="height_min" min="0" onChange={handleChange}/> - <input type="number" name="height_max" onChange={handleChange}/>cm
           </div>
           <div className="model_weight_area">
-            <label >Weight</label>
-            <input type="number" name="weight_min" min="0" onChange={handleModel}/> - <input type="number" name="weight_max" onChange={handleModel}/>kg
+            <label htmlFor='weight'>Weight</label>
+            <input type="number" name="weight_min" min="0" onChange={handleChange}/> - <input type="number" name="weight_max" onChange={handleChange}/>kg
           </div>
-          <div className="model_top_size_area">
-            <label >Top size</label>
-            <input type="number" name="top_size_min" min="0" onChange={handleModel}/> - <input type="number" name="top_size_max" onChange={handleModel}/>
+          <div className="model_busto_area">
+            <label htmlFor='busto'>Busto</label>
+            <input type="number" name="busto_min" min="0" onChange={handleChange}/> - <input type="number" name="busto_max" onChange={handleChange}/>
           </div>
-          <div className="model_height_area">
-            <label >Buttom size</label>
-            <input type="number" name="bottom_size_min" min="0" onChange={handleModel}/> - <input type="number" name="bottom_size_max" onChange={handleModel}/>
+          <div className="model_quadril_area">
+            <label htmlFor='quadril'>Quadril</label>
+            <input type="number" name="quadril_min" min="0" onChange={handleChange}/> - <input type="number" name="quadril_max" onChange={handleChange}/>
           </div>
-          <div className="model_height_area">
-            <label >Shoe size</label>
-            <input type="number" name="model_height" min="0" onChange={handleModel}/> - <input type="number" name="shoe_size_max" onChange={handleModel}/>mm
+          <div className="model_cintura_area">
+            <label htmlFor='cintura'>Cintura</label>
+            <input type="number" name="cintura_min" min="0" onChange={handleChange}/> - <input type="number" name="cintura_max" onChange={handleChange}/>
           </div>
           <div className="ethnicity_area">
-            <label htmlFor="ethnicity">Ethnicity</label>
-            <checkbox name="ethnicity" value="All" onChange={handleModel}/>All
-            <checkbox name="ethnicity" value="American" onChange={handleModel}/>American
-            <checkbox name="ethnicity" value="European" onChange={handleModel}/>European
-            <checkbox name="ethnicity" value="Asian" onChange={handleModel}/>Asian
-            <checkbox name="ethnicity" value="African" onChange={handleModel}/>African
-            <checkbox name="ethnicity" value="Others" onChange={handleModel}/>Others
+            <label htmlFor='ethnicity'>Ethnicity</label>
+            <input type="checkbox" name="ethnicity" value="All" onChange={handleChange}/>All
+            <input type="checkbox" name="ethnicity" value="American" onChange={handleChange}/>American
+            <input type="checkbox" name="ethnicity" value="European" onChange={handleChange}/>European
+            <input type="checkbox" name="ethnicity" value="Asian" onChange={handleChange}/>Asian
+            <input type="checkbox" name="ethnicity" value="African" onChange={handleChange}/>African
+            <input type="checkbox" name="ethnicity" value="Others" onChange={handleChange}/>Others
           </div>
           <div className="eye_color_area">
-            <label htmlFor="eye_color">Eye Color</label>
-            <checkbox name="eye_color" value="All" onChange={handleModel}/>All
-            <checkbox name="eye_color" value="Black" onChange={handleModel}/>Black
-            <checkbox name="eye_color" value="Blue" onChange={handleModel}/>Blue
-            <checkbox name="eye_color" value="Brown" onChange={handleModel}/>Brown
-            <checkbox name="eye_color" value="Green" onChange={handleModel}/>Green
-            <checkbox name="eye_color" value="Others" onChange={handleModel}/>Others
+            <label htmlFor='eye_color'>Eye Color</label>
+            <input type="checkbox" name="eye_color" value="All" onChange={handleChange}/>All
+            <input type="checkbox" name="eye_color" value="Black" onChange={handleChange}/>Black
+            <input type="checkbox" name="eye_color" value="Blue" onChange={handleChange}/>Blue
+            <input type="checkbox" name="eye_color" value="Brown" onChange={handleChange}/>Brown
+            <input type="checkbox" name="eye_color" value="Green" onChange={handleChange}/>Green
+            <input type="checkbox" name="eye_color" value="Others" onChange={handleChange}/>Others
           </div>
           <div className="hair_color_area">
-            <label htmlFor="hair_color">Hair Color</label>
-            <checkbox name="hair_color" value="All" onChange={handleModel}/>All
-            <checkbox name="hair_color" value="Black" onChange={handleModel}/>Black
-            <checkbox name="hair_color" value="Blonde" onChange={handleModel}/>Blonde
-            <checkbox name="hair_color" value="Brown" onChange={handleModel}/>Brown
-            <checkbox name="hair_color" value="Grey" onChange={handleModel}/>Grey
-            <checkbox name="hair_color" value="Others" onChange={handleModel}/>Others
+            <label htmlFor='hair_color'>Hair Color</label>
+            <input type="checkbox" name="hair_color" value="All" onChange={handleChange}/>All
+            <input type="checkbox" name="hair_color" value="Black" onChange={handleChange}/>Black
+            <input type="checkbox" name="hair_color" value="Blonde" onChange={handleChange}/>Blonde
+            <input type="checkbox" name="hair_color" value="Brown" onChange={handleChange}/>Brown
+            <input type="checkbox" name="hair_color" value="Grey" onChange={handleChange}/>Grey
+            <input type="checkbox" name="hair_color" value="Others" onChange={handleChange}/>Others
           </div>
-          <div className="field_area">
-            <label htmlFor="field">Field</label>
-            <checkbox name="field" value="Fashion" onChange={handleModel}/>Fashion
-            <checkbox name="field" value="Hair/Makeup" onChange={handleModel}/>Hair/Mackup
-            <checkbox name="field" value="Shoe" onChange={handleModel}/>Shoe
-            <checkbox name="field" value="Sport" onChange={handleModel}/>Sport
-            <checkbox name="field" value="Runway" onChange={handleModel}/>Runway
-            <checkbox name="field" value="Others" onChange={handleModel}/>Others
+          <div className="model_field_area">
+            <label htmlFor='model_field'>Field</label>
+            <input type="checkbox" name="model_field" value="Fashion" onChange={handleChange}/>Fashion
+            <input type="checkbox" name="model_field" value="Hair/Makeup" onChange={handleChange}/>Hair/Mackup
+            <input type="checkbox" name="model_field" value="Shoe" onChange={handleChange}/>Shoe
+            <input type="checkbox" name="model_field" value="Sport" onChange={handleChange}/>Sport
+            <input type="checkbox" name="model_field" value="Runway" onChange={handleChange}/>Runway
+            <input type="checkbox" name="model_field" value="Others" onChange={handleChange}/>Others
           </div>
-          <div classNmae="model_detail">
-            <input type="text" name="detail" onChange={handleModel}/>
+          <div className="model_detail">
+            <input type="text" name="model_detail" onChange={handleChange}/>
           </div>
         </div>
       </div>
 
-        
-      {/* photographer_area */}
       <div className="photographer">
-        <div className="title_area">
-          <button>photographer</button>
+        <div className="photographer_button">
+          <button type="button" onClick={()=>onClickArea('photographer')}>photographer</button>
         </div>
-        <div>
+        <div className={isPhotographer ? "photographer_form active" : "photographer_form"}>
           <div className="field_area">
-            <label htmlFor="field">Field</label>
-            <checkbox name="field" value="Fashion" onChange={handlePhotographer}/>Fashion
-            <checkbox name="field" value="Hair/Makeup" onChange={handlePhotographer}/>Hair/Mackup
-            <checkbox name="field" value="Shoe" onChange={handlePhotographer}/>Shoe
-            <checkbox name="field" value="Sport" onChange={handlePhotographer}/>Sport
-            <checkbox name="field" value="Object" onChange={handlePhotographer}/>Object
-            <checkbox name="field" value="Others" onChange={handlePhotographer}/>Others
+            <label htmlFor="photographer_field">Field</label>
+            <input type="checkbox" name="photographer_field" value="Fashion" onChange={handleChange}/>Fashion
+            <input type="checkbox" name="photographer_field" value="Hair/Makeup" onChange={handleChange}/>Hair/Mackup
+            <input type="checkbox" name="photographer_field" value="Shoe" onChange={handleChange}/>Shoe
+            <input type="checkbox" name="photographer_field" value="Sport" onChange={handleChange}/>Sport
+            <input type="checkbox" name="photographer_field" value="Object" onChange={handleChange}/>Object
+            <input type="checkbox" name="photographer_field" value="Others" onChange={handleChange}/>Others
           </div>
           <div className="retouch">
-            <lable htmlFor="retouch">Retouch</lable>
-            <radio name="retouch" value="Y" onChange={handlePhotographer}/>Yes
-            <radio name="retouch" value="N" onChange={handlePhotographer}/>No
+            <label htmlFor="retouch">Retouch</label>
+            <input type="radio" name="retouch" value="Y" onChange={handleChange}/>Yes
+            <input type="radio" name="retouch" value="N" onChange={handleChange}/>No
           </div>
-          <div classNmae="photographer_detail">
-            <input type="text" name="detail" onChange={handlePhotographer}/>
-          </div>
+          <div className="photographer_detail">
+            <input type="text" name="photographer_detail" onChange={handleChange}/>
           </div>
         </div>
+      </div>
+
       <button type="submit">save</button>
     </form>
   )
-  
 }
+
+function NewCollaborate(props) {
+
+  return (
+    <>
+      <CollaborationForm/>
+    </>
+  )
+}
+
 export default NewCollaborate;
