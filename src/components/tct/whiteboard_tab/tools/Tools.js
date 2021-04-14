@@ -60,6 +60,7 @@ let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
+  canvas.off('mouse:down', function (o) { console.log("aaaaaaaaaaaaa") });
     console.log(o);
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
@@ -97,7 +98,8 @@ export const mouseDown = (o, canvas) => {
         textbox = new fabric.Textbox('type', {
             left: pointer.x,
             top: pointer.y,
-            width: 100,
+            width: 10,
+            backgroundColor : "white",
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
@@ -120,6 +122,16 @@ export const mouseMove = (o, canvas) => {
         circle.set({ radius: Math.abs(origX - pointer.x) });
         canvas.renderAll();
     }
+    else if (currentType === 'text') {
+      if (!isDown) {
+          return;
+      }
+      let pointer = canvas.getPointer(o.e);
+      textbox.set({
+        width: Math.abs(textbox.left - pointer.x)
+      });
+      canvas.renderAll();
+    }
 };
 
 const emitObject = (drawElement) => {
@@ -137,7 +149,6 @@ const getObject = (o) => {
             drawElement.set('options', sharedLine);
             emitObject(drawElement);
         } else if (currentType === 'text') {
-            // currentType = "select";
             const jsonObject = JSON.stringify(textbox);
             sharedLine.push([jsonObject]);
             drawElement.set('options', sharedLine);
@@ -207,19 +218,6 @@ export const afterObjectModified = (o) => {
             if (options) {
                 const parseObject = JSON.parse(options);
                 if (parseObject.id === actObj.id) {
-                    // if (actObj.type === 'textbox') {
-                    //     shared.coordinate.push([
-                    //         {
-                    //             id: actObj.id,
-                    //             left: actObj.left,
-                    //             top: actObj.top,
-                    //             scaleX: actObj.scaleX,
-                    //             scaleY: actObj.scaleY,
-                    //             angle: actObj.angle,
-                    //             text: actObj.text,
-                    //         },
-                    //     ]);
-                    // }
                     const newYarray = new Y.Array();
                     const jsonModifiedObject = JSON.stringify(actObj);
                     newYarray.push([jsonModifiedObject]);
@@ -239,10 +237,12 @@ export const deleteObject = () => {
         const options = drawElement.get('options').toArray()[0];
         if (options) {
             const parseObject = JSON.parse(options);
-            if (parseObject.id === actObj.id) {
+            if (parseObject!== undefined && parseObject!== 'undefined' && parseObject !== null && actObj !== undefined && actObj !== 'undefined' && actObj !== null) {
+              if (parseObject.id === actObj.id) {
                 shared.drawingContent.get().delete(index);
                 const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
                 shared.emitYDoc(encodeDoc, 'clearDoc');
+              }
             }
         }
     });

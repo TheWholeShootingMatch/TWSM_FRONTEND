@@ -91,26 +91,28 @@ export default function Canvas({ activeSlide }) {
     const movingObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
-            if (activeObj.type === 'textbox') {
-                console.log(yaEvent.text);
-                activeObj.text = yaEvent.text;
+            if (activeObj !== undefined && activeObj !== 'undefined' && activeObj !== null) {
+              if (activeObj.type === 'textbox') {
+                  console.log(yaEvent.text);
+                  activeObj.text = yaEvent.text;
+              }
+              activeObj.animate(
+                  {
+                      left: yaEvent.left,
+                      top: yaEvent.top,
+                      scaleX: yaEvent.scaleX,
+                      scaleY: yaEvent.scaleY,
+                      angle: yaEvent.angle,
+                  },
+                  {
+                      duration: 500,
+                      onChange: function () {
+                          activeObj.setCoords();
+                          canvas.renderAll();
+                      },
+                  }
+              );  
             }
-            activeObj.animate(
-                {
-                    left: yaEvent.left,
-                    top: yaEvent.top,
-                    scaleX: yaEvent.scaleX,
-                    scaleY: yaEvent.scaleY,
-                    angle: yaEvent.angle,
-                },
-                {
-                    duration: 500,
-                    onChange: function () {
-                        activeObj.setCoords();
-                        canvas.renderAll();
-                    },
-                }
-            );
         }
     };
 
