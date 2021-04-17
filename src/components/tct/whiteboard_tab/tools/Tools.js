@@ -260,6 +260,7 @@ export const setToolOption = (type, canvas) => {
     if (type === 'panning') {
         externalCanvas.toggleDragMode(true);
     } else if (type !== 'select') {
+        canvas.discardActiveObject();
         canvas.selection = false;
         canvas.isDrawingMode = false;
         changeStatus(false, canvas);
