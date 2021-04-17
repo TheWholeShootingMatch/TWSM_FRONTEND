@@ -99,6 +99,8 @@ export const mouseDown = (o, canvas) => {
             top: pointer.y,
             width: 10,
             backgroundColor: 'white',
+            selectable: false,
+            evented: false,
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
@@ -125,9 +127,7 @@ export const mouseMove = (o, canvas) => {
             return;
         }
         let pointer = canvas.getPointer(o.e);
-        textbox.set({
-            width: Math.abs(textbox.left - pointer.x),
-        });
+        textbox.set({ width: Math.abs(textbox.left - pointer.x) });
         canvas.renderAll();
     }
 };
