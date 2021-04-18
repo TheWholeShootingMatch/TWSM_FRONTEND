@@ -82,6 +82,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
 };
 
 doc.on('update', (update) => {
+    console.log('update');
     drawingContent.init(doc.getArray(''));
 });
 
