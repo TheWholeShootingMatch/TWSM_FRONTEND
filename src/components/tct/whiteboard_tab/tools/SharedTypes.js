@@ -4,7 +4,7 @@ import { LeveldbPersistence } from 'y-leveldb';
 import { toUint8Array } from 'js-base64';
 
 const SOCKET_SERVER_URL = ':3001';
-export const socketClient = socketIOClient('http://localhost:3001');
+export const socketClient = socketIOClient();
 
 export const persistence = new LeveldbPersistence('./currentDoc');
 
