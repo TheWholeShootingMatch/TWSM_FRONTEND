@@ -91,27 +91,26 @@ export default function Canvas({ activeSlide }) {
     const movingObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
-            if (activeObj !== undefined && activeObj !== 'undefined' && activeObj !== null) {
-              if (activeObj.type === 'textbox') {
-                  console.log(yaEvent.text);
-                  activeObj.text = yaEvent.text;
-              }
-              activeObj.animate(
-                  {
-                      left: yaEvent.left,
-                      top: yaEvent.top,
-                      scaleX: yaEvent.scaleX,
-                      scaleY: yaEvent.scaleY,
-                      angle: yaEvent.angle,
-                  },
-                  {
-                      duration: 500,
-                      onChange: function () {
-                          activeObj.setCoords();
-                          canvas.renderAll();
-                      },
-                  }
-              );  
+            if (typeof activeObj !== 'undefined') {
+                if (activeObj.type === 'textbox') {
+                    activeObj.text = yaEvent.text;
+                }
+                activeObj.animate(
+                    {
+                        left: yaEvent.left,
+                        top: yaEvent.top,
+                        scaleX: yaEvent.scaleX,
+                        scaleY: yaEvent.scaleY,
+                        angle: yaEvent.angle,
+                    },
+                    {
+                        duration: 500,
+                        onChange: function () {
+                            activeObj.setCoords();
+                            canvas.renderAll();
+                        },
+                    }
+                );
             }
         }
     };
@@ -137,6 +136,7 @@ export default function Canvas({ activeSlide }) {
                         const options = drawElement.get('options').toArray()[0];
                         if (options) {
                             const parseFigure = JSON.parse(options);
+                            console.log(parseFigure.id);
                             if (!getObjectById(parseFigure.id, canvas)) {
                                 const textbox = new fabric.Textbox(
                                     '',
@@ -199,13 +199,12 @@ export default function Canvas({ activeSlide }) {
                     return parseOptions.id;
                 });
 
-                for (let i = 0; i < canvas._objects.length; i++) {
-                    if (!currentObjectIds.includes(canvas._objects[i].id)) {
-                        console.log(canvas._objects[i]);
-                        canvas.remove(canvas._objects[i]);
-                    }
-                }
-                needTodraw = false;
+                const canvasObjects = canvas.getObjects();
+                const deletedObject = canvasObjects.filter(
+                    (obj) => currentObjectIds.includes(obj.id) === false
+                );
+                console.log(currentObjectIds, deletedObject);
+                canvas.remove(...deletedObject);
             }
         });
         canvas.renderAll();
