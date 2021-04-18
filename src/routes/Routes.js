@@ -74,7 +74,7 @@ function Routes() {
                         <Route path="/Photographer/Photographer_Detail/:photographerId"><Photographer_Detail> <Header isLogin={isLogin}/> </Photographer_Detail></Route>
                         <Route path="/Photographer/New_Photographer"><New_Photographer> <Header isLogin={isLogin} /> </New_Photographer></Route>
                         <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>
-                        <Route path="/collaboration/project/:currentPage"><Collaboration isLogin={isLogin}/></Route>
+                        <Route path="/collaboration/project/:currentPage/:sort"><Collaboration isLogin={isLogin}/></Route>
                         <Route path="/collaboration/Create_Project"><NewCollaborate isLogin={isLogin}/></Route>
                         <Route path="/collaboration/CollaborateDetail/:projectId"><CollaborateDetail isLogin={isLogin}/></Route>
                 </Switch>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../common/header";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { useFetch } from "../common/useFetch";
+import SideNav from "./sidenav";
+import { Link, useHistory, useParams, useLocation } from "react-router-dom";
+// import { useFetch } from "../common/useFetch";
 import axios from "axios";
 import _ from 'lodash';
 import './Collaboration.scss';
@@ -22,22 +23,73 @@ function paginate(list, pageNumber, pageSize) {
     .value();
 }
 
+function param({find, sort}) {
+  const findInput = {};
+  const sortInput = {};
+
+  if (find.get("category") === "M") {
+    findInput.model = true;
+  }
+  else if(find.get("category") === "P") {
+    findInput.photographer = true;
+  }
+  if (sort === "P") {
+    sortInput.height = 1;
+  }
+  else if (sort === "O") {
+    sortInput._id = 1;
+  }
+  else {
+    sortInput._id = -1;
+  }
+  return {
+    find : findInput,
+    sort : sortInput
+  };
+}
+
 function CollaborateProject({isLogin}) {
 
     let history = useHistory();
-    let {currentPage} = useParams();
-    const [collaborationProjects] = useFetch('/api/collaboration');
+    let location = useLocation();
+    let {currentPage, sort} = useParams();
+    const find = new URLSearchParams(location.search);
+    const [collaborationProjects, setCollaborationProjects] = useState(null);
+
+    async function fetchUrl() {
+      const response = await fetch("/api/collaboration",
+      {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(param({find, sort}))
+      });
+      const json = await response.json();
+      setCollaborationProjects(json);
+    }
+    
+    useEffect(() => {
+      fetchUrl();
+    }, [useLocation()]);
+
+    // const [collaborationProjects] = useFetch('/api/collaboration', JSON.stringify(param({find, sort})));
+
     const pageSize = 3;
     const pageCollaboration = paginate(collaborationProjects, currentPage, pageSize);
 
     const handlePageChange = (page) => {
       if(0 < page < collaborationProjects.length/pageSize+1) {
-        history.push(`/collaboration/project/${page}`)
+        history.push(`/collaboration/project/${page}/${sort}`)
         console.log(currentPage)
       }
     };
 
-    if(collaborationProjects.length===0) {
+    const handleChange = (e) => {
+      history.push(`/collaboration/project/1/${e.target.value}${location.search}`);
+    };
+
+    if(collaborationProjects===null) {
       return (
         <>
           <p>loading...</p>
@@ -50,7 +102,18 @@ function CollaborateProject({isLogin}) {
             <Header isLogin={isLogin}/>
             <div className="collaboration_wrapper">
               <main>
-                <NewButton isLogin={isLogin}/>
+                <div className="main-header">
+                  <div className="sorting_bar">
+                    <label htmlFor="sort">sort as </label>
+                    <select name="sort" onChange={handleChange}>
+                      <option value="L" defaultValue>Latest</option>
+                      <option value="O">Oldest</option>
+                      <option value="P">Popular</option>
+                    </select>
+                  </div>
+                  <NewButton isLogin={isLogin}/>
+                </div>
+                <SideNav/>
                 <table>
                   <thead>
                     <tr>
@@ -61,7 +124,7 @@ function CollaborateProject({isLogin}) {
                     </tr>
                   </thead>
                   <tbody>
-                    {pageCollaboration.map((project, index) => <Project project={project} index={(currentPage-1)*pageSize+index}/>)}
+                    {pageCollaboration.map((project, index) => <Project project={project} key={index} index={(currentPage-1)*pageSize+index}/>)}
                   </tbody>
                 </table>
                 <Pagination projectSize={collaborationProjects.length} pageSize={pageSize} currentPage={currentPage} onPageChange={handlePageChange}/>
