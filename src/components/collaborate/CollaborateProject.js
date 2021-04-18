@@ -108,7 +108,6 @@ function CollaborateProject({isLogin}) {
                     <select name="sort" onChange={handleChange}>
                       <option value="L" defaultValue>Latest</option>
                       <option value="O">Oldest</option>
-                      <option value="P">Popular</option>
                     </select>
                   </div>
                   <NewButton isLogin={isLogin}/>
