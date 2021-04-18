@@ -66,7 +66,9 @@ export const connectToRoom = async (suffix, Ydoc) => {
     if (originSuffix === null) {
         originSuffix = suffix;
         const persistedYdoc = await persistence.getYDoc('doc');
-        Y.applyUpdate(doc, toUint8Array(Ydoc));
+        const ecodedUint8Arr = toUint8Array(Ydoc);
+        console.log(ecodedUint8Arr);
+        Y.applyUpdate(doc, ecodedUint8Arr);
         // if (persistedYdoc.share.size) {
         //     // console.log(Y.encodeStateAsUpdate(persistedYdoc));
         //     // Y.applyUpdate(doc, Y.encodeStateAsUpdate(persistedYdoc));
@@ -80,7 +82,6 @@ export const connectToRoom = async (suffix, Ydoc) => {
 };
 
 doc.on('update', (update) => {
-    console.log('update');
     drawingContent.init(doc.getArray(''));
 });
 
@@ -154,6 +155,7 @@ export const drawingContent = {
         console.log(this.drawingContent);
     },
     clear() {
+        console.log(this.drawingContent.length);
         this.drawingContent.delete(0, this.drawingContent.length);
     },
 };
