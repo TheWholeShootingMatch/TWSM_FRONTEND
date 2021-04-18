@@ -99,8 +99,6 @@ export const mouseDown = (o, canvas) => {
             top: pointer.y,
             width: 10,
             backgroundColor: 'white',
-            selectable: false,
-            evented: false,
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
