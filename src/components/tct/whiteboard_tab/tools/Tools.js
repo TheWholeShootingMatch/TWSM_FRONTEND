@@ -60,7 +60,7 @@ let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
-    console.log(o);
+    // console.log(o);
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
     if (currentType === 'drawing') {
@@ -103,12 +103,13 @@ export const mouseDown = (o, canvas) => {
         let id = new Date().getTime().toString();
         textbox.id = id;
 
+        console.log('add text', textbox);
         canvas.add(textbox);
         drawElement.set('type', 'text');
 
-        // canvas.setActiveObject(textbox);
-        // textbox.enterEditing();
-        // canvas.renderAll();
+        canvas.setActiveObject(textbox);
+        textbox.enterEditing();
+        canvas.renderAll();
     }
 };
 
@@ -231,51 +232,56 @@ export const afterObjectModified = (o) => {
 
 export const deleteObject = () => {
     const actObj = externalCanvas.getActiveObject();
-    shared.drawingContent.get().map((drawElement, index) => {
-        const options = drawElement.get('options').toArray()[0];
-        if (options) {
-            const parseObject = JSON.parse(options);
-            if (
-                parseObject !== undefined &&
-                parseObject !== 'undefined' &&
-                parseObject !== null &&
-                actObj !== undefined &&
-                actObj !== 'undefined' &&
-                actObj !== null
-            ) {
-                if (parseObject.id === actObj.id) {
-                    shared.drawingContent.get().delete(index);
-                    const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-                    shared.emitYDoc(encodeDoc, 'clearDoc');
-                }
-            }
-        }
-    });
+    if (actObj) {
+        const actObjId =
+            typeof actObj._objects === 'undefined'
+                ? [actObj.id]
+                : actObj._objects.map((object) => object.id);
 
-    externalCanvas.remove(externalCanvas.getActiveObject());
+        console.log(actObjId);
+
+        shared.doc.transact(() => {
+            actObjId.map((id) => {
+                shared.drawingContent.get().forEach((drawElement, index) => {
+                    const options = drawElement.get('options').toArray()[0];
+                    if (options) {
+                        const parseObject = JSON.parse(options);
+                        if (typeof parseObject !== 'undefined') {
+                            if (parseObject.id === id) {
+                                console.log(
+                                    index,
+                                    drawElement,
+                                    shared.drawingContent.get()._length,
+                                    shared.drawingContent.get().toArray()
+                                );
+                                shared.drawingContent.get().delete(index, 1);
+                            }
+                        }
+                    }
+                });
+            });
+        });
+        const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
+        shared.emitYDoc(encodeDoc, 'clearDoc');
+        externalCanvas.remove(actObj);
+    }
 };
+
+let initType = true;
 
 export const setToolOption = (type, canvas) => {
     currentType = type;
     if (type === 'panning') {
         externalCanvas.toggleDragMode(true);
     } else if (type !== 'select') {
+        canvas.toggleDragMode(false);
         canvas.selection = false;
         canvas.isDrawingMode = false;
         changeStatus(false, canvas);
-        externalCanvas.toggleDragMode(false);
-        canvas.off('object:moving', function (o) {
-            objectModified(o);
-        });
-        canvas.off('object:scaling', function (o) {
-            objectModified(o);
-        });
-        canvas.off('object:rotating', function (o) {
-            objectModified(o);
-        });
-        canvas.off('object:modified', function (o) {
-            afterObjectModified(o);
-        });
+        canvas.off('object:moving');
+        canvas.off('object:scaling');
+        canvas.off('object:rotating');
+        canvas.off('object:modified');
         canvas.on('mouse:down', function (o) {
             mouseDown(o, canvas);
         });
@@ -289,19 +295,13 @@ export const setToolOption = (type, canvas) => {
             getObject(o);
         });
     } else {
-        externalCanvas.toggleDragMode(false);
+        canvas.toggleDragMode(false);
         canvas.selection = true;
         canvas.isDrawingMode = false;
         changeStatus(true, canvas);
-        canvas.off('mouse:down', function (o) {
-            mouseDown(o, canvas);
-        });
-        canvas.off('mouse:move', function (o) {
-            mouseMove(o, canvas);
-        });
-        canvas.off('mouse:up', function (o) {
-            mouseUp(o, canvas);
-        });
+        canvas.off('mouse:down');
+        canvas.off('mouse:move');
+        canvas.off('mouse:up');
         canvas.on('object:moving', function (o) {
             objectModified(o);
         });
