@@ -9,7 +9,7 @@ import './Collaboration.scss';
 
 function NewButton({isLogin}) {
   if(isLogin) {
-    return <Link to="Create_Project">New Collaboration</Link>
+    return <Link to="/collaboration/Create_Project">New Collaboration</Link>
   }
   return <Link to="/login">New Collaboration</Link>
 }
@@ -68,7 +68,7 @@ function CollaborateProject({isLogin}) {
       const json = await response.json();
       setCollaborationProjects(json);
     }
-    
+
     useEffect(() => {
       fetchUrl();
     }, [useLocation()]);

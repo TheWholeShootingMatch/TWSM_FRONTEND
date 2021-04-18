@@ -84,7 +84,7 @@ function CollaborationForm() {
 
     console.log(collaborate)
     axios.post("/api/collaboration/new", collaborate)
-    .then((res) => {history.push('/collaboration/project')});
+    .then((res) => {history.push('/collaboration/project/1/L')});
   }
 
   return (
