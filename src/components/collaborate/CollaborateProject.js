@@ -30,7 +30,8 @@ function param({find, sort}) {
   if (find.get("heightMin") != null) {
     const heightMin = find.get("heightMin");
     const heightMax = find.get("heightMax");
-    findInput.height = { $gte: heightMin, $lt: heightMax };
+    findInput.height_max = { $gte: heightMax, $lte: heightMax };
+    findInput.height_min = { $gte: heightMin, $lt: heightMax };
   }
 
   if (find.get("category") === "M") {
@@ -39,6 +40,7 @@ function param({find, sort}) {
   else if(find.get("category") === "P") {
     findInput.photographer = true;
   }
+  
   if (sort === "P") {
     sortInput.height = 1;
   }

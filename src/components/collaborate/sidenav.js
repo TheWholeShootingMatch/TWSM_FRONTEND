@@ -74,15 +74,16 @@ function SideNav() {
 
   return (
     <div className="side_nav">
+
+      <select name="country" onChange={handleChange}>
+        <CountryOption />
+      </select>
+
       <div className="category">
         <button className="btn active" onClick={()=>filterSelection("A")}> All </button>
         <button className="btn" onClick={()=>filterSelection("M")}> Model </button>
         <button className="btn" onClick={()=>filterSelection("P")}> Photographer </button>
       </div>
-
-      <select name="country" onChange={handleChange}>
-        <CountryOption />
-      </select>
 
       <div className={model ? "model_filter active" : "model_filter"}>
         <select name="gender" onChange={handleChange}>
