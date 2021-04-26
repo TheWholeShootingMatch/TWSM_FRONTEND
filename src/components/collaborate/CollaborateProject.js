@@ -27,6 +27,12 @@ function param({find, sort}) {
   const findInput = {};
   const sortInput = {};
 
+  if (find.get("heightMin") != null) {
+    const heightMin = find.get("heightMin");
+    const heightMax = find.get("heightMax");
+    findInput.height = { $gte: heightMin, $lt: heightMax };
+  }
+
   if (find.get("category") === "M") {
     findInput.model = true;
   }
