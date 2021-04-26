@@ -80,14 +80,6 @@ export default function Canvas({ activeSlide }) {
         }
     });
 
-    const getObjectById = (id, canvas) => {
-        for (let i = 0; i < canvas._objects.length; i++) {
-            if (canvas._objects[i].id === id) {
-                return canvas._objects[i];
-            }
-        }
-    };
-
     const movingObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
@@ -115,7 +107,18 @@ export default function Canvas({ activeSlide }) {
         }
     };
 
-    const onCanvasUpdate = (newObject, canvas) => {
+    return <canvas ref={canvasRef} id="canvas" />;
+}
+
+export const getObjectById = (id, canvas) => {
+        for (let i = 0; i < canvas._objects.length; i++) {
+            if (canvas._objects[i].id === id) {
+                return canvas._objects[i];
+            }
+        }
+};
+
+export const onCanvasUpdate = (newObject, canvas) => {
         console.log(newObject);
         newObject.forEach((drawElements) => {
             if (drawElements.insert) {
@@ -210,18 +213,14 @@ export default function Canvas({ activeSlide }) {
         canvas.renderAll();
     };
 
-    /* render canvas */
-    const canvasRender = () => {
-        const renderList = [];
-        const yDrawingContent = shared.drawingContent.get();
-        yDrawingContent.forEach((drawElement) => {
-            renderList.push(drawElement);
-        });
-        return [{ insert: renderList }];
-    };
-
-    return <canvas ref={canvasRef} id="canvas" />;
-}
+export const canvasRender = () => {
+    const renderList = [];
+    const yDrawingContent = shared.drawingContent.get();
+    yDrawingContent.forEach((drawElement) => {
+        renderList.push(drawElement);
+    });
+    return [{ insert: renderList }];
+};
 
 export const versionRender = (externalContextRef) => {
     console.log(externalContextRef);
