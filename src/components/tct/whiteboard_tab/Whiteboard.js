@@ -6,7 +6,7 @@ import React, {
     createContext,
     useContext,
 } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { Redirect, useParams, useHistory } from 'react-router-dom';
 import TctComponant from '../tct_componant/TctComponant';
 // import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 // import TextFieldsIcon from '@material-ui/icons/TextFields';
@@ -35,9 +35,16 @@ import './styles/WhiteBoardHeader.scss';
 import { findAllByTestId } from '@testing-library/dom';
 
 const whiteboardContext = createContext();
+let reloadLink = null;
+
+export const reloadPage = () => {
+    reloadLink.go(0);
+}
 
 function WhiteBoard() {
     const { TcTnum } = useParams();
+    const history = useHistory();
+    reloadLink = history;
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
     let [title, setTitle] = useState('');
