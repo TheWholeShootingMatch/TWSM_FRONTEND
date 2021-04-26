@@ -30,6 +30,7 @@ import CreateProject from "../components/mypage/user/CreateProject";
 import RequestedProject from "../components/mypage/user/RequestedProject";
 import NotificationDetail from "../components/mypage/user/NotificationDetail";
 import Notification from "../components/mypage/user/Notification";
+import BookMark from "../components/mypage/user/BookMark";
 
 /* my page (manager) */
 import RequestedMessage from "../components/mypage/manager/RequestedMessage";
@@ -55,7 +56,8 @@ function Routes() {
                         <Route path="/mypage/project"><MyProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/create-project"><CreateProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/requested-message"><RequestedMessage isLogin={isLogin} userType={userType}/></Route>
-                        
+                        <Route path="/mypage/bookmark"><BookMark isLogin={isLogin} userType={userType}/></Route>
+
                         <Route path="/login"><Login setIsLogin={setIsLogin} isLogin={isLogin} setUserType={setUserType}/></Route>
                         <Route path="/logout"><Logout setIsLogin={setIsLogin} setUserType={setUserType}/></Route>
                         <Route path="/signup"><Signup /></Route>
