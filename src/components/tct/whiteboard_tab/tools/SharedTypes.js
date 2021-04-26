@@ -2,6 +2,8 @@ import socketIOClient from 'socket.io-client';
 import * as Y from 'yjs';
 import { LeveldbPersistence } from 'y-leveldb';
 import { toUint8Array } from 'js-base64';
+// import { reloadPage } from "../Whiteboard";
+import { externalCanvas, onCanvasUpdate, canvasRender} from "./Canvas";
 
 const SOCKET_SERVER_URL = ':3001';
 export const socketClient = socketIOClient();
@@ -33,18 +35,31 @@ export const connectToRoom = async (suffix, Ydoc) => {
     });
 
     socketClient.current.on('versionEvent', (req) => {
-        const docUint8Array = new Uint8Array(req);
-        doc = new Y.Doc();
-        doc.gc = true;
-        restoreVersion(docUint8Array);
+        const docUint8Array = toUint8Array(req);
+        const newDoc = new Y.Doc();
+        Y.applyUpdate(newDoc, docUint8Array);
+        doc = newDoc;
+        drawingContent.get().delete(0, drawingContent.get().length);
+        const objects = externalCanvas.getObjects();
+        externalCanvas.remove(...objects);
+        restoreVersion();
         // console.log('versionEvent', docUint8Array);
     });
 
-    const restoreVersion = (docUint8Array) => {
-        Y.applyUpdate(doc, docUint8Array);
-        console.log(doc.getArray('').toJSON());
+    const restoreVersion = () => {
         drawingContent.init(doc.getArray(''));
-    };
+        const renderList = canvasRender();
+        console.log(renderList);
+        onCanvasUpdate(renderList, externalCanvas);
+    }
+    // const restoreVersion = () => {
+    //     const cloneNewDocArr = doc.getArray('').toArray();
+    //     drawingContent.get().push()
+    //     // doc.getArray('').toArray().forEach((ymap) => {
+    //     //     const x = ymap.clone();
+    //     //     drawingContent.get().push([x]);
+    //     // })
+    // };
 
     socketClient.current.emit('peerConnectEvent', {
         id: window.localStorage.getItem('id'),
