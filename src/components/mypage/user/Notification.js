@@ -36,7 +36,7 @@ function NotificationTable({ notification }) {
         <tr className="message">
             <td className="msg_checked">{status? "안 읽음" : "읽음"}</td>
             <td className="sender">{sender}</td>
-            <Link to={`/notification/notification_Detail/${_id}`}><td className="title">{msgTitle}</td></Link>
+            <td className="title"><Link to={`/notification/notification_Detail/${_id}`}>{msgTitle}</Link></td>
             <td className="date">{new Date(Number(sendTime)).toLocaleDateString()}</td>
         </tr>
     )
