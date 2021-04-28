@@ -8,7 +8,7 @@ function Header({ isLogin }) {
 
     return(
         <header className="main_header">
-            <div className="logo"></div>
+            <a href="/" className="logo">TWSM</a>
             <nav className="header_nav">
                 <ul>
                     <li><Link to="/model/Model/0/L">model</Link></li>
