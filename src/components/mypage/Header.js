@@ -7,10 +7,11 @@ export function UHeader(){
         <div className="profile_nav">
             <div className="profile_upper">이미지랑 이름</div>
             <ul>
-                <li><NavLink to="/mypage/requested-project">requested project</NavLink></li>
-                <li><NavLink to="/mypage/notification">notification</NavLink></li>
-                <li><NavLink to="/mypage/project">my project</NavLink></li>
-                <li><NavLink to="/mypage/profile">my profile</NavLink></li>
+                <li><NavLink to="/mypage/requested-project">Requested Project</NavLink></li>
+                <li><NavLink to="/mypage/notification">Notification</NavLink></li>
+                <li><NavLink to="/mypage/project">My Project</NavLink></li>
+                <li><NavLink to="/mypage/bookmark">Bookmark</NavLink></li>
+                <li><NavLink to="/mypage/profile">My Profile</NavLink></li>
             </ul>
         </div>
     )

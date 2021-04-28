@@ -1,7 +1,9 @@
+$--menubox-border-color: #808080;
 /*whiteboard header*/
 .whiteboard_header{
     display: flex;
-    border: 1px solid yellow;
+    border-bottom: 1px solid $--menubox-border-color;
+    border-top: 1px solid $--menubox-border-color;
 
     .tools{
         width: 90%;
@@ -24,9 +26,8 @@
 
 /*whiteboard contents*/
 .whiteboard_contents{
-    height: 65vh;
     position: relative;
-
+    
     .history_area{
         position: absolute;
         right: 0;

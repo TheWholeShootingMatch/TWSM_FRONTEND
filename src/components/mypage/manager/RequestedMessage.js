@@ -4,7 +4,7 @@ import { useFetch } from "../../common/useFetch";
 import axios from "axios";
 
 function RequestedMessage({isLogin, userType}) {
-    const [requestedMessage] = useFetch('/api/tct');
+    const [requestedMessage] = useFetch('/api/project');
 
     return(
         <ManagerPage header="Requested project" user={userType} isLogin={isLogin}>
@@ -28,7 +28,7 @@ function RequestedProject({ message }) {
     }, []);
 
     const onApprove = () => {
-        axios.post('/api/tct/approve', { _id, owner, title }, { withCredentials: true })
+        axios.post('/api/project/approve', { _id, owner, title }, { withCredentials: true })
             .then(res => {
                 if (res.data) {
                     setStatus('A');
@@ -43,7 +43,7 @@ function RequestedProject({ message }) {
                 <td className="username">{owner}</td>
                 <td className="title">{title}</td>
                 <td className="description">{description}</td>
-                <td className="date">{new Date(Number(request_time)).toLocaleDateString()}</td>
+                <td className="date">{new Date(request_time).toLocaleDateString()}</td>
                 <td className="status">{newStatus}</td>
                 <td className="approve_btn"><button onClick={() => onApprove()} disabled={approveToggleBtn}>approve btn</button></td>
                 <td className="deny_btn">deny btn</td>

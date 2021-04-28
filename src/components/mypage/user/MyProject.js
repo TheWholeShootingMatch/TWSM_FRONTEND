@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UserMyPage from "../common/MyPage";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../common/useFetch";
 
 function MyProject({ isLogin }) {
-    
-    const [myProjects] = useFetch('/api/tct/my-project');
-    
+  const [myProjects] = useFetch('/api/project/my-project');
+
     return(
         <UserMyPage user="user" header="My Project" isLogin={isLogin}>
             <Myprojects myProjects={myProjects}/>
@@ -14,7 +13,7 @@ function MyProject({ isLogin }) {
     )
 }
 
-function Myprojects({myProjects}) {
+function Myprojects({ myProjects }) {
     return(
         <>
         <div className="contents_upper_flex">
@@ -24,13 +23,15 @@ function Myprojects({myProjects}) {
         </div>
         <div className="project_area">
                 <div>
-                    {myProjects.map(project =>
-                        <Link to={`/whiteboard/${project._id}`}>
+                    {
+                        myProjects.map(project =>
+                        <Link to={`/whiteboard/${project.TcTnum._id}`}>
                             <div className="box_long">
-                                <p>{project.title}</p>
-                                <p>{project.description}</p>
+                                <p>{project.TcTnum.title}</p>
+                                <p>{project.TcTnum.description}</p>
                             </div>
-                        </Link>)}
+                        </Link>)
+                    }
                 </div>
             </div>
         </>

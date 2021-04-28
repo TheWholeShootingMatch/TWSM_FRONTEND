@@ -27,7 +27,7 @@ function Main({photographerId}) {
   });
 
   async function fetchUrl() {
-    const response = await fetch('/api/photographicAreaP/searchPid',
+    const response = await fetch('/api/photographer/fetch',
     {
       method: "POST",
       headers: {

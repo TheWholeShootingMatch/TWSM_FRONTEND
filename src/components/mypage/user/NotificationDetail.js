@@ -24,8 +24,11 @@ function NotificationDetail({isLogin, props}){
         if (type === "A") {
             setTitle(`${TcTnum} 프로젝트가 승인되었습니다.`);
         }
+        else if (type === "B") {
+          setTitle(`${TcTnum} 프로젝트에 초대되었습니다.`);
+        }
     }, [])
-    
+
     return(
         <UserMyPage user="user" header={msgTitle} isLogin={isLogin}>
             <div className="mail_upper">
@@ -34,17 +37,31 @@ function NotificationDetail({isLogin, props}){
                 <span>보낸 시간: {new Date(Number(sendTime)).toLocaleDateString()}</span>
             </div>
             <div className="mail_content">
-                <MsgContent TcTnum={TcTnum}/>
+                <MsgContent type={type} TcTnum={TcTnum}/>
             </div>
         </UserMyPage>
     )
 }
 
-function MsgContent({ TcTnum }) {
+function MsgContent({ type, TcTnum }) {
+  const handleAccept = () => {
+    axios
+    .post('/api/project/invite', {TcTnum:TcTnum})
+    .then (res => {  })
+    .catch(err => { console.error(err); });
+  }
+
     if (TcTnum) {
+      if (type === "A") {
         return (
-            <p>프로젝트로 이동하시려면 아래 링크를 클릭하세요 <br /> <Link to={`/whiteboard/${TcTnum}`}>"http://localhost:3000/whiteboard/{TcTnum}"</Link></p>
-        ) 
+            <p>If you want to move to the project page, Click on the link below.<br /> <Link to={`/whiteboard/${TcTnum}`}>"http://localhost:3000/whiteboard/{TcTnum}"</Link></p>
+        )
+      }
+      else if (type === "B") {
+        return (
+            <button onClick={handleAccept}>Accept</button>
+        )
+      }
     }
     else {
         return(<p>loading...</p>)

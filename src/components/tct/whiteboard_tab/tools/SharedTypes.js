@@ -1,118 +1,142 @@
-import * as Y from 'yjs'
-import { WebrtcProvider } from 'y-webrtc'
-import { WebsocketProvider } from 'y-websocket'
-import { IndexeddbPersistence, storeState } from 'y-indexeddb'
-import {setLocalUserInfo} from "./activeUserInfo";
-const websocketUrl = 'http://localhost:3000'
+import socketIOClient from 'socket.io-client';
+import * as Y from 'yjs';
+import { LeveldbPersistence } from 'y-leveldb';
+import { toUint8Array } from 'js-base64';
+// import { reloadPage } from "../Whiteboard";
+import { externalCanvas, onCanvasUpdate, canvasRender} from "./Canvas";
 
-let lastSnapshot = null
+const SOCKET_SERVER_URL = ':3001';
+export const socketClient = socketIOClient();
 
-/**
- * @param {Y.Item} item
- * @return {boolean}
- */
+export const persistence = new LeveldbPersistence('./currentDoc');
 
-const gcFilter = item => !Y.isParentOf(prosemirrorEditorContent, item) || (lastSnapshot && (lastSnapshot.sv.get(item.id.client) || 0) <= item.id.clock)
+export let originSuffix = null;
+export let indexeddbPersistence = null;
+export let doc = new Y.Doc();
+let userDoc = new Y.Doc();
+export let activeUserList = userDoc.getMap('activeUserList');
 
-const suffix = '/602d0c1801cdf45b14462599'
+/* connect to room by shared link */
+export const connectToRoom = async (suffix, Ydoc) => {
+    // tmp room id
+    const roomId = suffix;
+    console.log(roomId);
 
-export let versionDoc = new Y.Doc();
-// this websocket provider doesn't connect
-export const versionWebsocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website-version' + suffix, versionDoc, { connect: false })
-versionWebsocketProvider.connectBc() // only connect via broadcastchannel
-export let versionIndexeddbPersistence = new IndexeddbPersistence('yjs-website-version' + suffix, versionDoc)
-export let versionType = versionDoc.getArray('versions');
-export const versionList = versionDoc.getArray('versionList');
+    console.log(Ydoc);
+    //enter the room
+    socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
+        query: { roomId },
+    });
 
-export const getVersionList = () => {
-  return versionList;
-}
+    socketClient.current.on('canvasEvent', (req) => {
+        const docUint8Array = new Uint8Array(req);
+        // console.log('canvasEvent', docUint8Array);
+        Y.applyUpdate(doc, docUint8Array);
+    });
 
-export const addVersion = () => {
-  versionList.push([{
-    date: new Date().getTime(),
-    drawingDocState: Y.encodeStateAsUpdate(doc),
-    versionDocState : Y.encodeStateAsUpdate(versionDoc),
-    clientID: versionDoc.clientID
-  }]);
-}
+    socketClient.current.on('versionEvent', (req) => {
+        const docUint8Array = toUint8Array(req);
+        const newDoc = new Y.Doc();
+        Y.applyUpdate(newDoc, docUint8Array);
+        doc = newDoc;
+        drawingContent.get().delete(0, drawingContent.get().length);
+        const objects = externalCanvas.getObjects();
+        externalCanvas.remove(...objects);
+        restoreVersion();
+        // console.log('versionEvent', docUint8Array);
+    });
 
-export const renderVersion = (version) => {
-  // console.log(version);
-  // console.log(Y.encodeStateAsUpdate(doc));
-  // console.log(Y.encodeStateAsUpdate(versionDoc));
-  doc = new Y.Doc({ gcFilter });
-  restoreVersion(version);
-}
-
-const restoreVersion = (version) => {
-  Y.applyUpdate(doc, version.drawingDocState); //doc state update
-  Y.applyUpdate(versionDoc, version.versionDocState) //version doc state update
-  drawingContent.set();
-}
-
-export const clearVersionList = () => {
-  versionList.delete(0, versionList.length);
-}
-
-export let doc = new Y.Doc({ gcFilter });
-
-doc.on('update', () => {
-  console.log("update!");
-})
-
-// export const websocketProvider = new WebsocketProvider(websocketUrl, 'yjs-website' + suffix, doc)
-export const webrtcProvider = new WebrtcProvider('yjs-website' + suffix, doc)
-export const awareness = webrtcProvider.awareness // websocketProvider.awareness
-export let indexeddbPersistence = new IndexeddbPersistence('yjs-website' + suffix, doc)
-export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror')
-
-versionIndexeddbPersistence.on('synced', () => {
-
-  lastSnapshot = versionType.length > 0 ? Y.decodeSnapshot(versionType.get(0).snapshot) : Y.emptySnapshot;
-  versionType.observe(() => {
-    if (versionType.length > 0) {
-      const nextSnapshot = Y.decodeSnapshot(versionType.get(0).snapshot)
-      undoManager.clear()
-      Y.tryGc(nextSnapshot.ds, doc.store, gcFilter)
-      lastSnapshot = nextSnapshot
-      storeState(indexeddbPersistence)
+    const restoreVersion = () => {
+        drawingContent.init(doc.getArray(''));
+        const renderList = canvasRender();
+        console.log(renderList);
+        onCanvasUpdate(renderList, externalCanvas);
     }
-  })
-})
+    // const restoreVersion = () => {
+    //     const cloneNewDocArr = doc.getArray('').toArray();
+    //     drawingContent.get().push()
+    //     // doc.getArray('').toArray().forEach((ymap) => {
+    //     //     const x = ymap.clone();
+    //     //     drawingContent.get().push([x]);
+    //     // })
+    // };
 
-class LocalRemoteUserData extends Y.PermanentUserData {
-  /**
-   * @param {number} clientid
-   * @return {string}
-   */
-  getUserByClientId (clientid) {
-    return super.getUserByClientId(clientid) || 'remote'
-  }
-  /**
-   * @param {Y.ID} id
-   * @return {string}
-   */
-  getUserByDeletedId (id) {
-    return super.getUserByDeletedId(id) || 'remote'
-  }
-}
+    socketClient.current.emit('peerConnectEvent', {
+        id: window.localStorage.getItem('id'),
+    });
 
-export const permanentUserData = new LocalRemoteUserData(doc, versionDoc.getMap('userInfo'));
+    socketClient.current.on('peerConnectEvent', (client) => {
+        client.forEach((client) => {
+            if (!activeUserList.has(client.socketId)) {
+                activeUserList.set(client.socketId, [client]);
+            }
+        });
+    });
 
-awareness.on('update', ({ added, updated, removed }) => {
-  const localState = awareness.getLocalState();
-  if (localState === null || JSON.stringify(localState) === JSON.stringify({})) {
-    setLocalUserInfo();
-  }
+    socketClient.current.on('peerDisconnectEvent', (client) => {
+        console.log(client);
+        activeUserList.delete(client);
+    });
+
+    if (originSuffix === null) {
+        originSuffix = suffix;
+        const persistedYdoc = await persistence.getYDoc('doc');
+        const ecodedUint8Arr = toUint8Array(Ydoc);
+        console.log(ecodedUint8Arr);
+        Y.applyUpdate(doc, ecodedUint8Arr);
+        // if (persistedYdoc.share.size) {
+        //     // console.log(Y.encodeStateAsUpdate(persistedYdoc));
+        //     // Y.applyUpdate(doc, Y.encodeStateAsUpdate(persistedYdoc));
+        // }
+
+        //reset websocket and version db with suffix (tct num)
+        // const binaryEncoded = toUint8Array(Ydoc);
+        // console.log(binaryEncoded);
+        // Y.applyUpdate(doc, binaryEncoded);
+    }
+};
+
+doc.on('update', (update) => {
+    console.log('update');
+    drawingContent.init(doc.getArray(''));
 });
 
-// setLocalUserInfo(Array.from(awareness.states));
+// Emit Changes to server (using socket-io)
+export const emitYDoc = (data, type) => {
+    socketClient.current.emit('canvasEvent', {
+        data: data,
+        type: type,
+    });
+};
 
-/* indexed db 연결 성공 시 */
-versionIndexeddbPersistence.whenSynced.then(() => {
-  permanentUserData.setUserMapping(doc, doc.clientID, 'local', {});
-})
+export const emitVersionDoc = (docName) => {
+    socketClient.current.emit('emitVersionDoc', docName);
+};
+
+export const emitLastYDoc = (data) => {
+    socketClient.current.emit('emitLastYDoc', data);
+};
+
+export let prosemirrorEditorContent = doc.getXmlFragment('prosemirror');
+
+class LocalRemoteUserData extends Y.PermanentUserData {
+    /**
+     * @param {number} clientid
+     * @return {string}
+     */
+    getUserByClientId(clientid) {
+        return super.getUserByClientId(clientid) || 'remote';
+    }
+    /**
+     * @param {Y.ID} id
+     * @return {string}
+     */
+    getUserByDeletedId(id) {
+        return super.getUserByDeletedId(id) || 'remote';
+    }
+}
+
+export const permanentUserData = new LocalRemoteUserData(doc);
 
 /**
  * An array of draw element.
@@ -122,51 +146,59 @@ versionIndexeddbPersistence.whenSynced.then(() => {
  */
 
 export const slideNum = {
-  get() {
-    return this.active;
-  },
-  set(value) {
-    this.active = value;
-    drawingContent.set(value);
-  }
-}
+    get() {
+        console.log(this.active);
+        return this.active;
+    },
+    set(value) {
+        this.active = value;
+        drawingContent.set(value);
+    },
+};
+
+export const coordinate = doc.getArray('coordinate');
 
 export const drawingContent = {
-  drawingContent: doc.getArray(slideNum.get()),
-  get() {
-    return this.drawingContent;
-  },
-  set(value) {
-    this.drawingContent = doc.getArray(value);
-    console.log(this.drawingContent);
-  },
-  clear() {
-    this.drawingContent.delete(0, this.drawingContent.length);
-  }
-}
+    drawingContent: doc.getArray(slideNum.get()),
+    get() {
+        return this.drawingContent;
+    },
+    init(data) {
+        this.drawingContent = data;
+    },
+    set(value) {
+        this.drawingContent = doc.getArray(value);
+        console.log(this.drawingContent);
+    },
+    clear() {
+        console.log(this.drawingContent.length);
+        this.drawingContent.delete(0, this.drawingContent.length);
+    },
+};
+
+// doc.on('update', (update) => {
+//     console.log('update', update);
+
+//     indexeddbPersistence = new IndexeddbPersistence(
+//         'tct-website-' + originSuffix,
+//         doc
+//     );
+// });
 
 export const whiteboardUndoManager = new Y.UndoManager(drawingContent.get());
 
-let undoManager = null
+let undoManager = null;
 
-export const setUndoManager = nextUndoManager => {
-  if (undoManager) {
-    undoManager.clear()
-  }
-  undoManager = nextUndoManager
-}
+export const setUndoManager = (nextUndoManager) => {
+    if (undoManager) {
+        undoManager.clear();
+    }
+    undoManager = nextUndoManager;
+};
 
 // @ts-ignore
-window.ydoc = doc
+window.ydoc = doc;
 // @ts-ignore
-window.versionDoc = versionDoc
+window.indexeddbPersistence = indexeddbPersistence;
 // @ts-ignore
-window.awareness = awareness
-// @ts-ignore
-window.webrtcProvider = webrtcProvider
-// @ts-ignore
-// window.websocketProvider = websocketProvider
-// @ts-ignore
-window.indexeddbPersistence = indexeddbPersistence
-// @ts-ignore
-window.prosemirrorEditorContent = prosemirrorEditorContent
+window.prosemirrorEditorContent = prosemirrorEditorContent;

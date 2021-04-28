@@ -1,0 +1,47 @@
+img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.model_list {
+  margin: 50px 5px;
+}
+
+.model {
+  display: inline-block;
+}
+
+.like_btn {
+  position: relative;
+  left: -40px;
+  bottom: 17px;
+  background-color: rgba(0,0,0,0);
+  border: none;
+  color : white;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.pageControll * {
+  display: inline-block;
+  margin: 5px;
+  font-size: 15px;
+}
+
+.pageControll {
+  text-align: center;
+}
+
+.side_nav select {
+  width: 200px;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 4px;
+  margin-right: 10px;
+  padding: 10px;
+}
+
+.side_nav {
+  padding: 20px;
+}

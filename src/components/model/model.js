@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
-import './model.scss';
+import './model.css';
 
 import SideNav from "./sidenav"
 import Like from "./like_btn";
@@ -10,7 +10,7 @@ import Like from "./like_btn";
 import Modal from '@material-ui/core/Modal';
 
 // post in one page && page
-const postNum = 3;
+const postNum = 20;
 const pageNum = 3;
 
 const ModalContext = createContext({
@@ -94,7 +94,7 @@ function MakeParam({find, sort, skip}) {
 }
 
 // model listing
-function GetModel({location, sort, skip, setModelLeng}) {
+function GetModel({location, sort, skip, setModelLeng, isLogin}) {
   //for get models
   const find = new URLSearchParams(location.search);
 
@@ -141,7 +141,9 @@ function GetModel({location, sort, skip, setModelLeng}) {
           return (
             <div className="model" key={index}>
               <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              <Like />
+              {
+                isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
+              }
             </div>
           );
         }
@@ -186,17 +188,9 @@ function Compcard() {
   );
 }
 
-function NewButton() {
+function NewButton({isLogin}) {
   //check is user logined
-  const [isLogin, setIsLogin] = useState(false);
   const [isModel, setIsModel] = useState(false);
-  axios
-    .get('/api/users/login')
-    .then(res => {
-      if(res.data === true ) {
-          setIsLogin(true);
-      }
-    })
 
   if (isLogin) {
     axios
@@ -216,6 +210,15 @@ function NewButton() {
 }
 
 function Main() {
+  const [isLogin, setIsLogin] = useState(false);
+  axios
+    .get('/api/users/login')
+    .then(res => {
+      if(res.data === true ) {
+          setIsLogin(true);
+      }
+    })
+
   let location = useLocation();
   let history = useHistory();
   const {skip, sort} = useParams();
@@ -261,10 +264,10 @@ function Main() {
           </select>
         </div>
 
-        <NewButton />
+        <NewButton isLogin={isLogin}/>
       </div>
 
-      <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} />
+      <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} isLogin={isLogin} />
 
       <ul className="pageControll">
         {page}

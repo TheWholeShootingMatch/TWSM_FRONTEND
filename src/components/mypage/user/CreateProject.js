@@ -29,16 +29,33 @@ function ProjectForm() {
             [name]: value
         });
     }
-    
+
     const onSubmitForm = (e) => {
         e.preventDefault();
         setLoading(true);
-        axios.post('/api/tct', formData, {
+        formData.user = usr;
+        axios.post('/api/project', formData, {
             withCredentials: true,
         }).then(res => {
             console.log(res.data);
         });
         setLoading(false);
+    };
+
+    const [inputs, setInputs] = useState("");
+
+    const handleChange = (e) => {
+      const { value, name } = e.target;
+      setInputs({
+        ...inputs, value
+      });
+    };
+
+    const [usr, setUsr] = useState([]);
+
+    const handleAdd = (e) => {
+      console.log(inputs);
+      setUsr((usr) => [...usr, inputs.value]);
     };
 
     if (loading) return (<div>loading...</div>);
@@ -57,12 +74,22 @@ function ProjectForm() {
             <details>
             <summary>members</summary>
             <div className="details-menu">
-                search memebers
+                <p>search memebers</p>
+                {
+                  usr.map((elem,index) => <p key={index}>{elem}</p>)
+                }
+                <input
+                    type="text"
+                    name="id"
+                    placeholder="Enter the ID"
+                    onChange={handleChange}
+                />
+                <button type="button" onClick={handleAdd}>add</button>
             </div>
             </details>
         </div>
         <button type="button" onClick={onSubmitForm}>Send request</button>
-    </form>                    
+    </form>
     )
 }
 

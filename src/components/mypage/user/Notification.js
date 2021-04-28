@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 
 function Notification({isLogin}){
-    
+
     const [notifications] = useFetch('/api/notification');
     console.log(notifications);
 
@@ -19,13 +19,16 @@ function Notification({isLogin}){
 }
 
 function NotificationTable({ notification }) {
-                
+
     const { _id, TcTnum, sender, sendTime, type, status } = notification;
     const [msgTitle, setTitle] = useState("");
 
     useEffect(() => {
         if (type === "A") {
             setTitle(`${TcTnum} 프로젝트가 승인되었습니다.`);
+        }
+        else if (type === "B") {
+          setTitle(`${sender} has invited you to work with them in ${TcTnum}`);
         }
     },[])
 
