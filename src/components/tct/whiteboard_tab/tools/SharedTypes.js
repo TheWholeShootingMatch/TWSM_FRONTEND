@@ -84,11 +84,8 @@ export const connectToRoom = async (suffix, Ydoc) => {
         originSuffix = suffix;
         const persistedYdoc = await persistence.getYDoc("doc");
         const ecodedUint8Arr = toUint8Array(Ydoc);
-        const newDoc = new Y.Doc();
-        Y.applyUpdate(newDoc, ecodedUint8Arr);
-        doc = newDoc;
-        console.log(doc.getArray("").toJSON());
-        restoreVersion();
+        console.log(ecodedUint8Arr);
+        Y.applyUpdate(doc, ecodedUint8Arr);
     }
 };
 
