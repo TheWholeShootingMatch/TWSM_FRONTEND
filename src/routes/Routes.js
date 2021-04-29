@@ -9,11 +9,13 @@ import MainPage from "../components/main/MainPage";
 import Model from "../components/model/model";
 import Model_Detail from "../components/model/model_detail";
 import New_Model from "../components/model/new_model";
+import M_portfolio from "../components/model/model_portfolio";
 
 /* explore - Photographer pages */
 import Photographer from "../components/photographer/photographer";
 import Photographer_Detail from "../components/photographer/photographer_detail";
 import New_Photographer from "../components/photographer/new_photographer";
+import P_portfolio from "../components/photographer/photographer_portfolio";
 
 /* TCT pages */
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
@@ -133,6 +135,7 @@ function Routes() {
                             <Header isLogin={isLogin} />{" "}
                         </New_Model>
                     </Route>
+                    <Route path="/model/M_portfolio"><M_portfolio> {" "}<Header isLogin={isLogin} />{" "} </M_portfolio></Route>
 
                     <Route path="/Photographer/Photographer/:skip/:sort">
                         <Photographer>
@@ -152,6 +155,8 @@ function Routes() {
                             <Header isLogin={isLogin} />{" "}
                         </New_Photographer>
                     </Route>
+                    <Route path="/Photographer/P_portfolio"><P_portfolio> {" "}<Header isLogin={isLogin} />{" "} </P_portfolio></Route>
+
                     <Route path="/notification/notification_Detail/:notificationNum">
                         <NotificationDetail isLogin={isLogin} />
                     </Route>

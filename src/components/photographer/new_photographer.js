@@ -131,13 +131,14 @@ function ProfileForm() {
     self_introduction : "",
     career : "",
     country : "",
-    locations : ""
+    locations : "",
+    profile_img: ""
   });
 
   async function fetchUrl() {
     const response = await fetch("/api/photographer/searchForUid");
     const json = await response.json();
-    if (json != null) {
+    if (json !== null) {
       setPhotographer(json);
     }
   }
@@ -173,7 +174,7 @@ function ProfileForm() {
 
     axios
     .post('/api/photographer/new', formData)
-    .then((response) => { history.push(`/photographer/Photographer/0/L`) });
+    .then((response) => { history.push(`/photographer/P_portfolio`) });
   };
 
   return (
@@ -182,6 +183,8 @@ function ProfileForm() {
 
         <div className="left" id="photo_area">
           <label htmlFor="photo">Profile photo</label>
+          {(photographer.profile_img !== "")?
+          <img src={photographer.profile_img} alt={photographer.Name}/> : null}
           <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
         </div>
 
@@ -213,7 +216,7 @@ function ProfileForm() {
         <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
       </div>
 
-      <button className="save-btn" type="submit">save</button>
+      <button className="save-btn" type="submit">NEXT</button>
     </form>
   );
 }

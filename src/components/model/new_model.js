@@ -128,7 +128,8 @@ function ProfileForm() {
     career : "",
     language : "",
     country : "",
-    locations : ""
+    locations : "",
+    profile_img: ""
   });
 
   async function fetchUrl() {
@@ -178,7 +179,7 @@ function ProfileForm() {
 
     axios
     .post('/api/model/new', formData)
-    .then((response) => { history.push(`/model/Model/0/L`) });
+    .then((response) => { history.push(`/model/M_portfolio`) });
   };
 
   return (
@@ -187,6 +188,8 @@ function ProfileForm() {
 
         <div className="left" id="photo_area">
           <label htmlFor="photo">Profile photo</label>
+          {(model.profile_img !== "")?
+          <img src={model.profile_img} alt={model.Name}/> : null}
           <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
         </div>
 
@@ -241,7 +244,7 @@ function ProfileForm() {
         <input type="text" name="locations" value={model.locations} onChange={handleChange}/>
       </div>
 
-      <button className="save-btn" type="submit">save</button>
+      <button className="save-btn" type="submit">NEXT</button>
     </form>
   );
 }
