@@ -8,12 +8,12 @@ function Header({ isLogin }) {
 
     return(
         <header className="main_header">
-            <div className="logo"></div>
+            <a href="/" className="logo">TWSM</a>
             <nav className="header_nav">
                 <ul>
                     <li><Link to="/model/Model/0/L">model</Link></li>
                     <li><Link to="/photographer/Photographer/0/L">photographer</Link></li>
-                    <li>collaborate</li>
+                    <li><Link to="/collaboration/project/1/L">collaborate</Link></li>
                     <li>{isLogin ? <Link to="/mypage">my page</Link> : <Link to="/login">my page</Link>}</li>
                     <li>{isLogin ? <Link to="/logout">logout</Link> : <Link to="/login">login</Link>}</li>
                 </ul>
