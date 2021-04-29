@@ -1,11 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import accountIcon from "./Icons/outline_account_circle_black_24dp.png";
 
 /* 일반 유저 */
 export function UHeader() {
+    const id = window.localStorage.getItem("id");
     return (
         <div className="profile_nav">
-            <div className="profile_upper">이미지랑 이름</div>
+            <div className="profile_upper">
+                <img src={accountIcon} alt="acount_logo" />
+                <h1>{id}</h1>
+            </div>
             <ul>
                 <li>
                     <NavLink to="/mypage/requested-project">
@@ -31,9 +36,14 @@ export function UHeader() {
 
 /* 매니저 */
 export function MHeader() {
+    const id = window.localStorage.getItem("id");
+
     return (
         <div className="profile_nav">
-            <div className="profile_upper">이미지랑 이름</div>
+            <div className="profile_upper">
+                <img src={accountIcon} alt="acount_logo" />
+                <h1>{id}</h1>
+            </div>
             <ul>
                 <li>
                     <NavLink to="/mypage/requested-message">

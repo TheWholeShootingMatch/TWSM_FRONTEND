@@ -9,14 +9,14 @@ function Notification({ isLogin }) {
 
     return (
         <UserMyPage user="user" header="Notification" isLogin={isLogin}>
-            <tbody className="notifications">
+            <table className="notifications">
                 {notifications.map((notification, index) => (
                     <NotificationTable
                         key={index}
                         notification={notification}
                     />
                 ))}
-            </tbody>
+            </table>
         </UserMyPage>
     );
 }

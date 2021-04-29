@@ -4,42 +4,34 @@ import React, {
     useEffect,
     useCallback,
     createContext,
-    useContext,
-} from 'react';
-import { Redirect, useParams, useHistory } from 'react-router-dom';
-import TctComponant from '../tct_componant/TctComponant';
-// import CropOriginalIcon from '@material-ui/icons/CropOriginal';
-// import TextFieldsIcon from '@material-ui/icons/TextFields';
-// import GestureIcon from '@material-ui/icons/Gesture';
-// import PanToolIcon from '@material-ui/icons/PanTool';
-// import DeleteIcon from '@material-ui/icons/Delete';
-// import NearMeIcon from '@material-ui/icons/NearMe';
-// import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-// import UndoIcon from '@material-ui/icons/Undo';
-// import RedoIcon from '@material-ui/icons/Redo';
-import Canvas from './tools/Canvas';
+    useContext
+} from "react";
+import { Redirect, useParams, useHistory } from "react-router-dom";
+import TctComponant from "../tct_componant/TctComponant";
+import { category } from "./Icons/outline_category_black_24dp.png";
+import Canvas from "./tools/Canvas";
 import {
     connectToRoom,
     originSuffix,
     doc,
-    emitVersionDoc,
-} from './tools/SharedTypes';
-import * as Tools from './tools/Tools';
-import { externalCanvas } from './tools/Canvas';
-import * as Y from 'yjs';
-import axios from 'axios';
-import { fromUint8Array } from 'js-base64';
+    emitVersionDoc
+} from "./tools/SharedTypes";
+import * as Tools from "./tools/Tools";
+import { externalCanvas } from "./tools/Canvas";
+import * as Y from "yjs";
+import axios from "axios";
+import { fromUint8Array } from "js-base64";
 
-import './styles/Whiteboard.scss';
-import './styles/WhiteBoardHeader.scss';
-import { findAllByTestId } from '@testing-library/dom';
+import "./styles/Whiteboard.scss";
+import "./styles/WhiteBoardHeader.scss";
+import { findAllByTestId } from "@testing-library/dom";
 
 const whiteboardContext = createContext();
 let reloadLink = null;
 
 export const reloadPage = () => {
     reloadLink.go(0);
-}
+};
 
 function WhiteBoard() {
     const { TcTnum } = useParams();
@@ -47,22 +39,22 @@ function WhiteBoard() {
     reloadLink = history;
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
-    let [title, setTitle] = useState('');
+    let [title, setTitle] = useState("");
 
     useEffect(() => {
         setLoading(true);
         /* TcTnum 존재 여부를 db로부터 확인 */
         axios
             .post(
-                '/api/tct',
+                "/api/tct",
                 { TcTnum: TcTnum },
                 {
-                    withCredentials: true,
+                    withCredentials: true
                 }
             )
-            .then((res) => {
+            .then(res => {
                 if (res.data === false) {
-                    alert('권한이 없습니다!');
+                    alert("권한이 없습니다!");
                     setExist(false);
                 } else {
                     setTitle(res.data.title);
@@ -74,7 +66,7 @@ function WhiteBoard() {
     }, []);
 
     if (isExist === false) {
-        return <Redirect to={{ pathname: '/' }} />;
+        return <Redirect to={{ pathname: "/" }} />;
     } else if (isLoading) {
         return (
             <TctComponant>
@@ -91,7 +83,7 @@ function WhiteBoard() {
 }
 
 function WhiteBoardArea() {
-    const [toolType, setType] = useState('');
+    const [toolType, setType] = useState("");
     const [toggleHistoryMenu, setToggle] = useState(false);
     const hiddenFileInput = useRef(null);
 
@@ -99,7 +91,7 @@ function WhiteBoardArea() {
         hiddenFileInput.current.click();
     };
 
-    const onChangeImageInput = (e) => {
+    const onChangeImageInput = e => {
         e.preventDefault();
         if (e.target.files) {
             const fileUploaded = e.target.files[0];
@@ -131,7 +123,7 @@ function WhiteBoardHeader({
     toggleHistoryMenu,
     hiddenFileInput,
     onClickImageInput,
-    onChangeImageInput,
+    onChangeImageInput
 }) {
     return (
         <div className="whiteboard_header">
@@ -140,7 +132,7 @@ function WhiteBoardHeader({
                     <li
                         id="select"
                         onClick={() => {
-                            Tools.setToolOption('select', externalCanvas);
+                            Tools.setToolOption("select", externalCanvas);
                         }}
                     >
                         Select
@@ -149,7 +141,7 @@ function WhiteBoardHeader({
                     <li
                         id="panning"
                         onClick={() => {
-                            Tools.setToolOption('panning', externalCanvas);
+                            Tools.setToolOption("panning", externalCanvas);
                         }}
                     >
                         Panning
@@ -158,7 +150,7 @@ function WhiteBoardHeader({
                     <li
                         id="figure"
                         onClick={() => {
-                            Tools.setToolOption('figure', externalCanvas);
+                            Tools.setToolOption("figure", externalCanvas);
                         }}
                     >
                         Figure
@@ -167,7 +159,7 @@ function WhiteBoardHeader({
                     <li
                         id="text"
                         onClick={() => {
-                            Tools.setToolOption('text', externalCanvas);
+                            Tools.setToolOption("text", externalCanvas);
                         }}
                     >
                         Text
@@ -177,7 +169,7 @@ function WhiteBoardHeader({
                         id="image"
                         onClick={() => {
                             onClickImageInput();
-                            Tools.setToolOption('image', externalCanvas);
+                            Tools.setToolOption("image", externalCanvas);
                         }}
                     >
                         Image
@@ -188,12 +180,12 @@ function WhiteBoardHeader({
                         accept="image/*"
                         ref={hiddenFileInput}
                         onChange={onChangeImageInput}
-                        style={{ display: 'none' }}
+                        style={{ display: "none" }}
                     />
                     <li
                         id="drawing"
                         onClick={() => {
-                            Tools.setToolOption('drawing', externalCanvas);
+                            Tools.setToolOption("drawing", externalCanvas);
                         }}
                     >
                         Drawing
@@ -220,7 +212,7 @@ function WhiteBoardHeader({
                     <li
                         id="delete"
                         onClick={() => {
-                            setType('delete');
+                            setType("delete");
                             Tools.deleteObject();
                         }}
                     >
@@ -267,15 +259,15 @@ function HistoryArea() {
             const getVersions = async () => {
                 await axios
                     .post(
-                        '/api/tctversion/fetch',
+                        "/api/tctversion/fetch",
                         {
-                            tctNum: originSuffix,
+                            tctNum: originSuffix
                         },
                         {
-                            withCredentials: true,
+                            withCredentials: true
                         }
                     )
-                    .then((res) => {
+                    .then(res => {
                         if (res.data) {
                             console.log(res.data);
                             setVersion(res.data);
@@ -293,19 +285,19 @@ function HistoryArea() {
         const response = async () => {
             await axios
                 .post(
-                    '/api/tctversion',
+                    "/api/tctversion",
                     {
                         docName: docName,
                         encodePersistedYdoc: encodePersistedYdoc,
-                        tctNum: tctNum,
+                        tctNum: tctNum
                     },
                     {
-                        withCredentials: true,
+                        withCredentials: true
                     }
                 )
-                .then((res) => {
+                .then(res => {
                     if (res.data) {
-                        console.log('version add ', res.data);
+                        console.log("version add ", res.data);
                     }
                 });
         };
@@ -313,7 +305,7 @@ function HistoryArea() {
     }, []);
 
     return (
-        <div className={`history_area ${toggleHistoryMenu ? 'active' : ''}`}>
+        <div className={`history_area ${toggleHistoryMenu ? "active" : ""}`}>
             <ul className="history_list">
                 <button onClick={() => addVersion()}>add</button>
                 <button>clear</button>

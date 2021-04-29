@@ -1,55 +1,70 @@
-import React from "react";
-import { Redirect } from 'react-router-dom';
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import MyPage from "./MyPage";
+import { useFetch } from "../../common/useFetch";
 
 function Overview({ isLogin, userType }) {
-    console.log(userType);
     if (!isLogin) {
         alert("로그인 후 이용하세요!");
-        return <Redirect to={{pathname: "/login"}}/>
+        return <Redirect to={{ pathname: "/login" }} />;
     }
-    return(
+    return (
         <MyPage header="Overview" isLogin={isLogin} user={userType}>
-            <OverviewPropjects user={userType}/>
+            <OverviewPropjects user={userType} />
         </MyPage>
-    )
+    );
 }
 
-function ShortBox(){
-    return(
-        <div className="box_short"></div>
-    )   
-}
-
-function ProjectForm({title}){
-    return(
-        <div className="project_area">
-                <h3 className="project_area_header">{title}</h3>
-                <div>
-                    <ShortBox />
-                    <ShortBox />
-                </div>
+function ShortBox(project) {
+    const { title, description } = project.project;
+    return (
+        <div className="box_short">
+            <h4>Title : {title}</h4>
+            <p>Description: {description}</p>
         </div>
-    )
+    );
 }
 
-function OverviewPropjects({user}){
+function ProjectForm({ title, projects }) {
+    return (
+        <article className="project_area">
+            <h3 className="project_area_header">{title}</h3>
+            <div>
+                {projects.map((project, index) => {
+                    if (index < 4) return <ShortBox project={project.TcTnum} />;
+                })}
+            </div>
+        </article>
+    );
+}
 
-    if(user === "manager"){
+function OverviewPropjects({ user }) {
+    const [requestedProject] = useFetch("/api/project");
+    const [myProjects] = useFetch("/api/project/my-project");
+
+    if (user === "manager") {
         return (
             <>
-            <ProjectForm title="requested project"/>
-            <ProjectForm title="approved project"/>
+                <ProjectForm
+                    title="requested project"
+                    projects={requestedProject}
+                />
+                <ProjectForm
+                    title="approved project"
+                    projects={requestedProject}
+                />
             </>
-        )
-    }
-    else{
+        );
+    } else {
         return (
             <>
-            <ProjectForm title="requested project"/>
-            <ProjectForm title="my project"/>
+                <ProjectForm
+                    title="requested project"
+                    projects={requestedProject}
+                />
+                <ProjectForm title="my project" projects={myProjects} />
             </>
-        )  
+        );
     }
 }
 
