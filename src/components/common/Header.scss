@@ -1,4 +1,5 @@
-header {
+header.main_header {
+  overflow: hidden;
   padding: 16px;
 }
 
@@ -10,9 +11,31 @@ header a {
   text-decoration: none;
   font-size: 18px;
   line-height: 25px;
-  border-radius: 4px;
 }
 
 header a.logo {
+  margin-left: 20px;
   font-size: 25px;
+}
+
+nav {
+  display: block;
+}
+
+nav ul {
+  margin: 0;
+}
+
+nav ul li {
+  float: left;
+  text-align: center;
+}
+
+div.header_nav_left {
+  margin-left: 100px;
+  float: left;
+}
+
+div.header_nav_right {
+  float: right;
 }
