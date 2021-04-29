@@ -160,7 +160,7 @@ function Compcard() {
           <p>Instagram : {photographerC.photographer.instagram}</p>
         </div>
       </div>
-      <Like />
+      <Like id={photographerC.photographer.id}/>
       <Link to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
         View More
       </Link>
@@ -195,7 +195,7 @@ function Main() {
   axios
     .get('/api/users/login')
     .then(res => {
-      if(res.data === true ) {
+      if(res.data !== false ) {
           setIsLogin(true);
       }
     })

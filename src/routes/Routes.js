@@ -9,11 +9,13 @@ import MainPage from "../components/main/MainPage";
 import Model from "../components/model/model";
 import Model_Detail from "../components/model/model_detail";
 import New_Model from "../components/model/new_model";
+import M_portfolio from "../components/model/model_portfolio";
 
 /* explore - Photographer pages */
 import Photographer from "../components/photographer/photographer";
 import Photographer_Detail from "../components/photographer/photographer_detail";
 import New_Photographer from "../components/photographer/new_photographer";
+import P_portfolio from "../components/photographer/photographer_portfolio";
 
 /* TCT pages */
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
@@ -52,6 +54,7 @@ function Routes() {
                         <Route exact path="/"><MainPage isLogin={isLogin} /></Route>
                         <Route exact path="/mypage"><Overview isLogin={isLogin} userType={userType}/></Route>
                         <Route path="/mypage/notification"><Notification isLogin={isLogin} /></Route>
+                        <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>
                         <Route path="/mypage/requested-project"><RequestedProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/project"><MyProject isLogin={isLogin}/></Route>
                         <Route path="/mypage/create-project"><CreateProject isLogin={isLogin}/></Route>
@@ -70,11 +73,12 @@ function Routes() {
                         <Route path="/model/Model/:skip/:sort"><Model> <Header isLogin={isLogin}/> </Model></Route>
                         <Route path="/model/Model_Detail/:modelId"><Model_Detail> <Header isLogin={isLogin}/> </Model_Detail></Route>
                         <Route path="/model/New_Model"><New_Model> <Header isLogin={isLogin} /> </New_Model></Route>
+                        <Route path="/model/M_portfolio"><M_portfolio> <Header isLogin={isLogin} /> </M_portfolio></Route>
 
                         <Route path="/Photographer/Photographer/:skip/:sort"><Photographer> <Header isLogin={isLogin}/> </Photographer></Route>
                         <Route path="/Photographer/Photographer_Detail/:photographerId"><Photographer_Detail> <Header isLogin={isLogin}/> </Photographer_Detail></Route>
                         <Route path="/Photographer/New_Photographer"><New_Photographer> <Header isLogin={isLogin} /> </New_Photographer></Route>
-                        <Route path="/notification/notification_Detail/:notificationNum"><NotificationDetail isLogin={isLogin} /></Route>
+                        <Route path="/Photographer/P_portfolio"><P_portfolio> <Header isLogin={isLogin} /> </P_portfolio></Route>
                 </Switch>
             </>
         </BrowserRouter>
