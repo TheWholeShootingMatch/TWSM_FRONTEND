@@ -4,38 +4,36 @@ import { Link } from "react-router-dom";
 import { useFetch } from "../../common/useFetch";
 
 function MyProject({ isLogin }) {
-  const [myProjects] = useFetch('/api/project/my-project');
+    const [myProjects] = useFetch("/api/project/my-project");
 
-    return(
+    return (
         <UserMyPage user="user" header="My Project" isLogin={isLogin}>
-            <Myprojects myProjects={myProjects}/>
+            <Myprojects myProjects={myProjects} />
         </UserMyPage>
-    )
+    );
 }
 
 function Myprojects({ myProjects }) {
-    return(
+    return (
         <>
-        <div className="contents_upper_flex">
-            <div>search</div>
-            <Link to="/mypage/create-project">new</Link>
-            {/* 누르면 create-project 페이지로 이동 */}
-        </div>
-        <div className="project_area">
+            <div className="contents_upper_flex">
+                <Link to="/mypage/create-project">new</Link>
+                {/* 누르면 create-project 페이지로 이동 */}
+            </div>
+            <div className="project_area">
                 <div>
-                    {
-                        myProjects.map(project =>
+                    {myProjects.map(project => (
                         <Link to={`/whiteboard/${project.TcTnum._id}`}>
                             <div className="box_long">
-                                <p>{project.TcTnum.title}</p>
+                                <h3>{project.TcTnum.title}</h3>
                                 <p>{project.TcTnum.description}</p>
                             </div>
-                        </Link>)
-                    }
+                        </Link>
+                    ))}
                 </div>
             </div>
         </>
-    )
+    );
 }
 
 export default MyProject;

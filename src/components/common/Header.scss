@@ -1,21 +1,20 @@
-header.main_header {
-  overflow: hidden;
-  padding: 16px;
+header {
+    padding: 16px;
+    height: 60px;
 }
 
 header a {
-  float: left;
-  color: black;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-  font-size: 18px;
-  line-height: 25px;
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
 }
 
 header a.logo {
-  margin-left: 20px;
-  font-size: 25px;
+    font-size: 25px;
 }
 
 nav {

@@ -179,7 +179,7 @@ function Compcard() {
           <p>Size : {modelC.model.Busto}-{modelC.model.Quadril}-{modelC.model.Cintura}</p>
         </div>
       </div>
-      <Like />
+      <Like id={modelC.model._id}/>
       <Link to={`/model/Model_Detail/${modelC.model._id}`}>
         View More
       </Link>
@@ -214,7 +214,7 @@ function Main() {
   axios
     .get('/api/users/login')
     .then(res => {
-      if(res.data === true ) {
+      if(res.data !== false ) {
           setIsLogin(true);
       }
     })

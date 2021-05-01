@@ -4,6 +4,37 @@ import { useParams } from 'react-router-dom';
 
 import Like from "./like_btn";
 
+function Portfolio({Uid}) {
+  const [portfolio, setPortfolio] = useState({
+    _id: "",
+    id: Uid,
+    link: "",
+  });
+
+  async function fetchUrl() {
+    const response = await fetch('/api/photographer/portfolio',
+    {
+      method: "POST",
+      headers: {
+              'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id : Uid })
+    });
+
+    const json = await response.json();
+    if (json !== null) {
+      setPortfolio(json);
+    }
+  }
+
+  useEffect(() => {
+    fetchUrl();
+  }, [Uid]);
+
+  return (portfolio.link !== "")?
+  <a href={portfolio.link}>download</a>:null;
+}
+
 function Main({photographerId}) {
   // get photographer
   // const param = {
@@ -63,7 +94,9 @@ function Main({photographerId}) {
           <p>{photographer.locations}</p>
         </div>
       </div>
-      <Like />
+      <Like id={photographerId}/>
+      <h3>Portfolio</h3>
+      <Portfolio Uid={photographer.Uid}/>
     </main>
   );
 }

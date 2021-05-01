@@ -1,42 +1,36 @@
 import React from "react";
-import {MHeader} from "../Header";
+import { MHeader } from "../Header";
 import { UHeader } from "../Header";
 import Header from "../../common/header";
 import "./MyPage.scss";
 
 function MyPage({ children, user, header, isLogin }) {
-
-    if(user === "manager"){
-        return (
-        <div>
-            <Header isLogin={isLogin}/>
-            <div className="mypage_wrapper">
-                <MHeader/>
-                <main>
-                    <h2 className="mypage_header">{header}</h2>
-                    <div className="mypage_contents">
-                        {children}
-                    </div>
-                </main>
-            </div>
-        </div>
-        )
-    }
-    else{
+    if (user === "manager") {
         return (
             <div>
-                <Header isLogin={isLogin}/>
+                <Header isLogin={isLogin} />
                 <div className="mypage_wrapper">
-                    <UHeader/>
+                    <MHeader />
                     <main>
                         <h2 className="mypage_header">{header}</h2>
-                        <div className="mypage_contents">
-                            {children}
-                        </div>
+                        <div className="mypage_contents">{children}</div>
                     </main>
                 </div>
             </div>
-        )
+        );
+    } else {
+        return (
+            <div>
+                <Header isLogin={isLogin} />
+                <div className="mypage_wrapper">
+                    <UHeader />
+                    <main>
+                        <h2 className="mypage_header">{header}</h2>
+                        <div className="mypage_contents">{children}</div>
+                    </main>
+                </div>
+            </div>
+        );
     }
 }
 
