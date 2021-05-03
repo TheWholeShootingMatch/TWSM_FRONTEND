@@ -49,6 +49,10 @@ export const connectToRoom = async (suffix, Ydoc) => {
         Y.applyUpdate(doc, docUint8Array);
     });
 
+    socketClient.current.on("objectEvent", req => {
+        coordinate.push(req);
+    });
+
     socketClient.current.on("versionEvent", req => {
         const docUint8Array = toUint8Array(req);
         const newYdoc = new Y.Doc();
@@ -71,7 +75,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
     // };
 
     socketClient.current.emit("peerConnectEvent", {
-        id: window.localStorage.getItem("id")
+        name: window.localStorage.getItem("name")
     });
 
     socketClient.current.on("peerConnectEvent", client => {
@@ -99,6 +103,10 @@ export const emitYDoc = (data, type) => {
         data: data,
         type: type
     });
+};
+
+export const emitObject = data => {
+    socketClient.current.emit("objectEvent", data);
 };
 
 export const emitVersionDoc = docName => {
