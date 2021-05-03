@@ -1,14 +1,14 @@
-import * as shared from './SharedTypes';
-import { fabric } from 'fabric';
-import { externalCanvas } from './Canvas';
-import * as Y from 'yjs';
-import FabricProto from '../extension/FabricProto';
+import * as shared from "./SharedTypes";
+import { fabric } from "fabric";
+import { externalCanvas } from "./Canvas";
+import * as Y from "yjs";
+import FabricProto from "../extension/FabricProto";
 
 /* delete all (trash action) */
 export const deleteAllDrawing = () => {
     shared.drawingContent.clear();
     const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-    shared.emitYDoc(encodeDoc, 'clearDoc');
+    shared.emitYDoc(encodeDoc, "clearDoc");
 };
 
 /* undo drawing (undo action) */
@@ -33,7 +33,7 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             uploadedImg.set({
                 angle: 0,
                 scaleX: 0.1,
-                scaleY: 0.1,
+                scaleY: 0.1
             });
             uploadedImg.id = id;
             externalCanvas.centerObject(uploadedImg);
@@ -41,11 +41,11 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             const yArray = new Y.Array();
             const drawElement = new Y.Map();
             yArray.push([jsonObject]);
-            drawElement.set('type', 'image');
-            drawElement.set('options', yArray);
+            drawElement.set("type", "image");
+            drawElement.set("options", yArray);
             shared.drawingContent.get().push([drawElement]);
             const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-            shared.emitYDoc(encodeDoc, 'addObj');
+            shared.emitYDoc(encodeDoc, "addObj");
             externalCanvas.renderAll();
         };
     };
@@ -63,15 +63,15 @@ export const mouseDown = (o, canvas) => {
     // console.log(o);
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
-    if (currentType === 'drawing') {
+    if (currentType === "drawing") {
         isDown = true;
         canvas.isDrawingMode = true;
-        canvas.freeDrawingBrush.color = '#000';
+        canvas.freeDrawingBrush.color = "#000";
         canvas.freeDrawingBrush.width = 4;
-        drawElement.set('type', 'drawing');
-        drawElement.set('color', '#000');
-        drawElement.set('width', 4);
-    } else if (currentType === 'figure') {
+        drawElement.set("type", "drawing");
+        drawElement.set("color", "#000");
+        drawElement.set("width", 4);
+    } else if (currentType === "figure") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
         let id = new Date().getTime().toString();
@@ -81,31 +81,31 @@ export const mouseDown = (o, canvas) => {
             top: pointer.y,
             radius: 1,
             strokeWidth: 1,
-            stroke: 'black',
-            fill: 'white',
+            stroke: "black",
+            fill: "white",
             selectable: false,
-            originX: 'center',
-            originY: 'center',
-            evented: false,
+            originX: "center",
+            originY: "center",
+            evented: false
         });
         circle.id = id;
         canvas.add(circle);
-        drawElement.set('type', 'figure');
-    } else if (currentType === 'text') {
+        drawElement.set("type", "figure");
+    } else if (currentType === "text") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
-        textbox = new fabric.Textbox('type', {
+        textbox = new fabric.Textbox("type", {
             left: pointer.x,
             top: pointer.y,
             width: 10,
-            backgroundColor: 'white',
+            backgroundColor: "white"
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
 
-        console.log('add text', textbox);
+        console.log("add text", textbox);
         canvas.add(textbox);
-        drawElement.set('type', 'text');
+        drawElement.set("type", "text");
 
         canvas.setActiveObject(textbox);
         textbox.enterEditing();
@@ -114,14 +114,14 @@ export const mouseDown = (o, canvas) => {
 };
 
 export const mouseMove = (o, canvas) => {
-    if (currentType === 'figure') {
+    if (currentType === "figure") {
         if (!isDown) {
             return;
         }
         let pointer = canvas.getPointer(o.e);
         circle.set({ radius: Math.abs(origX - pointer.x) });
         canvas.renderAll();
-    } else if (currentType === 'text') {
+    } else if (currentType === "text") {
         if (!isDown) {
             return;
         }
@@ -131,32 +131,32 @@ export const mouseMove = (o, canvas) => {
     }
 };
 
-const emitObject = (drawElement) => {
+const emitObject = drawElement => {
     shared.drawingContent.get().push([drawElement]);
     const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-    shared.emitYDoc(encodeDoc, 'addObj');
+    shared.emitYDoc(encodeDoc, "addObj");
 };
 
 //http://jsfiddle.net/softvar/Nt8f7/
-const getObject = (o) => {
+const getObject = o => {
     if (sharedLine !== null) {
-        if (currentType === 'figure') {
+        if (currentType === "figure") {
             const jsonObject = JSON.stringify(circle);
             sharedLine.push([jsonObject]);
-            drawElement.set('options', sharedLine);
+            drawElement.set("options", sharedLine);
             emitObject(drawElement);
-        } else if (currentType === 'text') {
+        } else if (currentType === "text") {
             const jsonObject = JSON.stringify(textbox);
             sharedLine.push([jsonObject]);
-            drawElement.set('options', sharedLine);
+            drawElement.set("options", sharedLine);
             emitObject(drawElement);
-        } else if (currentType === 'drawing') {
+        } else if (currentType === "drawing") {
             let id = new Date().getTime().toString();
             const drawing = o.path;
             drawing.id = id;
             const jsonObject = JSON.stringify(drawing);
             sharedLine.push([jsonObject]);
-            drawElement.set('options', sharedLine);
+            drawElement.set("options", sharedLine);
             emitObject(drawElement);
         }
     }
@@ -165,16 +165,16 @@ const getObject = (o) => {
 export const mouseUp = (o, canvas) => {
     if (o && isDown) {
         isDown = false;
-        if (currentType === 'text' || currentType === 'figure') {
+        if (currentType === "text" || currentType === "figure") {
             getObject(o);
-        } else if (currentType === 'drawing') {
+        } else if (currentType === "drawing") {
             let pointer = canvas.getPointer(o.e);
             sharedLine.push([
                 {
                     x: pointer.x,
                     y: pointer.y,
-                    event: 'up',
-                },
+                    event: "up"
+                }
             ]);
         }
     }
@@ -188,7 +188,7 @@ export const changeStatus = (value, canvas) => {
     canvas.renderAll();
 };
 
-export const objectModified = (o) => {
+export const objectModified = o => {
     if (o.target) {
         let actObj = o.target;
         shared.coordinate.push([
@@ -199,30 +199,40 @@ export const objectModified = (o) => {
                 scaleX: actObj.scaleX,
                 scaleY: actObj.scaleY,
                 angle: actObj.angle,
-                text: actObj.text,
-            },
+                text: actObj.text
+            }
         ]);
-        const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-        shared.emitYDoc(encodeDoc, 'moveObj');
+        const modifiedInfo = [
+            {
+                id: actObj.id,
+                left: actObj.left,
+                top: actObj.top,
+                scaleX: actObj.scaleX,
+                scaleY: actObj.scaleY,
+                angle: actObj.angle,
+                text: actObj.text
+            }
+        ];
+        shared.emitObject(modifiedInfo);
     }
 };
 
-export const afterObjectModified = (o) => {
+export const afterObjectModified = o => {
     let actObj = o.target;
     if (actObj) {
-        shared.drawingContent.get().map((drawElement) => {
-            const options = drawElement.get('options').toArray()[0];
+        shared.drawingContent.get().map(drawElement => {
+            const options = drawElement.get("options").toArray()[0];
             if (options) {
                 const parseObject = JSON.parse(options);
                 if (parseObject.id === actObj.id) {
                     const newYarray = new Y.Array();
                     const jsonModifiedObject = JSON.stringify(actObj);
                     newYarray.push([jsonModifiedObject]);
-                    drawElement.set('options', newYarray);
+                    drawElement.set("options", newYarray);
                 }
             }
         });
-        console.log('emitlastDoc');
+        console.log("emitlastDoc");
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
         shared.emitLastYDoc(encodeDoc);
     }
@@ -232,19 +242,19 @@ export const deleteObject = () => {
     const actObj = externalCanvas.getActiveObject();
     if (actObj) {
         const actObjId =
-            typeof actObj._objects === 'undefined'
+            typeof actObj._objects === "undefined"
                 ? [actObj.id]
-                : actObj._objects.map((object) => object.id);
+                : actObj._objects.map(object => object.id);
 
         console.log(actObjId);
 
         shared.doc.transact(() => {
-            actObjId.map((id) => {
+            actObjId.map(id => {
                 shared.drawingContent.get().forEach((drawElement, index) => {
-                    const options = drawElement.get('options').toArray()[0];
+                    const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseObject = JSON.parse(options);
-                        if (typeof parseObject !== 'undefined') {
+                        if (typeof parseObject !== "undefined") {
                             if (parseObject.id === id) {
                                 console.log(
                                     index,
@@ -260,7 +270,7 @@ export const deleteObject = () => {
             });
         });
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-        shared.emitYDoc(encodeDoc, 'clearDoc');
+        shared.emitYDoc(encodeDoc, "clearDoc");
         externalCanvas.remove(actObj);
     }
 };
@@ -269,28 +279,28 @@ let initType = true;
 
 export const setToolOption = (type, canvas) => {
     currentType = type;
-    if (type === 'panning') {
+    if (type === "panning") {
         externalCanvas.toggleDragMode(true);
-    } else if (type !== 'select') {
+    } else if (type !== "select") {
         canvas.toggleDragMode(false);
         canvas.discardActiveObject();
         canvas.selection = false;
         canvas.isDrawingMode = false;
         changeStatus(false, canvas);
-        canvas.off('object:moving');
-        canvas.off('object:scaling');
-        canvas.off('object:rotating');
-        canvas.off('object:modified');
-        canvas.on('mouse:down', function (o) {
+        canvas.off("object:moving");
+        canvas.off("object:scaling");
+        canvas.off("object:rotating");
+        canvas.off("object:modified");
+        canvas.on("mouse:down", function (o) {
             mouseDown(o, canvas);
         });
-        canvas.on('mouse:move', function (o) {
+        canvas.on("mouse:move", function (o) {
             mouseMove(o, canvas);
         });
-        canvas.on('mouse:up', function (o) {
+        canvas.on("mouse:up", function (o) {
             mouseUp(o, canvas);
         });
-        canvas.on('path:created', function (o) {
+        canvas.on("path:created", function (o) {
             getObject(o);
         });
     } else {
@@ -298,22 +308,22 @@ export const setToolOption = (type, canvas) => {
         canvas.selection = true;
         canvas.isDrawingMode = false;
         changeStatus(true, canvas);
-        canvas.off('mouse:down');
-        canvas.off('mouse:move');
-        canvas.off('mouse:up');
-        canvas.on('object:moving', function (o) {
+        canvas.off("mouse:down");
+        canvas.off("mouse:move");
+        canvas.off("mouse:up");
+        canvas.on("object:moving", function (o) {
             objectModified(o);
         });
-        canvas.on('object:scaling', function (o) {
+        canvas.on("object:scaling", function (o) {
             objectModified(o);
         });
-        canvas.on('object:rotating', function (o) {
+        canvas.on("object:rotating", function (o) {
             objectModified(o);
         });
-        canvas.on('object:modified', function (o) {
+        canvas.on("object:modified", function (o) {
             objectModified(o);
         });
-        canvas.on('object:modified', function (o) {
+        canvas.on("object:modified", function (o) {
             afterObjectModified(o);
         });
     }
