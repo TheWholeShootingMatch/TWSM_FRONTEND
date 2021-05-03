@@ -1,45 +1,45 @@
 $--menu-border-color: #666666;
 $--menubox-border-color: #808080;
 
-.whole_wrapper{
+.whole_wrapper {
     display: flex;
     height: 100vh;
 }
 
-.tct_wrapper{
+.tct_wrapper {
     overflow: hidden;
     width: 87%;
 }
 
 /*TCT side menu*/
-.tct_sidemenu{
-    border-right: 1px solid  $--menubox-border-color;
+.tct_sidemenu {
+    border-right: 1px solid $--menubox-border-color;
     width: 13%;
     box-sizing: border-box;
 
-    .logo_area{
+    .logo_area {
         border-bottom: 1px solid $--menubox-border-color;
         height: 10%;
     }
 
-    .menu_area{
-        ul{
+    .menu_area {
+        ul {
             padding: 10px;
-            li{
+            li {
                 list-style: none;
                 border-radius: 5px;
                 border: 1px solid $--menu-border-color;
                 margin: 10px 0;
                 box-sizing: border-box;
 
-                a{
+                a {
                     text-decoration: none;
                     color: #000;
                     display: block;
                     padding: 6px 11px;
                 }
 
-                a.tct-menu-active{
+                a.tct-menu-active {
                     background-color: $--menu-border-color;
                     color: white;
                 }
@@ -50,7 +50,6 @@ $--menubox-border-color: #808080;
     // .back_btn{
     //     border: 1px solid black;
     // }
-
 }
 
 /*TCT wrapper*/
@@ -59,37 +58,45 @@ $--menubox-border-color: #808080;
 // }
 
 /*TCT header*/
-.tct_header{
+.tct_header {
     display: flex;
     height: 10%;
-    
-    .project_title{
+
+    .project_title {
         width: 300px;
         padding: 15px;
         display: flex;
 
-        input{
+        input {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
         }
     }
 
-    .connected_users{
-        // border: 1px solid $--menubox-border-color;
+    .connected_users {
         width: 100%;
         display: flex;
+        justify-items: center;
+        padding: 15px 0;
+        align-content: stretch;
         justify-content: flex-end;
-
-        .user_icon{
-            border: 1px solid $--menubox-border-color;
+        align-items: center;
+        .user_icon {
+            border: 1px solid;
+            border-radius: 34px;
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            margin: 4px;
+            line-height: 35px;
+            font-size: bold;
         }
 
-        .invite_btn{
+        .invite_btn {
             border-left: 1px solid $--menubox-border-color;
-            details{
+            details {
                 width: 100px;
-
             }
         }
     }
