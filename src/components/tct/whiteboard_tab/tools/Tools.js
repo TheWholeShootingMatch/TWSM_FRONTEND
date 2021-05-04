@@ -191,6 +191,7 @@ export const changeStatus = (value, canvas) => {
 export const objectModified = o => {
     if (o.target) {
         let actObj = o.target;
+        console.log("object modified", actObj.text);
         shared.coordinate.push([
             {
                 id: actObj.id,
@@ -291,6 +292,7 @@ export const setToolOption = (type, canvas) => {
         canvas.off("object:scaling");
         canvas.off("object:rotating");
         canvas.off("object:modified");
+        canvas.off("text: changed");
         canvas.on("mouse:down", function (o) {
             mouseDown(o, canvas);
         });
@@ -325,6 +327,9 @@ export const setToolOption = (type, canvas) => {
         });
         canvas.on("object:modified", function (o) {
             afterObjectModified(o);
+        });
+        canvas.on("text:changed", function (o) {
+            objectModified(o);
         });
     }
 };
