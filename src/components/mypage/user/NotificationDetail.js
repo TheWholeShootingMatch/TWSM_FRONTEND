@@ -4,6 +4,8 @@ import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 import axios from "axios";
 
+import "./Notification.css";
+
 function NotificationDetail({ isLogin, props }) {
     let { notificationNum } = useParams();
 

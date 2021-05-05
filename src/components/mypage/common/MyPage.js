@@ -3,6 +3,7 @@ import { MHeader } from "../Header";
 import { UHeader } from "../Header";
 import Header from "../../common/header";
 import "./MyPage.scss";
+import "./Overview.css";
 
 function MyPage({ children, user, header, isLogin }) {
     if (user === "manager") {

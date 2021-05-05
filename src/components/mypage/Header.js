@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import accountIcon from "./Icons/outline_account_circle_black_24dp.png";
+import accountIcon from "./Icons/person.png";
 
 /* 일반 유저 */
 export function UHeader() {

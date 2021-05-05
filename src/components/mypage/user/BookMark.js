@@ -3,6 +3,8 @@ import UserMyPage from "../common/MyPage";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 
+import "./BookMark.css";
+
 function BookMark({ isLogin }) {
     return (
         <UserMyPage user="user" header="Bookmark" isLogin={isLogin}>

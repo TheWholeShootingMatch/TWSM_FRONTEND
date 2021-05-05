@@ -1,30 +1,30 @@
 /* my page header*/
 
-.mypage_header {
-    font-size: 25px;
-    font-weight: bold;
-    margin-top: 24px;
-}
+// .mypage_header {
+//     font-size: 25px;
+//     font-weight: bold;
+//     margin-top: 24px;
+// }
 
 .mypage_contents {
     margin-top: 13px;
 }
 
-.contents_upper_flex {
-    display: flex;
-    justify-content: flex-end;
-
-    a {
-        border: 1px solid #d4d4d4;
-        display: block;
-        /* padding: 15px; */
-        padding: 5px 11px;
-        width: 33px;
-        border-radius: 8px;
-        text-align: center;
-        margin: 0 0 14px 0;
-    }
-}
+// .contents_upper_flex {
+//     display: flex;
+//     justify-content: flex-end;
+//
+//     a {
+//         border: 1px solid #d4d4d4;
+//         display: block;
+//         /* padding: 15px; */
+//         padding: 5px 11px;
+//         width: 33px;
+//         border-radius: 8px;
+//         text-align: center;
+//         margin: 0 0 14px 0;
+//     }
+// }
 
 .profile_nav {
     border: 1px solid gray;
@@ -33,19 +33,19 @@
 
     .profile_upper {
         text-align: center;
-        padding: 20px;
+        // padding: 20px;
         border-bottom: 1px solid black;
         img {
-            width: 80px;
-            height: 80px;
+            width: 130px;
+            height: 130px;
         }
     }
     ul {
         li {
-            padding: 15px;
+            padding: 20px;
         }
         li:not(:last-of-type) {
-            border-bottom: 1px solid black;
+            // border-bottom: 1px solid black;
         }
     }
 }
@@ -62,7 +62,7 @@ main {
 
     table {
         tr {
-            border-bottom: 1px solid gray;
+            // border-bottom: 1px solid gray;
         }
 
         tr {
@@ -74,15 +74,15 @@ main {
 }
 
 .box_long {
-    border-top: 1px solid gray;
-    padding: 19px 12px;
-    margin: 20px 0;
-    width: 685px;
+    // border-top: 1px solid gray;
+    // padding: 19px 12px;
+    // margin: 20px 0;
+    // width: 685px;
 
-    h3 {
-        font-size: 20px;
-        font-weight: bold;
-    }
+    // h3 {
+    //     font-size: 20px;
+    //     font-weight: bold;
+    // }
 
     .box_long_upper {
         span:first-child {

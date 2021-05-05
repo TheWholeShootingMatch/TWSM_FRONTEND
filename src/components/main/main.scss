@@ -1,7 +1,12 @@
-.main_contents img {
-  width: 100%;
-  height: auto;
+.main_contents {
+  display: block;
+}
 
+.main_contents img {
+  top: 108px;
+  height: auto;
+  width: 60%;
+  float: right;
 }
 
 .main_contents .btn {
@@ -18,9 +23,7 @@
   border-radius: 5px;
   cursor: pointer;
   position: absolute;
-	left: 50%;
+	left: 20%;
 	top: 80%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
 	overflow: visible;
 }

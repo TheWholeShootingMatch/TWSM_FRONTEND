@@ -1,5 +1,8 @@
 header {
   float: left;
+  height: 108px;
+  display: block;
+  width: 100%;
 }
 
 header a {
@@ -34,6 +37,7 @@ nav ul {
 nav ul li {
   float: left;
   text-align: center;
+  font-weight: bold;
 }
 
 div.header_nav_left {

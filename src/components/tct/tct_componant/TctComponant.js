@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useHistory, useParams, NavLink } from "react-router-dom";
 import {
     originSuffix,
-    activeUserList,
-} from '../whiteboard_tab/tools/SharedTypes';
-import './TctComponant.scss';
-import axios from 'axios';
-import { YMapEvent } from 'yjs';
+    activeUserList
+} from "../whiteboard_tab/tools/SharedTypes";
+import "./TctComponant.scss";
+import axios from "axios";
 
 function SideMenu({ TcTnum }) {
     return (
@@ -53,20 +52,21 @@ function SideMenu({ TcTnum }) {
 }
 
 function Header({ TcTnum, title }) {
-    const [activeUsers, setActiveUsers] = useState([]);
-    activeUserList.observe((ymapEvent) => {
+    const currentList = Array.from(activeUserList.values()).map(e => e[0]);
+    const [activeUsers, setActiveUsers] = useState(currentList);
+    activeUserList.observe(ymapEvent => {
         ymapEvent.changes.keys.forEach((change, key) => {
-            if (change.action === 'add') {
-                const socketId = activeUsers.map((e) => e.socketId);
+            if (change.action === "add") {
+                const socketId = activeUsers.map(e => e.socketId);
                 if (!socketId.includes(key)) {
                     const user = activeUserList.get(key);
                     setActiveUsers([...activeUsers, user[0]]);
                 }
-            } else if (change.action === 'delete') {
-                const socketId = activeUsers.map((e) => e.socketId);
+            } else if (change.action === "delete") {
+                const socketId = activeUsers.map(e => e.socketId);
                 if (socketId.includes(key)) {
                     setActiveUsers(
-                        activeUsers.filter((user) => user.socketId !== key)
+                        activeUsers.filter(user => user.socketId !== key)
                     );
                 }
             }
@@ -75,40 +75,40 @@ function Header({ TcTnum, title }) {
 
     // for post
     const [inputs, setInputs] = useState({ TcTnum: TcTnum });
-    const [titleInputs, setTitleInputs] = useState('');
+    const [titleInputs, setTitleInputs] = useState("");
 
-    const titleHandleChanges = (e) => {
+    const titleHandleChanges = e => {
         const title = e.target.value;
         setTitleInputs(title);
     };
 
-    const titleSubmit = (e) => {
+    const titleSubmit = e => {
         e.preventDefault();
         axios
-            .post('/api/tct/title', {
+            .post("/api/tct/title", {
                 titleInputs: titleInputs,
-                TcTnum: TcTnum,
+                TcTnum: TcTnum
             })
-            .then((res) => console.log(res.data))
-            .catch((err) => {
+            .then(res => console.log(res.data))
+            .catch(err => {
                 console.log(err);
             });
     };
 
-    const handleChange = (e) => {
+    const handleChange = e => {
         const { value, name } = e.target;
         setInputs({
             ...inputs,
-            [name]: value,
+            [name]: value
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = e => {
         e.preventDefault();
         axios
-            .post('/api/notification/invite', inputs)
-            .then((res) => {})
-            .catch((err) => {
+            .post("/api/notification/invite", inputs)
+            .then(res => {})
+            .catch(err => {
                 console.error(err);
             });
     };
@@ -126,26 +126,33 @@ function Header({ TcTnum, title }) {
                 />
             </div>
             <div className="connected_users">
-                {activeUsers.map((user) => (
-                    <span className="user_icon" style={{ color: user.color }}>
-                        {user.id}
+                {activeUsers.map(user => (
+                    <span
+                        className="user_icon"
+                        style={{
+                            color: user.color,
+                            borderColor: user.color,
+                            boxShadow: `${user.color} 0px 0px 3px 1px`
+                        }}
+                    >
+                        {user.name.charAt(0)}
                     </span>
                 ))}
-                <span className="invite_btn">
-                    <details>
-                        <summary>plus</summary>
-                        <form onSubmit={handleSubmit}>
-                            <input
-                                type="text"
-                                name="id"
-                                placeholder="Enter the ID"
-                                onChange={handleChange}
-                            />
-                            <button type="submit">Invite</button>
-                        </form>
-                        <div>user list</div>
-                    </details>
-                </span>
+            </div>
+            <div className="invite_btn">
+                <details>
+                    <summary>plus</summary>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            name="id"
+                            placeholder="Enter the ID"
+                            onChange={handleChange}
+                        />
+                        <button type="submit">Invite</button>
+                    </form>
+                    <div>user list</div>
+                </details>
             </div>
         </header>
     );

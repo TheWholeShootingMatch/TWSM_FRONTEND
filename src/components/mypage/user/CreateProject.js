@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import UserMyPage from "../common/MyPage";
 import axios from "axios";
 
+import "./CreateProject.css";
+
 function CreateProject({ isLogin }) {
     console.log(isLogin);
     return(
@@ -62,21 +64,18 @@ function ProjectForm() {
     return(
     <form>
         <div className="title">
-            <h3>title</h3>
+            <h3>Title</h3>
                 <input onChange={onChangeForm} name="title" value={title}/>
         </div>
         <div className="description">
-            <h3>description</h3>
+            <h3>Description</h3>
                 <input onChange={onChangeForm} name="description" value={description}/>
         </div>
         <div className="collaboration">
-            <h3>collaboration</h3>
-            <details>
-            <summary>members</summary>
-            <div className="details-menu">
+            <h3>Collaboration</h3>
                 <p>search memebers</p>
                 {
-                  usr.map((elem,index) => <p key={index}>{elem}</p>)
+                  usr.map((elem,index) => <li key={index}>{elem}</li>)
                 }
                 <input
                     type="text"
@@ -85,8 +84,6 @@ function ProjectForm() {
                     onChange={handleChange}
                 />
                 <button type="button" onClick={handleAdd}>add</button>
-            </div>
-            </details>
         </div>
         <button type="button" onClick={onSubmitForm}>Send request</button>
     </form>

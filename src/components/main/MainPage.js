@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Header from "../common/header";
-import Search from "../common/search";
-import mainImage from "./mainImage.png";
+import mainImage from "./mainImage1.png";
 import "./main.scss"
 
 function MainPage({ isLogin }) {
