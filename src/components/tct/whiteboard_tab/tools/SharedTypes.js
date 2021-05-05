@@ -23,8 +23,21 @@ export const connectToRoom = async (suffix, Ydoc) => {
     // tmp room id
     const roomId = suffix;
     console.log(roomId);
-
     console.log(Ydoc);
+
+    const restoreVersion = () => {
+        const renderList = canvasRender();
+        onCanvasUpdate(renderList, externalCanvas);
+    };
+
+    if (originSuffix === null) {
+        originSuffix = suffix;
+        const persistedYdoc = await persistence.getYDoc("doc");
+        const ecodedUint8Arr = toUint8Array(Ydoc);
+        Y.applyUpdate(doc, ecodedUint8Arr);
+        console.log(doc.getArray("").toJSON());
+    }
+
     //enter the room
     socketClient.current = socketIOClient(SOCKET_SERVER_URL, {
         query: { roomId }
@@ -36,24 +49,22 @@ export const connectToRoom = async (suffix, Ydoc) => {
         Y.applyUpdate(doc, docUint8Array);
     });
 
+    socketClient.current.on("objectEvent", req => {
+        coordinate.push(req);
+    });
+
     socketClient.current.on("versionEvent", req => {
         const docUint8Array = toUint8Array(req);
-        const newDoc = new Y.Doc();
-        Y.applyUpdate(newDoc, docUint8Array);
-        doc = newDoc;
-        drawingContent.get().delete(0, drawingContent.get().length);
+        const newYdoc = new Y.Doc();
+        Y.applyUpdate(newYdoc, docUint8Array);
+        Y.applyUpdate(doc, docUint8Array);
+        drawingContent.init(newYdoc.getArray(""));
         const objects = externalCanvas.getObjects();
         externalCanvas.remove(...objects);
         restoreVersion();
         // console.log('versionEvent', docUint8Array);
     });
 
-    const restoreVersion = () => {
-        drawingContent.init(doc.getArray(""));
-        const renderList = canvasRender();
-        console.log(renderList);
-        onCanvasUpdate(renderList, externalCanvas);
-    };
     // const restoreVersion = () => {
     //     const cloneNewDocArr = doc.getArray('').toArray();
     //     drawingContent.get().push()
@@ -64,7 +75,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
     // };
 
     socketClient.current.emit("peerConnectEvent", {
-        id: window.localStorage.getItem("id")
+        name: window.localStorage.getItem("name")
     });
 
     socketClient.current.on("peerConnectEvent", client => {
@@ -79,14 +90,6 @@ export const connectToRoom = async (suffix, Ydoc) => {
         console.log(client);
         activeUserList.delete(client);
     });
-
-    if (originSuffix === null) {
-        originSuffix = suffix;
-        const persistedYdoc = await persistence.getYDoc("doc");
-        const ecodedUint8Arr = toUint8Array(Ydoc);
-        console.log(ecodedUint8Arr);
-        Y.applyUpdate(doc, ecodedUint8Arr);
-    }
 };
 
 doc.on("update", update => {
@@ -100,6 +103,10 @@ export const emitYDoc = (data, type) => {
         data: data,
         type: type
     });
+};
+
+export const emitObject = data => {
+    socketClient.current.emit("objectEvent", data);
 };
 
 export const emitVersionDoc = docName => {
