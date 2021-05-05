@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Header from "../common/header";
 import Search from "../common/search";
+import mainImage from "./mainImage.png";
 import "./main.scss"
 
 function MainPage({ isLogin }) {
@@ -9,8 +10,8 @@ function MainPage({ isLogin }) {
         <div>
             <Header isLogin={isLogin}/>
             <div className="main_contents">
-              <img src="../common/mainImage.png" alt="main_image" />
-              <button> Get started </button>
+              <img src={mainImage} alt="main_image" />
+              <button className="btn"> Get started </button>
             </div>
         </div>
     )

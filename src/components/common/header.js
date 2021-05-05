@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Header.scss";
+import logo from "./logo.png";
 
 function Header({ isLogin }) {
 
@@ -8,7 +9,7 @@ function Header({ isLogin }) {
 
     return(
         <header className="main_header">
-            <a href="/" className="logo">TWSM</a>
+            <a href="/" className="logo"><img src={logo} alt="TWSM"/></a>
             <nav className="header_nav">
                 <div className="header_nav_left">
                     <ul>

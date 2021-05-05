@@ -1,6 +1,5 @@
 header {
-    padding: 16px;
-    height: 60px;
+  float: left;
 }
 
 header a {
@@ -13,12 +12,19 @@ header a {
     line-height: 25px;
 }
 
-header a.logo {
-    font-size: 25px;
+header a.logo img {
+    height: 80px;
+    width: auto;
 }
 
 nav {
+  float: left;
   display: block;
+  position: absolute;
+	height: 33px;
+	top: 30px;
+	overflow: visible;
+  width: 100%;
 }
 
 nav ul {
@@ -31,10 +37,11 @@ nav ul li {
 }
 
 div.header_nav_left {
-  margin-left: 100px;
+  padding-left: 200px;
   float: left;
 }
 
 div.header_nav_right {
+  padding-right: 30px;
   float: right;
 }
