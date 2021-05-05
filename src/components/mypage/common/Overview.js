@@ -19,8 +19,8 @@ function ShortBox(project) {
     const { title, description } = project.project;
     return (
         <div className="box_short">
-            <h4>Title : {title}</h4>
-            <p>Description: {description}</p>
+            <h4>{title}</h4>
+            <p>{description}</p>
         </div>
     );
 }

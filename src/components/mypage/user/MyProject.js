@@ -3,6 +3,8 @@ import UserMyPage from "../common/MyPage";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../common/useFetch";
 
+import "./MyProject.css";
+
 function MyProject({ isLogin }) {
     const [myProjects] = useFetch("/api/project/my-project");
 
