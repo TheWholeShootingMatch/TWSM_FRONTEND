@@ -4,7 +4,7 @@ import accountIcon from "./Icons/person.png";
 
 /* 일반 유저 */
 export function UHeader() {
-    const id = window.localStorage.getItem("id");
+    const id = window.localStorage.getItem("name");
     return (
         <div className="profile_nav">
             <div className="profile_upper">
@@ -36,7 +36,7 @@ export function UHeader() {
 
 /* 매니저 */
 export function MHeader() {
-    const id = window.localStorage.getItem("id");
+    const id = window.localStorage.getItem("name");
 
     return (
         <div className="profile_nav">
