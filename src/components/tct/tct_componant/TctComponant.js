@@ -200,7 +200,6 @@ function Header({ TcTnum, title }) {
         ymapEvent.changes.keys.forEach((change, key) => {
             if (change.action === "add") {
                 const socketId = activeUsers.map(e => e.socketId);
-                console.log(socketId, key);
                 if (!socketId.includes(key)) {
                     const user = activeUserList.get(key);
                     setActiveUsers([...activeUsers, user[0]]);
