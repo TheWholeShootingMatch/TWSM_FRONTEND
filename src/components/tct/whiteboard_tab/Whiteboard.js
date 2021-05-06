@@ -8,8 +8,17 @@ import React, {
 } from "react";
 import { Redirect, useParams, useHistory } from "react-router-dom";
 import TctComponant from "../tct_componant/TctComponant";
-import { category } from "./Icons/outline_category_black_24dp.png";
 import Canvas from "./tools/Canvas";
+import { IconContext } from "react-icons";
+import { GrPan } from "react-icons/gr";
+import {
+    BiShapeSquare,
+    BiPencil,
+    BiTrash,
+    BiNavigation,
+    BiImageAlt,
+    BiText
+} from "react-icons/bi";
 import {
     connectToRoom,
     originSuffix,
@@ -21,10 +30,7 @@ import { externalCanvas } from "./tools/Canvas";
 import * as Y from "yjs";
 import axios from "axios";
 import { fromUint8Array } from "js-base64";
-
 import "./styles/Whiteboard.scss";
-import "./styles/WhiteBoardHeader.scss";
-import { findAllByTestId } from "@testing-library/dom";
 
 const whiteboardContext = createContext();
 let reloadLink = null;
@@ -127,71 +133,66 @@ function WhiteBoardHeader({
 }) {
     return (
         <div className="whiteboard_header">
-            <div className="tools">
-                <ul>
-                    <li
-                        id="select"
-                        onClick={() => {
-                            Tools.setToolOption("select", externalCanvas);
-                        }}
-                    >
-                        Select
-                        {/* <NearMeIcon /> */}
-                    </li>
-                    <li
-                        id="panning"
-                        onClick={() => {
-                            Tools.setToolOption("panning", externalCanvas);
-                        }}
-                    >
-                        Panning
-                        {/* <PanToolIcon /> */}
-                    </li>
-                    <li
-                        id="figure"
-                        onClick={() => {
-                            Tools.setToolOption("figure", externalCanvas);
-                        }}
-                    >
-                        Figure
-                        {/* <RadioButtonUncheckedIcon /> */}
-                    </li>
-                    <li
-                        id="text"
-                        onClick={() => {
-                            Tools.setToolOption("text", externalCanvas);
-                        }}
-                    >
-                        Text
-                        {/* <TextFieldsIcon /> */}
-                    </li>
-                    <li
-                        id="image"
-                        onClick={() => {
-                            onClickImageInput();
-                            Tools.setToolOption("image", externalCanvas);
-                        }}
-                    >
-                        Image
-                        {/* <CropOriginalIcon /> */}
-                    </li>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        ref={hiddenFileInput}
-                        onChange={onChangeImageInput}
-                        style={{ display: "none" }}
-                    />
-                    <li
-                        id="drawing"
-                        onClick={() => {
-                            Tools.setToolOption("drawing", externalCanvas);
-                        }}
-                    >
-                        Drawing
-                        {/* <GestureIcon /> */}
-                    </li>
-                    {/* <li
+            <IconContext.Provider value={{ className: "tool_icons" }}>
+                <div className="tools">
+                    <ul>
+                        <li
+                            id="select"
+                            onClick={() => {
+                                Tools.setToolOption("select", externalCanvas);
+                            }}
+                        >
+                            <BiNavigation />
+                        </li>
+                        <li
+                            id="panning"
+                            onClick={() => {
+                                Tools.setToolOption("panning", externalCanvas);
+                            }}
+                        >
+                            <GrPan />
+                        </li>
+                        <li
+                            id="figure"
+                            onClick={() => {
+                                Tools.setToolOption("figure", externalCanvas);
+                            }}
+                        >
+                            <BiShapeSquare />
+                        </li>
+                        <li
+                            id="text"
+                            onClick={() => {
+                                Tools.setToolOption("text", externalCanvas);
+                            }}
+                        >
+                            <BiText />
+                        </li>
+                        <li
+                            id="image"
+                            onClick={() => {
+                                onClickImageInput();
+                                Tools.setToolOption("image", externalCanvas);
+                            }}
+                        >
+                            <BiImageAlt />
+                        </li>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            ref={hiddenFileInput}
+                            onChange={onChangeImageInput}
+                            style={{ display: "none" }}
+                        />
+                        <li
+                            id="drawing"
+                            onClick={() => {
+                                Tools.setToolOption("drawing", externalCanvas);
+                            }}
+                        >
+                            <BiPencil />
+                        </li>
+                        {/* <li
                         id="undo"
                         onClick={() => {
                             setType('undo');
@@ -209,17 +210,16 @@ function WhiteBoardHeader({
                     >
                         <RedoIcon/>
                     </li> */}
-                    <li
-                        id="delete"
-                        onClick={() => {
-                            setType("delete");
-                            Tools.deleteObject();
-                        }}
-                    >
-                        Delete
-                        {/* <DeleteIcon /> */}
-                    </li>
-                    {/* <li
+                        <li
+                            id="delete"
+                            onClick={() => {
+                                setType("delete");
+                                Tools.deleteObject();
+                            }}
+                        >
+                            <BiTrash value={{ className: "tool_icons" }} />
+                        </li>
+                        {/* <li
                         id="trash"
                         onClick={() => {
                             setType('trash');
@@ -228,8 +228,9 @@ function WhiteBoardHeader({
                     >
                         trash
                     </li> */}
-                </ul>
-            </div>
+                    </ul>
+                </div>
+            </IconContext.Provider>
             <div className="history_btn">
                 <button onClick={() => setToggle(!toggleHistoryMenu)}>
                     history
@@ -307,8 +308,6 @@ function HistoryArea() {
     return (
         <div className={`history_area ${toggleHistoryMenu ? "active" : ""}`}>
             <ul className="history_list">
-                <button onClick={() => addVersion()}>add</button>
-                <button>clear</button>
                 {versionList.map((version, index) => {
                     return (
                         <li
@@ -323,6 +322,10 @@ function HistoryArea() {
                     );
                 })}
             </ul>
+            <div className="history_action_btn">
+                <button class="add_btn"onClick={() => addVersion()}>add</button>
+                <button class="clear_btn">clear</button>
+            </div>
         </div>
     );
 }

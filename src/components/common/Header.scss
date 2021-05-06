@@ -1,6 +1,28 @@
-header {
-    padding: 16px;
-    height: 60px;
+.main_header {
+    float: left;
+    height: 8%;
+    display: block;
+    width: 100%;
+
+    nav {
+        float: left;
+        display: block;
+        position: absolute;
+        height: 33px;
+        top: 30px;
+        overflow: visible;
+        width: 100%;
+    }
+
+    nav ul {
+        margin: 0;
+    }
+
+    nav ul li {
+        float: left;
+        text-align: center;
+        font-weight: bold;
+    }
 }
 
 header a {
@@ -11,9 +33,19 @@ header a {
     text-decoration: none;
     font-size: 18px;
     line-height: 25px;
-    border-radius: 4px;
+
+    &.logo img {
+        height: 80px;
+        width: auto;
+    }
 }
 
-header a.logo {
-    font-size: 25px;
+div.header_nav_left {
+    padding-left: 200px;
+    float: left;
+}
+
+div.header_nav_right {
+    padding-right: 30px;
+    float: right;
 }
