@@ -11,6 +11,7 @@ export const socketClient = socketIOClient();
 export const persistence = new LeveldbPersistence("./currentDoc");
 
 export let originSuffix = null;
+export let connect = false;
 export let indexeddbPersistence = null;
 export let doc = new Y.Doc();
 let userDoc = new Y.Doc();
@@ -74,10 +75,12 @@ export const connectToRoom = async (suffix, Ydoc) => {
     //     // })
     // };
 
-    socketClient.current.emit("peerConnectEvent", {
-        name: window.localStorage.getItem("name")
-    });
-
+    if (!connect) {
+        socketClient.current.emit("peerConnectEvent", {
+            name: window.localStorage.getItem("name")
+        });
+        connect = true;
+    }
     socketClient.current.on("peerConnectEvent", client => {
         client.forEach(client => {
             if (!activeUserList.has(client.socketId)) {
