@@ -308,8 +308,6 @@ function HistoryArea() {
     return (
         <div className={`history_area ${toggleHistoryMenu ? "active" : ""}`}>
             <ul className="history_list">
-                <button onClick={() => addVersion()}>add</button>
-                <button>clear</button>
                 {versionList.map((version, index) => {
                     return (
                         <li
@@ -324,6 +322,10 @@ function HistoryArea() {
                     );
                 })}
             </ul>
+            <div className="history_action_btn">
+                <button class="add_btn"onClick={() => addVersion()}>add</button>
+                <button class="clear_btn">clear</button>
+            </div>
         </div>
     );
 }
