@@ -1,19 +1,27 @@
-$--menubox-border-color: #808080;
+$--menubox-border-color: #ebebeb;
+$--history-btn-color: #e8eaed;
+$--history-text-color: #597ef7;
+
 /*whiteboard header*/
 .whiteboard_header {
     display: flex;
     border-bottom: 1px solid $--menubox-border-color;
     border-top: 1px solid $--menubox-border-color;
-
+    height: 45px;
+    align-items: center;
+    justify-content: center;
     .tools {
         width: 90%;
+        .tool_icons {
+            font-size: 1.3em;
+        }
+
         ul {
             display: flex;
-            margin: 5px;
-            padding: 8px;
             li {
                 list-style: none;
                 margin: 0 8px;
+                cursor: pointer;
 
                 img {
                     width: 50px;
@@ -24,8 +32,17 @@ $--menubox-border-color: #808080;
     }
 
     .history_btn {
-        margin: 5px;
-        padding: 8px;
+        margin: 8px;
+        button {
+            border: 1px solid $--history-btn-color;
+            padding: 8px 12px;
+            background-color: #fff;
+            color: $--history-text-color;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     }
 }
 
