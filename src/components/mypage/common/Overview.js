@@ -3,6 +3,8 @@ import { Redirect } from "react-router-dom";
 import MyPage from "./MyPage";
 import { useFetch } from "../../common/useFetch";
 
+import "./Overview.scss"
+
 function Overview({ isLogin, userType }) {
     if (!isLogin) {
         alert("로그인 후 이용하세요!");
@@ -16,9 +18,12 @@ function Overview({ isLogin, userType }) {
 }
 
 function ShortBox(project) {
-    const { title, description } = project.project;
+    const { title, description, _id } = project.project;
     return (
-        <div className="box_short">
+        <div
+            className="box_short"
+            onClick={() => window.open(`/whiteboard/${_id}`, "_blank")}
+        >
             <h4>{title}</h4>
             <p>{description}</p>
         </div>

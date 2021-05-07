@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetch } from "../../common/useFetch"
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import TctComponant from "../tct_componant/TctComponant";
 
@@ -22,7 +22,7 @@ function Category() {
 }
 
 //modal
-function AddBtn() {
+function AddBtn({TcTnum}) {
 
   // for modal
   const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ function AddBtn() {
   };
 
   // for post
-  const [inputs, setInputs] = useState();
+  const [inputs, setInputs] = useState({TcTnum:TcTnum});
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -151,11 +151,13 @@ function NoteArea(props) {
 }
 
 function Contents() {
+  const { TcTnum } = useParams();
   let history = useHistory();
   let location = useLocation();
   const find = new URLSearchParams(location.search);
 
   const findInput = {};
+  findInput.TcTnum = TcTnum;
   if (find.get("category") !== null && find.get("category") !== "") {
     findInput.category = find.get("category");
   }
@@ -185,7 +187,7 @@ function Contents() {
     e.preventDefault();
     find.set(e.target.name, e.target.value);
 
-    history.push(`/TctWorkflow?${find}`);
+    history.push(`/TctWorkflow/${TcTnum}?${find}`);
   };
 
   return (
@@ -196,7 +198,7 @@ function Contents() {
           <option value={""}>select</option>
           <Category />
         </select>
-        <AddBtn />
+        <AddBtn TcTnum={TcTnum}/>
       </div>
 
       <div className="note_list">

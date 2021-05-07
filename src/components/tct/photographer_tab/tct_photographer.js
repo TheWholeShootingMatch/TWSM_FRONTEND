@@ -221,7 +221,7 @@ function Main() {
 
     // for selected list
     const { TcTnum } = useParams();
-    const { selectedList, sendSelectedList } = useSocket(TcTnum*1);
+    const { selectedList, sendSelectedList } = useSocket(TcTnum);
 
     const [selectedDB, setSelectedDB] = useState([]);
 
@@ -231,7 +231,7 @@ function Main() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({}),
+            body: JSON.stringify({TcTnum:TcTnum}),
         });
 
         const json = await response.json();
