@@ -1,0 +1,42 @@
+.mypage_contents {
+  h3 {
+    font-size: 35px;
+    color: #707070;
+    margin-bottom: 40px;
+  }
+}
+
+.project_area {
+  div {
+    width:100%;
+    display: inline-block;
+
+    :first-child {
+      margin-right: 1%;
+    }
+
+    .box_short {
+      width: 45%;
+      height: 45px;
+      padding: 40px 2%;
+      float: left;
+
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid #707070;
+
+      font-size: 35px;
+      color: #707070;
+    }
+  }
+}
+
+.box_short {
+  h4 {
+    float: left;
+  }
+
+  p {
+    float: right;
+  }
+}

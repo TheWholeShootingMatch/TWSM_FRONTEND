@@ -1,4 +1,4 @@
-input {
+.mypage_contents form input {
   border: 1px solid #707070;
   border-radius: 15px;
   margin-bottom : 30px;
@@ -48,7 +48,7 @@ input {
   margin: 0;
 }
 
-button {
+.mypage_contents form button {
 width: 250px;
 height: 60px;
 border-radius: 20px;

@@ -6,6 +6,7 @@ const NEW_SELECT_EVENT = "newSelect";
 const SOCKET_SERVER_URL = ":3001";
 
 const useSocket = (roomId) => {
+  console.log("roomId",roomId);
   const [selectedList, setSelectedList] = useState([]);
   const socketRef = useRef();
 

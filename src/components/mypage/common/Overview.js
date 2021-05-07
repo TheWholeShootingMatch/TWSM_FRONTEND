@@ -3,6 +3,8 @@ import { Redirect } from "react-router-dom";
 import MyPage from "./MyPage";
 import { useFetch } from "../../common/useFetch";
 
+import "./Overview.scss"
+
 function Overview({ isLogin, userType }) {
     if (!isLogin) {
         alert("로그인 후 이용하세요!");
