@@ -1,8 +1,20 @@
 header {
-  float: left;
-  height: 108px;
-  display: block;
+  height: 100px;
   width: 100%;
+  border-bottom-width: thin;
+  border-bottom-color: #B7BCC5
+}
+
+header div.logo {
+  float: left;
+  width: 210px;
+  height: 100px;
+}
+
+header div.header_nav {
+  float: right;
+  width: 1300px;
+  display: inline-block;
 }
 
 header a {
@@ -13,39 +25,32 @@ header a {
     text-decoration: none;
     font-size: 18px;
     line-height: 25px;
+    background-color: white;
+}
+
+header a.logo{
+  height: 100%;
+  padding: 0px;
 }
 
 header a.logo img {
-    height: 80px;
+    height: 100%;
     width: auto;
 }
 
-nav {
-  float: left;
-  display: block;
+div.header_nav {
   position: absolute;
-	height: 33px;
 	top: 30px;
-	overflow: visible;
-  width: 100%;
-}
-
-nav ul {
-  margin: 0;
-}
-
-nav ul li {
-  float: left;
+  width: auto;
   text-align: center;
-  font-weight: bold;
 }
 
 div.header_nav_left {
-  padding-left: 200px;
   float: left;
+  text-align: center;
 }
 
 div.header_nav_right {
-  padding-right: 30px;
   float: right;
+  text-align: center;
 }
