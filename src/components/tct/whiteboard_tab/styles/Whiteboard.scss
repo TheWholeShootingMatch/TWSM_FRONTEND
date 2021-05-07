@@ -1,19 +1,27 @@
-$--menubox-border-color: #808080;
+$--menubox-border-color: #ebebeb;
+$--history-btn-color: #e8eaed;
+$--history-text-color: #597ef7;
+
 /*whiteboard header*/
 .whiteboard_header {
     display: flex;
     border-bottom: 1px solid $--menubox-border-color;
     border-top: 1px solid $--menubox-border-color;
-
+    height: 45px;
+    align-items: center;
+    justify-content: center;
     .tools {
         width: 90%;
+        .tool_icons {
+            font-size: 1.3em;
+        }
+
         ul {
             display: flex;
-            margin: 5px;
-            padding: 8px;
             li {
                 list-style: none;
                 margin: 0 8px;
+                cursor: pointer;
 
                 img {
                     width: 50px;
@@ -24,8 +32,17 @@ $--menubox-border-color: #808080;
     }
 
     .history_btn {
-        margin: 5px;
-        padding: 8px;
+        margin: 8px;
+        button {
+            border: 1px solid $--history-btn-color;
+            padding: 8px 12px;
+            background-color: #fff;
+            color: $--history-text-color;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     }
 }
 
@@ -41,16 +58,48 @@ $--menubox-border-color: #808080;
 
         &.active {
             display: block;
+            width: 191px;
+            background-color: white;
+            padding: 17px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0px 5px 6px rgba(0, 0, 0, 0.459);
         }
 
         .history_list {
-            width: 143px;
-            list-style: none;
-            padding: 17px;
-            margin: 0;
-            height: 268px;
             overflow: auto;
-            background-color: white;
+
+            li {
+                color: $--history-text-color;
+                padding: 10px 0;
+                cursor: pointer;
+            }
+
+            li:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .history_action_btn {
+            margin: 10px 0;
+            float: right;
+
+            button {
+                border: 0;
+                padding: 5px 10px;
+                border-radius: 6px;
+                margin: 0 4px;
+            }
+
+            .add_btn {
+                border: 1px solid $--history-text-color;
+                background-color: $--history-text-color;
+                color: white;
+            }
+
+            .clear_btn {
+                border: 1px solid #707070;
+                color: #707070;
+            }
         }
     }
 }
