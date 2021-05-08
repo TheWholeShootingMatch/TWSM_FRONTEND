@@ -75,13 +75,13 @@ function WhiteBoard() {
         return <Redirect to={{ pathname: "/" }} />;
     } else if (isLoading) {
         return (
-            <TctComponant>
+            <TctComponant linkType={false}>
                 <div>loading...</div>
             </TctComponant>
         );
     } else {
         return (
-            <TctComponant TcTnum={TcTnum} title={title}>
+            <TctComponant TcTnum={TcTnum} title={title} linkType={false}>
                 <WhiteBoardArea />
             </TctComponant>
         );
@@ -323,7 +323,9 @@ function HistoryArea() {
                 })}
             </ul>
             <div className="history_action_btn">
-                <button class="add_btn"onClick={() => addVersion()}>add</button>
+                <button class="add_btn" onClick={() => addVersion()}>
+                    add
+                </button>
                 <button class="clear_btn">clear</button>
             </div>
         </div>
