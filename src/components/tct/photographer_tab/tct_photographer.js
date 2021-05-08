@@ -1,11 +1,11 @@
-import React, { useState, useContext, createContext, useEffect } from 'react';
-import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
-import { useFetch } from '../../common/useFetch';
-import useSocket from '../tct_componant/useSocket';
-import TctComponant from '../tct_componant/TctComponant';
-import { originSuffix } from '../whiteboard_tab/tools/SharedTypes';
+import React, { useState, useContext, createContext, useEffect } from "react";
+import { Link, useHistory, useParams, useLocation } from "react-router-dom";
+import { useFetch } from "../../common/useFetch";
+import useSocket from "../tct_componant/useSocket";
+import TctComponant from "../tct_componant/TctComponant";
+import { originSuffix } from "../whiteboard_tab/tools/SharedTypes";
 
-import Modal from '@material-ui/core/Modal';
+import Modal from "@material-ui/core/Modal";
 
 // post in one page && page
 const postNum = 3;
@@ -13,20 +13,20 @@ const pageNum = 3;
 
 const ModalContext = createContext({
     bool: false,
-    toggle: () => {},
+    toggle: () => {}
 });
 
 // photographer inside modal
 const PhotographerContext = createContext({
     photographer: {
-        id: '',
-        profile_img: '',
-        Name: '',
-        email: '',
-        instagram: '',
+        id: "",
+        profile_img: "",
+        Name: "",
+        email: "",
+        instagram: ""
     },
 
-    setPhotographerContext: () => {},
+    setPhotographerContext: () => {}
 });
 
 // photographer listing
@@ -35,6 +35,7 @@ function GetPhotographer({
     skip,
     setPhotographerLeng,
     sendSelectedList,
+    TcTnum
 }) {
     let skipInput = 0;
     let limitInput = postNum * pageNum;
@@ -48,17 +49,18 @@ function GetPhotographer({
     const [photographerlist, setPhotographerlist] = useState([]);
 
     async function fetchUrl() {
-        const response = await fetch('/api/photographer', {
-            method: 'POST',
+        const response = await fetch("/api/photographer", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 find: {},
                 sort: {},
                 skip: skipInput,
                 limit: limitInput,
-            }),
+                TcTnum: TcTnum
+            })
         });
 
         const json = await response.json();
@@ -74,7 +76,7 @@ function GetPhotographer({
     const { toggle } = useContext(ModalContext);
     const { setPhotographerContext } = useContext(PhotographerContext);
 
-    const handleClick = (input) => {
+    const handleClick = input => {
         setPhotographerContext(input);
         toggle();
     };
@@ -86,30 +88,34 @@ function GetPhotographer({
     }
 
     return (
-        <div className="photographer_list">
+        <div className="profile_list">
             {photographerlist.map((elem, index) => {
                 if (
                     indexLow * postNum <= index &&
                     index < indexLow * postNum + postNum
                 ) {
                     return (
-                        <div className="photographer" key={index}>
+                        <div className="profile" key={index}>
                             <img
                                 src={elem.profile_img}
                                 alt={elem.Name}
                                 onClick={() => handleClick(elem)}
                             />
-                            <button
-                                onClick={() =>
-                                    sendSelectedList({
-                                        id: elem._id,
-                                        func: 'P',
-                                        type: 'P',
-                                    })
-                                }
-                            >
-                                ADD
-                            </button>
+                            <div class="profile_info">
+                                <span>{elem.Name}</span>
+                                <button
+                                    onClick={() =>
+                                        sendSelectedList({
+                                            id: elem._id,
+                                            func: "P",
+                                            type: "P",
+                                            TcTnum: TcTnum
+                                        })
+                                    }
+                                >
+                                    ADD
+                                </button>
+                            </div>
                         </div>
                     );
                 }
@@ -185,7 +191,7 @@ function Main() {
                         );
                     }}
                 >
-                    <strong>{pageSet * pageNum + i + 1}</strong>
+                    <b>{pageSet * pageNum + i + 1}</b>
                 </li>
             );
         } else {
@@ -215,27 +221,32 @@ function Main() {
         </li>
     );
 
-    const handleChange = (e) => {
+    const handleChange = e => {
         history.push(`/TctPhotographer/${skip}`);
     };
 
     // for selected list
     const { TcTnum } = useParams();
     const { selectedList, sendSelectedList } = useSocket(TcTnum);
-
+    const [selectedStatus, setSelectedStatus] = useState(false);
     const [selectedDB, setSelectedDB] = useState([]);
 
     async function fetchUrl() {
-        const response = await fetch('/api/tct/photographer', {
-            method: 'POST',
+        const response = await fetch("/api/tct/photographer", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({TcTnum:TcTnum}),
+            body: JSON.stringify({ TcTnum: TcTnum })
         });
 
         const json = await response.json();
         setSelectedDB(json);
+        if (json.length !== 0) {
+            setSelectedStatus(true);
+        } else {
+            setSelectedStatus(false);
+        }
     }
 
     useEffect(() => {
@@ -244,20 +255,35 @@ function Main() {
 
     return (
         <main>
-            <div className="selectedArea">
-                {selectedDB.map((elem, index) => (
-                    <img
-                        src={elem.profile_img}
-                        alt={elem.Name}
-                        onClick={() =>
-                            sendSelectedList({
-                                id: elem._id,
-                                func: 'D',
-                                type: 'P',
-                            })
-                        }
-                    />
-                ))}
+            <div
+                className="selected_area"
+                style={
+                    selectedStatus
+                        ? { border: "1px solid #ebebeb" }
+                        : { border: "none" }
+                }
+            >
+                <h2>Choose your photographer</h2>
+
+                <div className="selected_list">
+                    {selectedDB.map((elem, index) => (
+                        <div class="selected_profile">
+                            <img src={elem.profile_img} alt={elem.Name} />
+                            <span
+                                onClick={() =>
+                                    sendSelectedList({
+                                        id: elem._id,
+                                        func: "D",
+                                        type: "P",
+                                        TcTnum: TcTnum
+                                    })
+                                }
+                            >
+                                X
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <GetPhotographer
@@ -265,9 +291,10 @@ function Main() {
                 skip={skip}
                 setPhotographerLeng={setPhotographerLeng}
                 sendSelectedList={sendSelectedList}
+                TcTnum={TcTnum}
             />
 
-            <ul className="pageControll">{page}</ul>
+            <ul className="page-controll">{page}</ul>
         </main>
     );
 }
@@ -275,38 +302,38 @@ function Main() {
 function Contents() {
     //for modal status
     const toggle = () => {
-        setBool((prevState) => {
+        setBool(prevState => {
             return {
                 ...prevState,
-                bool: !prevState.bool,
+                bool: !prevState.bool
             };
         });
     };
 
     const [bool, setBool] = useState({
         bool: false,
-        toggle,
+        toggle
     });
 
     // for modal contents
-    const setPhotographerContext = (input) => {
-        setPhotographer((prevState) => {
+    const setPhotographerContext = input => {
+        setPhotographer(prevState => {
             return {
                 ...prevState,
-                photographer: input,
+                photographer: input
             };
         });
     };
 
     const [photographer, setPhotographer] = useState({
         photographer: {
-            id: '',
-            profile_img: '',
-            Name: '',
-            email: '',
-            instagram: '',
+            id: "",
+            profile_img: "",
+            Name: "",
+            email: "",
+            instagram: ""
         },
-        setPhotographerContext,
+        setPhotographerContext
     });
 
     return (
@@ -322,7 +349,7 @@ function Contents() {
 function TctPhotographer() {
     return (
         <>
-            <TctComponant>
+            <TctComponant linkType={true}>
                 <Contents />
             </TctComponant>
         </>

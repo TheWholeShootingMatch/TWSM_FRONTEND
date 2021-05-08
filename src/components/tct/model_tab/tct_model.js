@@ -1,10 +1,10 @@
-import React, { useState, useContext, createContext, useEffect } from 'react';
-import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
-import useSocket from '../tct_componant/useSocket';
-import TctComponant from '../tct_componant/TctComponant';
-import { originSuffix } from '../whiteboard_tab/tools/SharedTypes';
+import React, { useState, useContext, createContext, useEffect } from "react";
+import { Link, useHistory, useParams, useLocation } from "react-router-dom";
+import useSocket from "../tct_componant/useSocket";
+import TctComponant from "../tct_componant/TctComponant";
+import { originSuffix } from "../whiteboard_tab/tools/SharedTypes";
 
-import Modal from '@material-ui/core/Modal';
+import Modal from "@material-ui/core/Modal";
 
 // post in one page && page
 const postNum = 3;
@@ -12,28 +12,28 @@ const pageNum = 3;
 
 const ModalContext = createContext({
     bool: false,
-    toggle: () => {},
+    toggle: () => {}
 });
 
 // model ID inside modal
 const ModelContext = createContext({
     model: {
-        id: '',
-        profile_img: '',
-        Name: '',
-        email: '',
-        instagram: '',
-        height: '',
-        Busto: '',
-        Quadril: '',
-        Cintura: '',
+        id: "",
+        profile_img: "",
+        Name: "",
+        email: "",
+        instagram: "",
+        height: "",
+        Busto: "",
+        Quadril: "",
+        Cintura: ""
     },
 
-    setModelContext: () => {},
+    setModelContext: () => {}
 });
 
 // model listing
-function GetModel({ location, skip, setModelLeng, sendSelectedList }) {
+function GetModel({ location, skip, setModelLeng, sendSelectedList, TcTnum }) {
     let skipInput = 0;
     let limitInput = postNum * pageNum;
 
@@ -47,17 +47,18 @@ function GetModel({ location, skip, setModelLeng, sendSelectedList }) {
     const [modellist, setModellist] = useState([]);
 
     async function fetchUrl() {
-        const response = await fetch('/api/model', {
-            method: 'POST',
+        const response = await fetch("/api/model", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 find: {},
                 sort: {},
                 skip: skipInput,
                 limit: limitInput,
-            }),
+                TcTnum: TcTnum
+            })
         });
 
         const json = await response.json();
@@ -73,7 +74,7 @@ function GetModel({ location, skip, setModelLeng, sendSelectedList }) {
     const { toggle } = useContext(ModalContext);
     const { setModelContext } = useContext(ModelContext);
 
-    const handleClick = (input) => {
+    const handleClick = input => {
         setModelContext(input);
         toggle();
     };
@@ -85,30 +86,34 @@ function GetModel({ location, skip, setModelLeng, sendSelectedList }) {
     }
 
     return (
-        <div className="model_list">
+        <div className="profile_list">
             {modellist.map((elem, index) => {
                 if (
                     indexLow * postNum <= index &&
                     index < indexLow * postNum + postNum
                 ) {
                     return (
-                        <div className="model" key={index}>
+                        <div className="profile" key={index}>
                             <img
                                 src={elem.profile_img}
                                 alt={elem.Name}
                                 onClick={() => handleClick(elem)}
                             />
-                            <button
-                                onClick={() =>
-                                    sendSelectedList({
-                                        id: elem._id,
-                                        func: 'P',
-                                        type: 'M',
-                                    })
-                                }
-                            >
-                                ADD
-                            </button>
+                            <div class="profile_info">
+                                <span>{elem.Name}</span>
+                                <button
+                                    onClick={() =>
+                                        sendSelectedList({
+                                            id: elem._id,
+                                            func: "P",
+                                            type: "M",
+                                            TcTnum: TcTnum
+                                        })
+                                    }
+                                >
+                                    ADD
+                                </button>
+                            </div>
                         </div>
                     );
                 }
@@ -189,7 +194,7 @@ function Main() {
                         history.push(`/TctModel/${pageSet * pageNum + i}`);
                     }}
                 >
-                    <strong>{pageSet * pageNum + i + 1}</strong>
+                    <b>{pageSet * pageNum + i + 1}</b>
                 </li>
             );
         } else {
@@ -217,27 +222,33 @@ function Main() {
         </li>
     );
 
-    const handleChange = (e) => {
+    const handleChange = e => {
         history.push(`/TctModel/${skip}`);
     };
 
     // for selected list
     const { TcTnum } = useParams();
     const { selectedList, sendSelectedList } = useSocket(TcTnum);
+    const [selectedStatus, setSelectedStatus] = useState(false);
 
     const [selectedDB, setSelectedDB] = useState([]);
 
     async function fetchUrl() {
-        const response = await fetch('/api/tct/model', {
-            method: 'POST',
+        const response = await fetch("/api/tct/model", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({TcTnum: TcTnum}),
+            body: JSON.stringify({ TcTnum: TcTnum })
         });
 
         const json = await response.json();
         setSelectedDB(json);
+        if (json.length !== 0) {
+            setSelectedStatus(true);
+        } else {
+            setSelectedStatus(false);
+        }
     }
 
     useEffect(() => {
@@ -246,20 +257,34 @@ function Main() {
 
     return (
         <main>
-            <div className="selectedArea">
-                {selectedDB.map((elem, index) => (
-                    <img
-                        src={elem.profile_img}
-                        alt={elem.Name}
-                        onClick={() =>
-                            sendSelectedList({
-                                id: elem._id,
-                                func: 'D',
-                                type: 'M',
-                            })
-                        }
-                    />
-                ))}
+            <div
+                className="selected_area"
+                style={
+                    selectedStatus
+                        ? { border: "1px solid #ebebeb" }
+                        : { border: "none" }
+                }
+            >
+                <h2>Choose your model</h2>
+                <div className="selected_list">
+                    {selectedDB.map((elem, index) => (
+                        <div class="selected_profile">
+                            <img src={elem.profile_img} alt={elem.Name} />
+                            <span
+                                onClick={() =>
+                                    sendSelectedList({
+                                        id: elem._id,
+                                        func: "D",
+                                        type: "M",
+                                        TcTnum: TcTnum
+                                    })
+                                }
+                            >
+                                X
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <GetModel
@@ -267,9 +292,10 @@ function Main() {
                 skip={skip}
                 setModelLeng={setModelLeng}
                 sendSelectedList={sendSelectedList}
+                TcTnum={TcTnum}
             />
 
-            <ul className="pageControll">{page}</ul>
+            <ul className="page-controll">{page}</ul>
         </main>
     );
 }
@@ -277,42 +303,42 @@ function Main() {
 function Contents() {
     //for modal status
     const toggle = () => {
-        setBool((prevState) => {
+        setBool(prevState => {
             return {
                 ...prevState,
-                bool: !prevState.bool,
+                bool: !prevState.bool
             };
         });
     };
 
     const [bool, setBool] = useState({
         bool: false,
-        toggle,
+        toggle
     });
 
     // for modal contents
-    const setModelContext = (input) => {
-        setModel((prevState) => {
+    const setModelContext = input => {
+        setModel(prevState => {
             return {
                 ...prevState,
-                model: input,
+                model: input
             };
         });
     };
 
     const [model, setModel] = useState({
         model: {
-            id: '',
-            profile_img: '',
-            Name: '',
-            email: '',
-            instagram: '',
-            height: '',
-            Busto: '',
-            Quadril: '',
-            Cintura: '',
+            id: "",
+            profile_img: "",
+            Name: "",
+            email: "",
+            instagram: "",
+            height: "",
+            Busto: "",
+            Quadril: "",
+            Cintura: ""
         },
-        setModelContext,
+        setModelContext
     });
 
     return (
@@ -328,7 +354,7 @@ function Contents() {
 function TctModel() {
     return (
         <>
-            <TctComponant>
+            <TctComponant linkType={true}>
                 <Contents />
             </TctComponant>
         </>
