@@ -7,7 +7,7 @@ import "./main.scss"
 function MainPage({ isLogin }) {
     console.log(isLogin);
     return(
-        <>
+        <div id="wrapper">
             <Header isLogin={isLogin}/>
             <div className="main_contents">
               <div className="image">
@@ -25,7 +25,7 @@ function MainPage({ isLogin }) {
                 <Link className="btn" to="/model/Model/0/L"> Get started </Link>
               </div>
             </div>
-        </>
+        </div>
     )
 }
 

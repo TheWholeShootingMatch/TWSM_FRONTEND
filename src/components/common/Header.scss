@@ -1,7 +1,7 @@
 header.main_header {
   height: 100px;
   width: auto;
-  position: relative;
+  position: inherit;
   z-index: 1;
   display: block;
   border-bottom-width: thin;
@@ -59,4 +59,8 @@ div.header_nav_left {
 div.header_nav_right {
   height: 100%;
   float: right;
+  margin-right: 20px;
+  a {
+    color: black;
+  }
 }

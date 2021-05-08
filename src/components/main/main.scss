@@ -1,23 +1,24 @@
+ div#wrapper {
+  background-image: url(./mainImage1.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: contain;
+  height: 100vh;
+}
+
+div#wrapper header.main_header div.header_nav_right a {
+  color: white;
+}
+
 div.main_contents {
   display: block;
-  height: 650px;
   width: 100%;
-
-  div.image {
-    float: right;
-    height: 100%;
-    width: 40%;
-    background-image: url(./mainImage1.png);
-    background-repeat: no-repeat;
-    background-position: top right;
-    background-size: contain;
-  }
 }
 
 div.text_content {
   top: 200px;
   position: absolute;
-  padding-left: 50px;
+  padding-left: 100px;
   background-color: rgba( 255, 255, 255, 0.5 );
 }
 
