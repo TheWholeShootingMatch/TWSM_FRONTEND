@@ -8,8 +8,96 @@ $--tct-font-size: 0.875rem;
 }
 
 .tct_wrapper {
-    overflow: hidden;
+    overflow-x: hidden;
     width: 87%;
+
+    main {
+        .selected_area {
+            h2 {
+                margin: 30px 0;
+                padding: 0 40px;
+                font-weight: bold;
+                font-size: 1.3rem;
+            }
+
+            .selected_list {
+                padding: 0 20px;
+                margin-bottom: 35px;
+                display: flex;
+                flex-wrap: wrap;
+                .selected_profile {
+                    img {
+                        margin: 0 20px;
+                    }
+
+                    span {
+                        display: block;
+                        text-align: right;
+                        margin: 5px 20px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+        .profile_list {
+            padding: 0 20px;
+            margin-top: 35px;
+            display: flex;
+            flex-wrap: wrap;
+
+            .profile {
+                margin: 0 20px;
+                background: #fff;
+                border-radius: 2px;
+                box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.12),
+                    0 1px 2px rgba(0, 0, 0, 0.24);
+
+                &:hover {
+                    animation-duration: 1ms;
+                    cursor: pointer;
+                    transition: 0.3s ease;
+                    transform: scale(1.05); /*  default */
+                    -webkit-transform: scale(1.05); /*  크롬 */
+                    -moz-transform: scale(1.05); /* FireFox */
+                    -o-transform: scale(1.05); /* Opera */
+                }
+
+                .profile_info {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 8px;
+
+                    button {
+                        border: none;
+                        padding: 4px;
+                        cursor: pointer;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+        }
+    }
+
+    .page-controll * {
+        display: inline-block;
+        padding: 5px;
+        font-size: 15px;
+    }
+
+    .page-controll {
+        text-align: center;
+        padding: 20px;
+
+        li:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        b {
+            font-weight: bold;
+            background-color: #ebebeb;
+        }
+    }
 }
 
 /*TCT side menu*/
@@ -75,6 +163,7 @@ $--tct-font-size: 0.875rem;
     display: flex;
     height: 10%;
     align-items: center;
+    border-bottom: 1px solid #ebebeb;
 
     .project_title {
         width: 300px;

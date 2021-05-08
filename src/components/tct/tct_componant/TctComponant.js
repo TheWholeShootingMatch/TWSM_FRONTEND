@@ -97,7 +97,6 @@ const useStyles = makeStyles({
 function AddUserMenu(props) {
     const classes = useStyles();
     const TcTnum = useContext(TcTnumcontext);
-    console.log("add", TcTnum);
     const { onClose, open } = props;
 
     const handleClose = () => {
@@ -268,12 +267,15 @@ function Header({ TcTnum, title }) {
     );
 }
 
-function TctComponant({ children, title }) {
+function TctComponant({ children, title, linkType }) {
     const { TcTnum } = useParams();
     return (
         <div className="whole_wrapper">
             <SideMenu TcTnum={TcTnum} />
-            <div className="tct_wrapper">
+            <div
+                className="tct_wrapper"
+                style={linkType ? { overflow: "none" } : { overflow: "hidden" }}
+            >
                 <Header TcTnum={TcTnum} title={title} />
                 {children}
             </div>
