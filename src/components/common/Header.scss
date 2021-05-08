@@ -4,6 +4,8 @@ header.main_header {
   position: relative;
   z-index: 1;
   display: block;
+  border-bottom-width: thin;
+  border-bottom-color: black;
 }
 
 header a {
