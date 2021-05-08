@@ -1,0 +1,56 @@
+ div#wrapper {
+  background-image: url(./mainImage1.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: contain;
+  height: 100vh;
+}
+
+div#wrapper header.main_header div.header_nav_right a {
+  color: white;
+}
+
+div.main_contents {
+  display: block;
+  width: 100%;
+}
+
+div.text_content {
+  top: 200px;
+  position: absolute;
+  padding-left: 100px;
+  background-color: rgba( 255, 255, 255, 0.5 );
+}
+
+div.title h1 {
+  font-size: 70px;
+  font-weight: bolder;
+  margin: 20px 0px;
+  font-style: italic;
+}
+
+div.explain p {
+  font-size: 20px;
+  margin: 20px 0px;
+  font-style: italic;
+}
+
+
+div.main_contents div.text_content .btn {
+  background-color: black;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  border-radius: 5px;
+  cursor: pointer;
+	left: 50%;
+	overflow: visible;
+  margin-top: 20px;
+  position: inherit;
+}
