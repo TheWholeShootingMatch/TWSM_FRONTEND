@@ -51,6 +51,30 @@ function Routes() {
     const [isLogin, setIsLogin] = useState(false);
     const [userType, setUserType] = useState();
 
+    useEffect(() => {
+        const response = async () => {
+            await axios({
+                method: "get",
+                withCredentials: true,
+                url: "/api/users/login"
+            }).then(res => {
+                if (res.data) {
+                    //login 기록이 있을 시 redirect("/")
+                    window.localStorage.setItem("name", res.data.name);
+                    if (res.data.isManager) {
+                        setUserType("manager");
+                    } else {
+                        setUserType("general");
+                    }
+                    setIsLogin(true);
+                } else {
+                    setIsLogin(false);
+                }
+            });
+        };
+        response();
+    }, []);
+
     return (
         <BrowserRouter>
             <>
@@ -135,7 +159,12 @@ function Routes() {
                             <Header isLogin={isLogin} />{" "}
                         </New_Model>
                     </Route>
-                    <Route path="/model/M_portfolio"><M_portfolio> {" "}<Header isLogin={isLogin} />{" "} </M_portfolio></Route>
+                    <Route path="/model/M_portfolio">
+                        <M_portfolio>
+                            {" "}
+                            <Header isLogin={isLogin} />{" "}
+                        </M_portfolio>
+                    </Route>
 
                     <Route path="/Photographer/Photographer/:skip/:sort">
                         <Photographer>
@@ -155,7 +184,12 @@ function Routes() {
                             <Header isLogin={isLogin} />{" "}
                         </New_Photographer>
                     </Route>
-                    <Route path="/Photographer/P_portfolio"><P_portfolio> {" "}<Header isLogin={isLogin} />{" "} </P_portfolio></Route>
+                    <Route path="/Photographer/P_portfolio">
+                        <P_portfolio>
+                            {" "}
+                            <Header isLogin={isLogin} />{" "}
+                        </P_portfolio>
+                    </Route>
 
                     <Route path="/notification/notification_Detail/:notificationNum">
                         <NotificationDetail isLogin={isLogin} />
