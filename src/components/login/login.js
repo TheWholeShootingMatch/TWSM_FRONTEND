@@ -29,8 +29,6 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
         password: ""
     });
 
-    // const [isLogin, setIsLogin] = useState(false); //true -> redirect to mainpage   //더 좋은 방법은 모르겠엄..
-
     const onChange = e => {
         const { value, name } = e.target;
         setInputs({
@@ -38,26 +36,6 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
             [name]: value
         });
     };
-
-    useEffect(() => {
-        const response = async () => {
-            await axios({
-                method: "get",
-                withCredentials: true,
-                url: "/api/users/login"
-            }).then(res => {
-                if (res.data) {
-                    //login 기록이 있을 시 redirect("/")
-                    window.localStorage.setItem("name", res.data);
-                    alert("already logined");
-                    setIsLogin(true);
-                } else {
-                    setIsLogin(false);
-                }
-            });
-        };
-        response();
-    }, []);
 
     const onSubmit = e => {
         e.preventDefault();
@@ -73,6 +51,7 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
                 } else {
                     //login 성공
                     window.localStorage.setItem("name", res.data.name);
+                    console.log(res.data.id);
                     if (res.data.id === "manager") {
                         setUserType("manager");
                     } else {
