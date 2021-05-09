@@ -4,7 +4,8 @@ import { UHeader } from "../Header";
 import Header from "../../common/header";
 import "./MyPage.scss";
 
-function MyPage({ children, user, header, isLogin }) {
+function MyPage({ children, header, isLogin, user }) {
+    console.log(user);
     if (user === "manager") {
         return (
             <div>
