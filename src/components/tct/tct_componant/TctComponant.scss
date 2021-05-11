@@ -39,6 +39,28 @@ $--tct-font-size: 0.875rem;
                 }
             }
         }
+
+        .compcard {
+            display: flex;
+            padding: 15px;
+            justify-content: space-between;
+
+            .compcard_info {
+                margin: auto 15px;
+
+                h2 {
+                    font-weight: bold;
+                }
+
+                p {
+                    margin: 8px 0;
+                }
+            }
+            span {
+                cursor: pointer;
+            }
+        }
+
         .profile_list {
             padding: 0 20px;
             margin-top: 35px;

@@ -3,8 +3,10 @@ import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import useSocket from "../tct_componant/useSocket";
 import TctComponant from "../tct_componant/TctComponant";
 import { originSuffix } from "../whiteboard_tab/tools/SharedTypes";
-
-import Modal from "@material-ui/core/Modal";
+import Paper from "@material-ui/core/Paper";
+import Slide from "@material-ui/core/Slide";
+import { makeStyles } from "@material-ui/core/styles";
+import Grow from "@material-ui/core/Grow";
 
 // post in one page && page
 const postNum = 3;
@@ -122,6 +124,13 @@ function GetModel({ location, skip, setModelLeng, sendSelectedList, TcTnum }) {
     );
 }
 
+const useStyles = makeStyles(() => ({
+    compcard: {
+        maxWidth: "fit-content",
+        margin: "14px auto"
+    }
+}));
+
 function Compcard() {
     //for model info
     const modelC = useContext(ModelContext);
@@ -130,31 +139,37 @@ function Compcard() {
     const open = useContext(ModalContext);
     const { toggle } = useContext(ModalContext);
 
+    const classes = useStyles();
+
     return (
-        <Modal open={open.bool} onClose={toggle}>
-            <div className="Compcard">
-                <div className="model_img">
-                    <img
-                        src={modelC.model.profile_img}
-                        alt={modelC.model.Name}
-                    />
+        <Grow
+            in={open.bool}
+            mountOnEnter
+            unmountOnExit
+            className={classes.compcard}
+        >
+            <Paper elevation={4}>
+                <div className="compcard">
+                    <div className="compcard_img">
+                        <img
+                            src={modelC.model.profile_img}
+                            alt={modelC.model.Name}
+                        />
+                    </div>
+                    <div className="compcard_info">
+                        <h2>{modelC.model.Name}</h2>
+                        <p>E-mail : {modelC.model.email}</p>
+                        <p>Instagram : {modelC.model.instagram}</p>
+                        <p>Height : {modelC.model.height}</p>
+                        <p>
+                            Size : {modelC.model.Busto}-{modelC.model.Quadril}-
+                            {modelC.model.Cintura}
+                        </p>
+                    </div>
+                    <span onClick={toggle}>X</span>
                 </div>
-                <div className="model_name">
-                    <h2>{modelC.model.Name}</h2>
-                </div>
-                <div className="model_contect">
-                    <p>E-mail : {modelC.model.email}</p>
-                    <p>Instagram : {modelC.model.instagram}</p>
-                </div>
-                <div className="model_size">
-                    <p>Height : {modelC.model.height}</p>
-                    <p>
-                        Size : {modelC.model.Busto}-{modelC.model.Quadril}-
-                        {modelC.model.Cintura}
-                    </p>
-                </div>
-            </div>
-        </Modal>
+            </Paper>
+        </Grow>
     );
 }
 
@@ -286,7 +301,7 @@ function Main() {
                     ))}
                 </div>
             </div>
-
+            <Compcard />
             <GetModel
                 location={location}
                 skip={skip}
@@ -294,7 +309,6 @@ function Main() {
                 sendSelectedList={sendSelectedList}
                 TcTnum={TcTnum}
             />
-
             <ul className="page-controll">{page}</ul>
         </main>
     );
@@ -344,7 +358,6 @@ function Contents() {
     return (
         <ModelContext.Provider value={model}>
             <ModalContext.Provider value={bool}>
-                <Compcard />
                 <Main />
             </ModalContext.Provider>
         </ModelContext.Provider>
