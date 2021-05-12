@@ -1,11 +1,13 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
-import { Link, useHistory, useParams, useLocation } from "react-router-dom";
-import { useFetch } from "../../common/useFetch";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import useSocket from "../tct_componant/useSocket";
 import TctComponant from "../tct_componant/TctComponant";
-import { originSuffix } from "../whiteboard_tab/tools/SharedTypes";
-
-import Modal from "@material-ui/core/Modal";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaInstagram } from "react-icons/fa";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import { withStyles } from "@material-ui/core/styles";
+import { orange } from "@material-ui/core/colors";
 
 // post in one page && page
 const postNum = 3;
@@ -29,13 +31,25 @@ const PhotographerContext = createContext({
     setPhotographerContext: () => {}
 });
 
+const YelllowCheckbox = withStyles({
+    root: {
+        color: orange[400],
+        padding: 0,
+        margin: 0,
+        "&$checked": {
+            color: orange[600]
+        }
+    }
+})(props => <Checkbox color="default" {...props} />);
+
 // photographer listing
 function GetPhotographer({
     location,
     skip,
     setPhotographerLeng,
     sendSelectedList,
-    TcTnum
+    TcTnum,
+    selectedDBId
 }) {
     let skipInput = 0;
     let limitInput = postNum * pageNum;
@@ -95,28 +109,14 @@ function GetPhotographer({
                     index < indexLow * postNum + postNum
                 ) {
                     return (
-                        <div className="profile" key={index}>
-                            <img
-                                src={elem.profile_img}
-                                alt={elem.Name}
-                                onClick={() => handleClick(elem)}
-                            />
-                            <div class="profile_info">
-                                <span>{elem.Name}</span>
-                                <button
-                                    onClick={() =>
-                                        sendSelectedList({
-                                            id: elem._id,
-                                            func: "P",
-                                            type: "P",
-                                            TcTnum: TcTnum
-                                        })
-                                    }
-                                >
-                                    ADD
-                                </button>
-                            </div>
-                        </div>
+                        <Compcard
+                            elem={elem}
+                            index={index}
+                            key={index}
+                            sendSelectedList={sendSelectedList}
+                            TcTnum={TcTnum}
+                            selectedDBId={selectedDBId}
+                        />
                     );
                 }
             })}
@@ -124,32 +124,65 @@ function GetPhotographer({
     );
 }
 
-function Compcard() {
-    //for photographer info
-    const photographerC = useContext(PhotographerContext);
+function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
+    const [checked, setChecked] = useState(false);
 
-    //for modal
-    const open = useContext(ModalContext);
-    const { toggle } = useContext(ModalContext);
+    useEffect(() => {
+        const x = selectedDBId.includes(elem._id);
+        setChecked(x);
+    }, [selectedDBId, elem._id]);
+
+    const handleChange = event => {
+        setChecked(event.target.checked);
+        if (event.target.checked) {
+            sendSelectedList({
+                id: elem._id,
+                func: "P",
+                type: "P",
+                TcTnum: TcTnum
+            });
+        } else {
+            sendSelectedList({
+                id: elem._id,
+                func: "P",
+                type: "D",
+                TcTnum: TcTnum
+            });
+        }
+    };
 
     return (
-        <Modal open={open.bool} onClose={toggle}>
-            <div className="Compcard">
-                <div className="photographer_img">
-                    <img
-                        src={photographerC.photographer.profile_img}
-                        alt={photographerC.photographer.Name}
-                    />
+        <div className="profile" key={index}>
+            <div className="profile_header">
+                <h2>{elem.Name}</h2>
+                <FormControlLabel
+                    style={{ margin: "0" }}
+                    control={
+                        <YelllowCheckbox
+                            checked={checked}
+                            onChange={handleChange}
+                            name="checkedG"
+                        />
+                    }
+                />
+            </div>
+            <div className="profile_wrapper">
+                <div className="profile_img">
+                    <img src={elem.profile_img} alt={elem.Name} />
                 </div>
-                <div className="photographer_name">
-                    <h2>{photographerC.photographer.Name}</h2>
-                </div>
-                <div className="photographer_contact">
-                    <p>E-mail : {photographerC.photographer.email}</p>
-                    <p>Instagram : {photographerC.photographer.instagram}</p>
+                <div className="profile_info">
+                    <h3>CONTACT</h3>
+                    <p>
+                        <HiOutlineMail />
+                        <span>{elem.email}</span>
+                    </p>
+                    <p>
+                        <FaInstagram />
+                        <span>{elem.instagram}</span>
+                    </p>
                 </div>
             </div>
-        </Modal>
+        </div>
     );
 }
 
@@ -230,6 +263,7 @@ function Main() {
     const { selectedList, sendSelectedList } = useSocket(TcTnum);
     const [selectedStatus, setSelectedStatus] = useState(false);
     const [selectedDB, setSelectedDB] = useState([]);
+    const [selectedDBId, setSelectedDBId] = useState([]);
 
     async function fetchUrl() {
         const response = await fetch("/api/tct/photographer", {
@@ -242,6 +276,8 @@ function Main() {
 
         const json = await response.json();
         setSelectedDB(json);
+        const ids = json.map(elm => elm._id);
+        setSelectedDBId(ids);
         if (json.length !== 0) {
             setSelectedStatus(true);
         } else {
@@ -292,8 +328,8 @@ function Main() {
                 setPhotographerLeng={setPhotographerLeng}
                 sendSelectedList={sendSelectedList}
                 TcTnum={TcTnum}
+                selectedDBId={selectedDBId}
             />
-
             <ul className="page-controll">{page}</ul>
         </main>
     );
@@ -339,7 +375,6 @@ function Contents() {
     return (
         <PhotographerContext.Provider value={photographer}>
             <ModalContext.Provider value={bool}>
-                <Compcard />
                 <Main />
             </ModalContext.Provider>
         </PhotographerContext.Provider>

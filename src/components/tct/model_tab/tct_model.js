@@ -1,12 +1,13 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
-import { Link, useHistory, useParams, useLocation } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import useSocket from "../tct_componant/useSocket";
 import TctComponant from "../tct_componant/TctComponant";
-import { originSuffix } from "../whiteboard_tab/tools/SharedTypes";
-import Paper from "@material-ui/core/Paper";
-import Slide from "@material-ui/core/Slide";
-import { makeStyles } from "@material-ui/core/styles";
-import Grow from "@material-ui/core/Grow";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaInstagram } from "react-icons/fa";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import { withStyles } from "@material-ui/core/styles";
+import { orange } from "@material-ui/core/colors";
 
 // post in one page && page
 const postNum = 3;
@@ -34,13 +35,31 @@ const ModelContext = createContext({
     setModelContext: () => {}
 });
 
+const YelllowCheckbox = withStyles({
+    root: {
+        color: orange[400],
+        padding: 0,
+        margin: 0,
+        "&$checked": {
+            color: orange[600]
+        }
+    }
+})(props => <Checkbox color="default" {...props} />);
+
 // model listing
-function GetModel({ location, skip, setModelLeng, sendSelectedList, TcTnum }) {
+function GetModel({
+    location,
+    skip,
+    setModelLeng,
+    sendSelectedList,
+    TcTnum,
+    selectedDBId
+}) {
     let skipInput = 0;
     let limitInput = postNum * pageNum;
 
     //skip && limit
-    if (skip != null && skip != 0) {
+    if (skip !== null && skip !== 0) {
         skipInput = parseInt(skip / pageNum) * postNum * pageNum;
         limitInput = (parseInt(skip / pageNum) + 1) * postNum * pageNum;
     }
@@ -95,28 +114,14 @@ function GetModel({ location, skip, setModelLeng, sendSelectedList, TcTnum }) {
                     index < indexLow * postNum + postNum
                 ) {
                     return (
-                        <div className="profile" key={index}>
-                            <img
-                                src={elem.profile_img}
-                                alt={elem.Name}
-                                onClick={() => handleClick(elem)}
-                            />
-                            <div class="profile_info">
-                                <span>{elem.Name}</span>
-                                <button
-                                    onClick={() =>
-                                        sendSelectedList({
-                                            id: elem._id,
-                                            func: "P",
-                                            type: "M",
-                                            TcTnum: TcTnum
-                                        })
-                                    }
-                                >
-                                    ADD
-                                </button>
-                            </div>
-                        </div>
+                        <Compcard
+                            elem={elem}
+                            index={index}
+                            key={index}
+                            sendSelectedList={sendSelectedList}
+                            TcTnum={TcTnum}
+                            selectedDBId={selectedDBId}
+                        />
                     );
                 }
             })}
@@ -124,52 +129,74 @@ function GetModel({ location, skip, setModelLeng, sendSelectedList, TcTnum }) {
     );
 }
 
-const useStyles = makeStyles(() => ({
-    compcard: {
-        maxWidth: "fit-content",
-        margin: "14px auto"
-    }
-}));
+function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
+    const [checked, setChecked] = useState(false);
 
-function Compcard() {
-    //for model info
-    const modelC = useContext(ModelContext);
+    useEffect(() => {
+        const x = selectedDBId.includes(elem._id);
+        setChecked(x);
+    }, [selectedDBId, elem._id]);
 
-    //for modal
-    const open = useContext(ModalContext);
-    const { toggle } = useContext(ModalContext);
-
-    const classes = useStyles();
+    const handleChange = event => {
+        setChecked(event.target.checked);
+        if (event.target.checked) {
+            sendSelectedList({
+                id: elem._id,
+                func: "P",
+                type: "M",
+                TcTnum: TcTnum
+            });
+        } else {
+            sendSelectedList({
+                id: elem._id,
+                func: "D",
+                type: "M",
+                TcTnum: TcTnum
+            });
+        }
+    };
 
     return (
-        <Grow
-            in={open.bool}
-            mountOnEnter
-            unmountOnExit
-            className={classes.compcard}
-        >
-            <Paper elevation={4}>
-                <div className="compcard">
-                    <div className="compcard_img">
-                        <img
-                            src={modelC.model.profile_img}
-                            alt={modelC.model.Name}
+        <div className="profile" key={index}>
+            <div className="profile_header">
+                <h2>{elem.Name}</h2>
+                <FormControlLabel
+                    style={{ margin: "0" }}
+                    control={
+                        <YelllowCheckbox
+                            checked={checked}
+                            onChange={handleChange}
+                            name="checkedG"
                         />
-                    </div>
-                    <div className="compcard_info">
-                        <h2>{modelC.model.Name}</h2>
-                        <p>E-mail : {modelC.model.email}</p>
-                        <p>Instagram : {modelC.model.instagram}</p>
-                        <p>Height : {modelC.model.height}</p>
-                        <p>
-                            Size : {modelC.model.Busto}-{modelC.model.Quadril}-
-                            {modelC.model.Cintura}
-                        </p>
-                    </div>
-                    <span onClick={toggle}>X</span>
+                    }
+                />
+            </div>
+            <div className="profile_wrapper">
+                <div className="profile_img">
+                    <img src={elem.profile_img} alt={elem.Name} />
                 </div>
-            </Paper>
-        </Grow>
+                <div className="profile_info">
+                    <h3>
+                        HEIGHT <span>{elem.height}</span>
+                    </h3>
+                    <h3>
+                        SIZE{" "}
+                        <span>
+                            {elem.Busto} - {elem.Quadril} - {elem.Cintura}
+                        </span>
+                    </h3>
+                    <h3>CONTACT</h3>
+                    <p>
+                        <HiOutlineMail />
+                        <span>{elem.email}</span>
+                    </p>
+                    <p>
+                        <FaInstagram />
+                        <span>{elem.instagram}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
     );
 }
 
@@ -184,7 +211,7 @@ function Main() {
     const [modelLeng, setModelLeng] = useState(1);
 
     let pageSet = 0;
-    if (skip != 0) {
+    if (skip !== 0) {
         pageSet = parseInt(skip / pageNum);
         page.push(
             <li
@@ -201,7 +228,7 @@ function Main() {
     }
 
     for (let i = 0; i < parseInt(modelLeng / postNum) + 1; i++) {
-        if (pageSet * pageNum + i == skip) {
+        if (pageSet * pageNum + i === skip) {
             page.push(
                 <li
                     key={i}
@@ -237,16 +264,16 @@ function Main() {
         </li>
     );
 
-    const handleChange = e => {
-        history.push(`/TctModel/${skip}`);
-    };
+    // const handleChange = e => {
+    //     history.push(`/TctModel/${skip}`);
+    // };
 
     // for selected list
     const { TcTnum } = useParams();
     const { selectedList, sendSelectedList } = useSocket(TcTnum);
     const [selectedStatus, setSelectedStatus] = useState(false);
-
     const [selectedDB, setSelectedDB] = useState([]);
+    const [selectedDBId, setSelectedDBId] = useState([]);
 
     async function fetchUrl() {
         const response = await fetch("/api/tct/model", {
@@ -259,6 +286,8 @@ function Main() {
 
         const json = await response.json();
         setSelectedDB(json);
+        const ids = json.map(elm => elm._id);
+        setSelectedDBId(ids);
         if (json.length !== 0) {
             setSelectedStatus(true);
         } else {
@@ -276,14 +305,14 @@ function Main() {
                 className="selected_area"
                 style={
                     selectedStatus
-                        ? { border: "1px solid #ebebeb" }
-                        : { border: "none" }
+                        ? { borderBottom: "1px solid #ebebeb" }
+                        : { borderBottom: "none" }
                 }
             >
                 <h2>Choose your model</h2>
                 <div className="selected_list">
                     {selectedDB.map((elem, index) => (
-                        <div class="selected_profile">
+                        <div className="selected_profile">
                             <img src={elem.profile_img} alt={elem.Name} />
                             <span
                                 onClick={() =>
@@ -301,13 +330,13 @@ function Main() {
                     ))}
                 </div>
             </div>
-            <Compcard />
             <GetModel
                 location={location}
                 skip={skip}
                 setModelLeng={setModelLeng}
                 sendSelectedList={sendSelectedList}
                 TcTnum={TcTnum}
+                selectedDBId={selectedDBId}
             />
             <ul className="page-controll">{page}</ul>
         </main>
