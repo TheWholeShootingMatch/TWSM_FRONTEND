@@ -4,43 +4,61 @@ import { useFetch } from "../../common/useFetch";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import TctComponant from "../tct_componant/TctComponant";
-
+import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Modal from "@material-ui/core/Modal";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
 
-function Category() {
+const useStyles = makeStyles(() => ({
+    inputField: {
+        minWidth: "250px"
+    },
+    selectField: {
+        minWidth: "150px"
+    },
+    messageField: {
+        minWidth: "435px"
+    }
+}));
+
+function Category({ handleChange }) {
+    const classes = useStyles();
     const [categorylist, setCategorylist] = useFetch("/api/category");
     return (
         <>
-            {categorylist.map((element, index) => (
-                <option value={element._id} key={index}>
-                    {element.name}
-                </option>
-            ))}
+            <InputLabel id="category">Category</InputLabel>
+            <Select
+                labelId="category"
+                onChange={handleChange}
+                className={classes.selectField}
+                name="category"
+            >
+                <MenuItem value="" disabled>
+                    Select
+                </MenuItem>
+                {categorylist.map((element, index) => (
+                    <MenuItem value={element._id}>{element.name}</MenuItem>
+                ))}
+            </Select>
         </>
     );
 }
 
-//modal
-function AddBtn({ TcTnum }) {
-    // for modal
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
+function NewNote({ TcTnum }) {
     // for post
     const [inputs, setInputs] = useState({ TcTnum: TcTnum });
 
+    const classes = useStyles();
+
     const handleChange = e => {
         const { value, name } = e.target;
+        console.log(name, value);
+
         setInputs({
             ...inputs,
             [name]: value
@@ -60,33 +78,52 @@ function AddBtn({ TcTnum }) {
     };
 
     return (
-        <>
-            <button onClick={handleOpen}>add</button>
-            <Modal open={open} onClose={handleClose}>
-                <form className="new_note" onSubmit={handleSubmit}>
-                    <div className="new_header">
-                        <input
-                            type="text"
+        <div className="new_note">
+            {" "}
+            <form onSubmit={handleSubmit}>
+                <div className="note_upper">
+                    <div>
+                        <label htmlFor="title" className="main_label">
+                            Title
+                        </label>
+                        <br />
+                        <TextField
+                            id="outlined-basic"
+                            variant="outlined"
                             name="title"
-                            placeholder="NoTitle"
+                            placeholder="No Title"
                             onChange={handleChange}
+                            className={classes.inputField}
+                            size="small"
                         />
-                        <select name="category" onChange={handleChange}>
-                            <option value={""}>select</option>
-                            <Category />
-                        </select>
                     </div>
+                    <div>
+                        <label htmlFor="category" className="main_label">
+                            Category
+                        </label>
+                        <br />
+                        <FormControl variant="outlined" size="small">
+                            <Category handleChange={handleChange} />{" "}
+                        </FormControl>
+                    </div>
+                </div>
+                <label htmlFor="text" className="main_label">
+                    Message
+                </label>
+                <br />
 
-                    <input
-                        type="text"
-                        name="text"
-                        placeholder="Leave a message"
-                        onChange={handleChange}
-                    />
-                    <button type="submit">save</button>
-                </form>
-            </Modal>
-        </>
+                <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    name="text"
+                    placeholder="Leave a message"
+                    onChange={handleChange}
+                    size="small"
+                    className={classes.messageField}
+                />
+                <button type="submit">save</button>
+            </form>
+        </div>
     );
 }
 
@@ -94,7 +131,7 @@ function AddBtn({ TcTnum }) {
 function Comment(props) {
     return (
         <div className="comment" id={props._id}>
-            <p className="comment_name">{props.writer}</p>
+            <h3 className="comment_name">{props.writer}</h3>
             <p className="comment_text">{props.contents}</p>
         </div>
     );
@@ -116,6 +153,7 @@ function NoteArea(props) {
 
     const handleChange = e => {
         const { value, name } = e.target;
+        console.log(value);
         setInputs({
             ...inputs,
             [name]: value
@@ -137,19 +175,23 @@ function NoteArea(props) {
     return (
         <div className="note_area" id={props._id}>
             <div className="note_dot"></div>
-
             <Accordion>
                 <AccordionSummary>
-                    <div className="note_title">
-                        <p className="category_tag">{props.category.name}</p>
-                        <h3>{props.title}</h3>
-                        <p>{props.contents}</p>
+                    <span className="note_tag">{props.category.name}</span>
+                    <div className="note_header">
+                        <div className="note_header_main">
+                            <h3 className="">{props.writer.id}</h3>
+                            <p className="note_title">{props.title}</p>
+                        </div>
+                        <div className="note_header_sub">
+                            <p>
+                                {new Date(props.logdate).toLocaleString()} |
+                                comment {commentlist.length}
+                            </p>
+                        </div>
                     </div>
-
                     <div className="note_detail">
-                        <p>{props.writer.id}</p>
-                        <p>{props.logdate}</p>
-                        <p>댓글 {commentlist.length}개</p>
+                        <p className="note_contents">{props.contents}</p>
                     </div>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -216,12 +258,11 @@ function Contents() {
 
     return (
         <div className="tct_contents">
+            <NewNote TcTnum={TcTnum} />
             <div className="category_area">
-                <select name="category" onChange={handleChange}>
-                    <option value={""}>select</option>
-                    <Category />
-                </select>
-                <AddBtn TcTnum={TcTnum} />
+                <FormControl variant="outlined" size="small">
+                    <Category handleChange={handleChange} />
+                </FormControl>
             </div>
 
             <div className="note_list">
