@@ -6,7 +6,7 @@ import React, {
     createContext,
     useContext
 } from "react";
-import { Redirect, useParams, useHistory } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { IconContext } from "react-icons";
@@ -33,16 +33,10 @@ import { fromUint8Array } from "js-base64";
 import "./styles/Whiteboard.scss";
 
 const whiteboardContext = createContext();
-let reloadLink = null;
-
-export const reloadPage = () => {
-    reloadLink.go(0);
-};
 
 function WhiteBoard() {
     const { TcTnum } = useParams();
-    const history = useHistory();
-    reloadLink = history;
+    console.log(TcTnum);
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
     let [title, setTitle] = useState("");
@@ -323,10 +317,10 @@ function HistoryArea() {
                 })}
             </ul>
             <div className="history_action_btn">
-                <button class="add_btn" onClick={() => addVersion()}>
+                <button className="add_btn" onClick={() => addVersion()}>
                     add
                 </button>
-                <button class="clear_btn">clear</button>
+                <button className="clear_btn">clear</button>
             </div>
         </div>
     );
