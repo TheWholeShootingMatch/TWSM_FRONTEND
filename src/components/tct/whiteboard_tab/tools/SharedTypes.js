@@ -1,7 +1,7 @@
 import socketIOClient from "socket.io-client";
 import * as Y from "yjs";
 import { LeveldbPersistence } from "y-leveldb";
-import { toUint8Array } from "js-base64";
+import { toUint8Array, fromUint8Array } from "js-base64";
 // import { reloadPage } from "../Whiteboard";
 import { externalCanvas, onCanvasUpdate, canvasRender } from "./Canvas";
 
@@ -16,6 +16,7 @@ export let indexeddbPersistence = null;
 export let doc = new Y.Doc();
 let userDoc = new Y.Doc();
 export let activeUserList = userDoc.getMap("activeUserList");
+export let coordinate = userDoc.getArray("coordinate");
 
 /* connect to room by shared link */
 export const connectToRoom = async (suffix, Ydoc) => {
@@ -23,7 +24,6 @@ export const connectToRoom = async (suffix, Ydoc) => {
     userDoc = new Y.Doc();
     // tmp room id
     const roomId = suffix;
-    console.log(roomId);
     console.log(Ydoc);
 
     const restoreVersion = () => {
@@ -33,10 +33,13 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
     if (originSuffix === null) {
         originSuffix = suffix;
-        const persistedYdoc = await persistence.getYDoc("doc");
-        const ecodedUint8Arr = toUint8Array(Ydoc);
-        Y.applyUpdate(doc, ecodedUint8Arr);
-        console.log(doc.getArray("").toJSON());
+        try {
+            const persistedYdoc = await persistence.getYDoc("doc");
+            const ecodedUint8Arr = toUint8Array(Ydoc);
+            Y.applyUpdate(doc, ecodedUint8Arr);
+        } catch (e) {
+            console.log("invalid ydoc");
+        }
     }
 
     //enter the room
@@ -45,8 +48,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
     });
 
     socketClient.current.on("canvasEvent", req => {
-        const docUint8Array = new Uint8Array(req);
-        // console.log('canvasEvent', docUint8Array);
+        const docUint8Array = toUint8Array(req);
         Y.applyUpdate(doc, docUint8Array);
     });
 
@@ -63,17 +65,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
         const objects = externalCanvas.getObjects();
         externalCanvas.remove(...objects);
         restoreVersion();
-        // console.log('versionEvent', docUint8Array);
     });
-
-    // const restoreVersion = () => {
-    //     const cloneNewDocArr = doc.getArray('').toArray();
-    //     drawingContent.get().push()
-    //     // doc.getArray('').toArray().forEach((ymap) => {
-    //     //     const x = ymap.clone();
-    //     //     drawingContent.get().push([x]);
-    //     // })
-    // };
 
     if (!connect) {
         socketClient.current.emit("peerConnectEvent", {
@@ -102,8 +94,9 @@ doc.on("update", update => {
 
 // Emit Changes to server (using socket-io)
 export const emitYDoc = (data, type) => {
+    const base64Ydoc = fromUint8Array(data);
     socketClient.current.emit("canvasEvent", {
-        data: data,
+        data: base64Ydoc,
         type: type
     });
 };
@@ -158,8 +151,6 @@ export const slideNum = {
         drawingContent.set(value);
     }
 };
-
-export const coordinate = doc.getArray("coordinate");
 
 export const drawingContent = {
     drawingContent: doc.getArray(slideNum.get()),
