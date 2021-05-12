@@ -235,7 +235,7 @@ export const afterObjectModified = o => {
         });
         console.log("emitlastDoc");
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
-        shared.emitLastYDoc(encodeDoc);
+        shared.emitYDoc(encodeDoc, "modifiedObj");
     }
 };
 
