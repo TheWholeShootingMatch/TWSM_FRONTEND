@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import UserMyPage from "../common/MyPage";
 import axios from "axios";
 
-import "./CreateProject.css";
+import "./CreateProject.scss";
 
 function CreateProject({ isLogin }) {
     console.log(isLogin);

@@ -1,4 +1,11 @@
 .mypage_contents {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.overview_wrap {
   display: inline-block;
   width: 100%;
   height: 100%;
@@ -34,7 +41,7 @@
   }
 }
 
-.mypage_contents > .project_area:last-child {
+.overview_wrap > .project_area:last-child {
   margin-top: 2%;
 }
 
@@ -72,7 +79,7 @@
   }
 }
 
-.project_area {
+.overview_wrap > .project_area {
   div {
     width: 96%;
     padding: 2%;

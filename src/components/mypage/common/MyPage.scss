@@ -35,17 +35,20 @@
 }
 
 .profile_nav {
-    width : 15%;
+    width : 17%;
     padding-top: 70px;
 
     font-size: 25px;
-    color: #707070;
 
     li {
         padding: 25px;
         height: 30px;
 
         display: inline-block;
+
+        a {
+          color: #919191;
+        }
 
         img {
             width: 30px;
@@ -56,12 +59,17 @@
             float: left;
         }
     }
+
+    .active {
+      display: inline-block;
+      color: black;
+    }
 }
 
 /* mypage - main */
 .mypage_wrapper main {
-    width : 80%;
-    padding : 30px 2%;
+    width : 78%;
+    padding : 2%;
     height: 720px;
     margin-top: 20px;
 
@@ -70,12 +78,11 @@
 
     h2 {
       padding-bottom: 35px;
-      margin-bottom: 50px;
-      border-bottom: 1px solid #707070;
+      margin-bottom: 30px;
 
       font-weight: 600;
       font-size: 45px;
-      color: #707070;
+      color: #141414;
     }
 
     table {

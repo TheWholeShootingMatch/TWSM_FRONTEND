@@ -9,6 +9,7 @@ function Notification({ isLogin }) {
 
     return (
         <UserMyPage user="user" header="Notification" isLogin={isLogin}>
+          <div className="notifications_wrap">
             <table className="notifications">
                 {notifications.map((notification, index) => (
                     <NotificationTable
@@ -17,6 +18,7 @@ function Notification({ isLogin }) {
                     />
                 ))}
             </table>
+          </div>
         </UserMyPage>
     );
 }

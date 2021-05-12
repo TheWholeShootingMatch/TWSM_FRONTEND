@@ -102,7 +102,7 @@ function OverviewPropjects() {
         );
     } else {
         return (
-            <>
+            <div className="overview_wrap">
                 <div className="Profile_box">
                   <img src={personIcon} alt="personIcon" />
                   <h4>{user.name}</h4>
@@ -115,7 +115,7 @@ function OverviewPropjects() {
                     projects={requestedProject}
                 />
                 <ProjectForm mainTitle="my project" projects={myProjects} />
-            </>
+            </div>
         );
     }
 }
