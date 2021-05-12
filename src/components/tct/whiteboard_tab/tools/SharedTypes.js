@@ -101,6 +101,7 @@ export const emitYDoc = (data, type) => {
     });
 };
 
+/* for coordinate */
 export const emitObject = data => {
     socketClient.current.emit("objectEvent", data);
 };
