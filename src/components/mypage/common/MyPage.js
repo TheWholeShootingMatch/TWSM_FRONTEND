@@ -13,7 +13,7 @@ function MyPage({ children, header, isLogin, user }) {
                 <div className="mypage_wrapper">
                     <MHeader />
                     <main>
-                        <h2 className="mypage_header">{header}</h2>
+                        {header!=="" ? <h2 className="mypage_header">{header}</h2> : null}
                         <div className="mypage_contents">{children}</div>
                     </main>
                 </div>
@@ -26,7 +26,7 @@ function MyPage({ children, header, isLogin, user }) {
                 <div className="mypage_wrapper">
                     <UHeader />
                     <main>
-                        <h2 className="mypage_header">{header}</h2>
+                        {header!=="" ? <h2 className="mypage_header">{header}</h2> : null}
                         <div className="mypage_contents">{children}</div>
                     </main>
                 </div>

@@ -1,42 +1,119 @@
 .mypage_contents {
-  h3 {
-    font-size: 35px;
-    color: #707070;
-    margin-bottom: 40px;
-  }
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.project_area {
-  div {
-    width:100%;
-    display: inline-block;
+.overview_wrap {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 
-    :first-child {
-      margin-right: 1%;
-    }
+  .Profile_box {
+    width: 48%;
+    height: 100%;
 
-    .box_short {
-      width: 45%;
-      height: 45px;
-      padding: 40px 2%;
-      float: left;
-
-      border-radius: 18px;
-      background: #fff;
-      border: 1px solid #707070;
-
-      font-size: 35px;
-      color: #707070;
-    }
-  }
-}
-
-.box_short {
-  h4 {
     float: left;
   }
 
-  p {
+  .project_area {
     float: right;
+    height: 49%;
+    width: 50%;
+    overflow: hidden;
+  }
+
+  .Profile_box, .project_area {
+    border-radius: 25px;
+    background: #fff;
+    box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.16);
+
+    h3 {
+      font-size: 35px;
+      color: #141414;
+      border-bottom: 1px solid #B1B1B1;
+      padding: 20px;
+      font-weight: 550;
+    }
+  }
+}
+
+.overview_wrap > .project_area:last-child {
+  margin-top: 2%;
+}
+
+.Profile_box {
+  text-align: center;
+
+  img {
+    margin-top: 15%;
+  }
+
+  h4 {
+    font-weight: 600;
+    font-size: 40px;
+    color: #141414;
+    margin-top: 7%;
+  }
+
+  p {
+    border-bottom: 1px solid #707070;
+    margin: 5% 15%;
+    padding: 10px;
+    text-align: left;
+
+    font-size: 20px;
+    color: #141414;
+  }
+
+  button {
+    border-radius: 15px;
+    background: linear-gradient(#ffe500 0%, #ffb972 100%);
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    font-size: 25px;
+  }
+}
+
+.overview_wrap > .project_area {
+  div {
+    width: 96%;
+    padding: 2%;
+  }
+
+  .box_short {
+    width: 92%;
+    height: 40px;
+    padding: 30px 4%;
+
+    font-size: 35px;
+    color: #707070;
+
+    display: inline-block;
+
+    p {
+      font-size: 18px;
+    }
+
+    .box_short_left {
+      float: left;
+      width : 70%;
+      padding: 0;
+    }
+
+    button {
+      border-radius: 15px;
+      background: linear-gradient(#ffe500 0%, #ffb972 100%);
+      border: none;
+      color: white;
+      padding: 8px 30px;
+      font-size: 20px;
+      float: right;
+      margin-top: 10px;
+    }
   }
 }
