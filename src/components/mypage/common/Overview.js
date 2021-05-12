@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import MyPage from "./MyPage";
 import { useFetch } from "../../common/useFetch";
+import personIcon from "../Icons/person.png";
 
 import "./Overview.scss";
 
@@ -13,7 +14,7 @@ function Overview({ isLogin, userType }) {
         return <Redirect to={{ pathname: "/login" }} />;
     }
     return (
-        <MyPage header="Overview" isLogin={isLogin} user={userType}>
+        <MyPage header="" isLogin={isLogin} user={userType}>
             <overviewContext.Provider value={userType}>
                 <OverviewPropjects />
             </overviewContext.Provider>
@@ -83,6 +84,8 @@ function OverviewPropjects() {
     const [requestedProject] = useFetch("/api/project");
     const [myProjects] = useFetch("/api/project/my-project");
 
+    const id = window.localStorage.getItem("name")
+
     if (userType === "manager") {
         return (
             <>
@@ -99,6 +102,11 @@ function OverviewPropjects() {
     } else {
         return (
             <>
+                <div className="Profile_box">
+                  <img src={personIcon} alt="personIcon" />
+                  <h4>{id}</h4>
+                  
+                </div>
                 <ProjectForm
                     mainTitle="requested project"
                     projects={requestedProject}
