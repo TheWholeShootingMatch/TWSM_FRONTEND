@@ -36,7 +36,7 @@ function SideMenu({ TcTnum }) {
                                 activeClassName="tct-menu-active"
                             >
                                 <BiUserPin />
-                                model
+                                Model
                             </NavLink>
                         </li>
                         <li className="menu">
@@ -45,16 +45,16 @@ function SideMenu({ TcTnum }) {
                                 activeClassName="tct-menu-active"
                             >
                                 <BiCamera />
-                                photographer
+                                Photographer
                             </NavLink>
                         </li>
                         <li className="menu">
                             <NavLink
-                                to={`/whiteboard/${originSuffix}`}
+                                to={`/whiteboard/${TcTnum}`}
                                 activeClassName="tct-menu-active"
                             >
                                 <BiNews />
-                                whiteboard
+                                Whiteboard
                             </NavLink>
                         </li>
                         <li className="menu">
@@ -63,7 +63,7 @@ function SideMenu({ TcTnum }) {
                                 activeClassName="tct-menu-active"
                             >
                                 <BiSitemap />
-                                workflow
+                                Workflow
                             </NavLink>
                         </li>
                     </ul>
