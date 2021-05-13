@@ -3,7 +3,7 @@ import UserMyPage from "../common/MyPage";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 
-import "./BookMark.css";
+import "./BookMark.scss";
 
 function BookMark({ isLogin }) {
     return (
@@ -17,8 +17,16 @@ function BookMarkArea() {
     const [category, setCategory] = useState("model");
     const [skipNum, setSkipNum] = useState(0);
     const [bookmarkList, setBookmarkList] = useState([]);
-
+    const [isActive, setActive] = useState({
+        model: true,
+        photographer: false
+    });
     const onClickCategory = newCategory => {
+        if (newCategory === "model") {
+            setActive({ model: true, photographer: false });
+        } else {
+            setActive({ model: false, photographer: true });
+        }
         setBookmarkList([]);
         setSkipNum(0);
         setCategory(newCategory);
@@ -70,10 +78,14 @@ function BookMarkArea() {
             <div className="bookmark_area_header">
                 <ul>
                     <li onClick={() => onClickCategory("model")}>
-                        <button>model</button>
+                        <span className={isActive.model ? "active" : ""}>
+                            model
+                        </span>
                     </li>
                     <li onClick={() => onClickCategory("photographer")}>
-                        <button>photographer</button>
+                        <span className={isActive.photographer ? "active" : ""}>
+                            photographer
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -93,13 +105,12 @@ const useStyles = makeStyles(theme => ({
         justifyContent: "center"
     },
     paper: {
-        width: 700,
-        height: 500,
+        width: "fit-content",
+        height: "fit-content",
         backgroundColor: theme.palette.background.paper,
         border: "2px solid #000",
         boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        overflow: "auto",
+        padding: "24px",
         display: "flex",
         justifyContent: "space-between"
     }
@@ -119,13 +130,13 @@ function BookmarkModal({ list }) {
 
     const body = (
         <div className={classes.paper}>
-            <article>
+            <article className="bm_profile_main">
                 <img src={list.profile_img} alt={list.Name} />
                 <p>Name : {list.Name}</p>
                 <p>email : {list.email}</p>
                 <p>instagram : {list.instagram}</p>
             </article>
-            <article>
+            <article className="bm_profile_sub">
                 <p>Age : {list.Age}</p>
                 <p>Gender : {list.Gender}</p>
                 <p>Busto : {list.Busto}</p>
