@@ -1,0 +1,63 @@
+.bookmark_area_header {
+    display: inline-block;
+
+    ul {
+        display: flex;
+        justify-content: flex-start;
+        margin: 0 15px 30px 0;
+
+        li {
+            cursor: pointer;
+            span {
+                color: #707070;
+                margin: 0;
+                margin-right: 30px;
+                font-size: 30px;
+                border: none;
+                padding-bottom: 10px;
+                cursor: pointer;
+                &.active {
+                    border-bottom: 3px solid #707070;
+                }
+            }
+        }
+    }
+}
+
+.bookmark_list {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    div {
+        margin: 15px 20px 15px 0;
+        box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.12),
+            0 1px 2px rgba(0, 0, 0, 0.24);
+        box-sizing: border-box;
+
+        &:hover {
+            animation-duration: 1ms;
+            cursor: pointer;
+            transition: 0.3s ease;
+            transform: scale(1.05); /*  default */
+            -webkit-transform: scale(1.05); /*  크롬 */
+            -moz-transform: scale(1.05); /* FireFox */
+            -o-transform: scale(1.05); /* Opera */
+        }
+    }
+}
+
+.bm_profile_main {
+    img {
+        margin-bottom: 10px;
+    }
+}
+
+.bm_profile_sub {
+    padding: 0 0 0 20px;
+
+    p {
+        margin-bottom: 7px;
+    }
+}
