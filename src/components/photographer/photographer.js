@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
-import './photographer.css';
+import './photographer.scss';
 
 import SideNav from "./sidenav"
 import Like from "./like_btn";
@@ -125,10 +125,15 @@ function GetPhotographer ({location, sort, skip, setPhotographerLeng, isLogin}) 
         if (indexLow*postNum<=index && index<indexLow*postNum+(postNum)) {
           return (
             <div className="photographer" key={index}>
-              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              {
-                isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
-              }
+              <div className="photographer_img">
+                <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
+              </div>
+              <div className="photographer_name">
+                <p>{elem.Name}</p>
+                {
+                  isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
+                }
+              </div>
             </div>
           );
         }
@@ -234,7 +239,8 @@ function Main() {
   };
 
   return (
-    <main>
+    <main className="photographer_content">
+      <h1 className="title">PHOTOGRAPHER</h1>
       <div className="main_header">
         <div className="sorting_bar">
           <label htmlFor="sort">sort as </label>
@@ -244,9 +250,10 @@ function Main() {
             <option value="P">Popular</option>
           </select>
         </div>
-
         <NewButton isLogin={isLogin}/>
       </div>
+      <hr/>
+      <SideNav/>
 
       <GetPhotographer location={location} skip={skip} sort ={sort} setPhotographerLeng={setPhotographerLeng} isLogin={isLogin}/>
 
@@ -298,8 +305,6 @@ function Photographer(props) {
   return (
     <>
       {props.children}
-
-      <SideNav />
 
       <PhotographerContext.Provider value={photographer}>
       <ModalContext.Provider value={bool}>

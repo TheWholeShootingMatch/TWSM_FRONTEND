@@ -21,11 +21,13 @@ function SideNav() {
 
   return (
     <div className="side_nav">
+      <div className="country">
+        <h3>Country</h3>
 
-      <select name="country" onChange={handleChange}>
-        <CountryOption />
-      </select>
-
+        <select name="country" onChange={handleChange}>
+          <CountryOption />
+        </select>
+      </div>
     </div>
   );
 }

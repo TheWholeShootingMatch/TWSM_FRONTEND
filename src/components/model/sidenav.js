@@ -55,20 +55,20 @@ function Height({find,history,location}) {
   };
 
   return (
-    <>
-    <h3>height</h3>
-    <Slider
-      value={value}
-      onChange={handleChange}
-      valueLabelDisplay="auto"
-      aria-labelledby="range-slider"
-      step={5}
-      marks
-      min={140}
-      max={190}
-      onChangeCommitted={handleChangeCommitted}
-    />
-    </>
+    <div className="height">
+      <h3>height</h3>
+      <Slider
+        value={value}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        aria-labelledby="range-slider"
+        step={5}
+        marks
+        min={140}
+        max={190}
+        onChangeCommitted={handleChangeCommitted}
+      />
+    </div>
   )
 }
 
@@ -87,17 +87,23 @@ function SideNav() {
 
   return (
     <div className="side_nav">
+      <div className="country">
+        <h3>Country</h3>
 
-      <select name="gender" onChange={handleChange}>
-        <option value="">gender</option>
-        <option value="F">female</option>
-        <option value="M">male</option>
-        <option value="N">not on the list</option>
-      </select>
+        <select name="country" onChange={handleChange}>
+          <CountryOption />
+        </select>
+      </div>
 
-      <select name="country" onChange={handleChange}>
-        <CountryOption />
-      </select>
+      <div className="gender">
+        <h3>Gender</h3>
+        <select name="gender" onChange={handleChange}>
+          <option value="">gender</option>
+          <option value="F">female</option>
+          <option value="M">male</option>
+          <option value="N">not on the list</option>
+        </select>
+      </div>
 
       <Height find={find} history={history} location={location}/>
 
