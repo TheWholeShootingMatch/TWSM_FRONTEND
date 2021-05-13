@@ -30,6 +30,9 @@ $--tct-font--size-verySmall: 0.725rem;
                 .selected_profile {
                     img {
                         margin: 0 20px;
+                        width: 200px;
+                        height: 200px;
+                        object-fit: cover;
                     }
 
                     span {
@@ -82,6 +85,14 @@ $--tct-font--size-verySmall: 0.725rem;
                     display: flex;
                     justify-content: space-between;
                     margin: 15px;
+
+                    .profile_img {
+                        img {
+                            width: 200px;
+                            height: 200px;
+                            object-fit: cover;
+                        }
+                    }
                 }
 
                 .profile_header {

@@ -30,6 +30,12 @@
     justify-content: flex-start;
     flex-wrap: wrap;
 
+    img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
     div {
         margin: 15px 20px 15px 0;
         box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.12),
