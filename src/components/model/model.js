@@ -2,7 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
-import './model.css';
+import './model.scss';
 
 import SideNav from "./sidenav"
 import Like from "./like_btn";
@@ -140,10 +140,15 @@ function GetModel({location, sort, skip, setModelLeng, isLogin}) {
         if (indexLow*postNum<=index && index<indexLow*postNum+(postNum)) {
           return (
             <div className="model" key={index}>
-              <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
-              {
-                isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
-              }
+              <div className="model_img">
+                <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)}/>
+              </div>
+              <div className="model_name">
+                <p>{elem.Name}</p>
+                {
+                  isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
+                }
+              </div>
             </div>
           );
         }
@@ -253,7 +258,8 @@ function Main() {
   };
 
   return (
-    <main>
+    <main className="model_content">
+      <h1 className="title">MODEL</h1>
       <div className="main_header">
         <div className="sorting_bar">
           <label htmlFor="sort">sort as </label>
@@ -266,6 +272,8 @@ function Main() {
 
         <NewButton isLogin={isLogin}/>
       </div>
+      <hr/>
+      <SideNav/>
 
       <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} isLogin={isLogin} />
 
@@ -321,8 +329,6 @@ function Model(props) {
   return (
     <>
       {props.children}
-
-      <SideNav />
 
       <ModelContext.Provider value={model}>
       <ModalContext.Provider value={bool}>
