@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
+import TextField from "@material-ui/core/TextField";
+import logo from "../common/logo.png";
+import Header from "../common/header";
+import "./login.scss";
 
 export function Logout({ setIsLogin, setUserType }) {
     useEffect(() => {
@@ -51,8 +55,7 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
                 } else {
                     //login 성공
                     window.localStorage.setItem("name", res.data.name);
-                    console.log(res.data.id);
-                    if (res.data.id === "manager") {
+                    if (res.data.name === "manager") {
                         setUserType("manager");
                     } else {
                         setUserType("general");
@@ -72,38 +75,49 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
         );
     } else {
         return (
-            <main>
-                <div className="logo">
-                    <img src="" alt="logo" />
+            <>
+                <Header isLogin={false} />
+                <div className="login_wrapper">
+                    <main>
+                        <h2>Sign in to TWSM</h2>
+                        <div className="container">
+                            <form onSubmit={onSubmit}>
+                                <TextField
+                                    id="outlined-password-input"
+                                    type="text"
+                                    name="id"
+                                    autoComplete="current-password"
+                                    variant="outlined"
+                                    placeholder="Id"
+                                    size="small"
+                                    className="id_area"
+                                    onChange={onChange}
+                                />
+                                {/* <span className="pw_search">
+                                    Forgot your password?
+                                </span> */}
+                                <TextField
+                                    id="outlined-password-input"
+                                    type="password"
+                                    name="password"
+                                    autoComplete="current-password"
+                                    variant="outlined"
+                                    placeholder="Password"
+                                    size="small"
+                                    className="pw_area"
+                                    onChange={onChange}
+                                />
+                                <button className="login_btn" type="submit">
+                                    LOGIN
+                                </button>
+                            </form>
+                            <Link to="/signup">
+                                <button className="signup_btn">SIGN UP</button>{" "}
+                            </Link>
+                        </div>
+                    </main>
                 </div>
-                <div className="container">
-                    <form onSubmit={onSubmit}>
-                        <input
-                            className="id_area"
-                            type="text"
-                            placeholder="ID"
-                            name="id"
-                            onChange={onChange}
-                            required
-                        />
-                        <input
-                            className="pw_area"
-                            type="password"
-                            placeholder="PASSWORD"
-                            name="password"
-                            onChange={onChange}
-                            required
-                        />
-                        <a href="#" className="pw_search">
-                            Forgot your password?
-                        </a>
-                        <button className="login_btn" type="submit">
-                            LOGIN
-                        </button>
-                    </form>
-                    <a href="/signup">SIGN UP</a>
-                </div>
-            </main>
+            </>
         );
     }
 }

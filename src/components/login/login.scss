@@ -1,0 +1,47 @@
+.login_wrapper {
+    display: flex;
+    justify-content: center;
+
+    h2 {
+        text-align: center;
+        font-weight: bold;
+        margin: 18px;
+    }
+    .container {
+        border: 1px solid #707070;
+        form {
+            .id_area,
+            .pw_area {
+                display: block;
+                margin: 18px;
+            }
+
+            // span {
+            //     display: block;
+            //     margin: 18px;
+
+            //     font-size: 0.875rem;
+            //     color: #929292;
+            // }
+
+            .login_btn {
+                background-color: #0f0f0f;
+                color: #fff;
+                width: 225px;
+                margin: 0 18px;
+                height: 40px;
+                border: none;
+                cursor: pointer;
+            }
+        }
+        .signup_btn {
+            background-color: #fff;
+            color: #0f0f0f;
+            width: 225px;
+            margin: 18px;
+            height: 40px;
+            border: 1px solid #0f0f0f;
+            cursor: pointer;
+        }
+    }
+}
