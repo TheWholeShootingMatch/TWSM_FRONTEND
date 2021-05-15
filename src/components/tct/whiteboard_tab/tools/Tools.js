@@ -60,7 +60,6 @@ let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
-    // console.log(o);
     sharedLine = new Y.Array();
     drawElement = new Y.Map();
     if (currentType === "drawing") {
@@ -82,7 +81,7 @@ export const mouseDown = (o, canvas) => {
             radius: 1,
             strokeWidth: 1,
             stroke: "black",
-            fill: "white",
+            fill: "transparent",
             selectable: false,
             originX: "center",
             originY: "center",
@@ -98,11 +97,11 @@ export const mouseDown = (o, canvas) => {
             left: pointer.x,
             top: pointer.y,
             width: 10,
-            backgroundColor: "white"
+            backgroundColor: "white",
+            fontFamily: "Inconsolata"
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
-
         console.log("add text", textbox);
         canvas.add(textbox);
         drawElement.set("type", "text");
@@ -220,14 +219,20 @@ export const objectModified = o => {
 
 export const afterObjectModified = o => {
     let actObj = o.target;
+    externalCanvas.bringToFront(o.target);
+    const klass = {};
+    externalCanvas.getObjects().map((elem, index) => {
+        elem.zIndex = externalCanvas.getObjects().indexOf(elem);
+        klass[elem.id] = JSON.stringify(elem);
+    });
     if (actObj) {
         shared.drawingContent.get().map(drawElement => {
             const options = drawElement.get("options").toArray()[0];
             if (options) {
                 const parseObject = JSON.parse(options);
-                if (parseObject.id === actObj.id) {
+                if (klass[parseObject.id]) {
                     const newYarray = new Y.Array();
-                    const jsonModifiedObject = JSON.stringify(actObj);
+                    const jsonModifiedObject = klass[parseObject.id];
                     newYarray.push([jsonModifiedObject]);
                     drawElement.set("options", newYarray);
                 }
@@ -243,9 +248,7 @@ export const deleteObject = () => {
     const actObj = externalCanvas.getActiveObject();
     if (actObj) {
         const actObjId =
-            typeof actObj._objects === "undefined"
-                ? [actObj.id]
-                : actObj._objects.map(object => object.id);
+            typeof actObj._objects === "undefined" ? [actObj.id] : actObj._objects.map(object => object.id);
 
         console.log(actObjId);
 
@@ -310,7 +313,10 @@ export const setToolOption = (type, canvas) => {
         canvas.selection = true;
         canvas.isDrawingMode = false;
         changeStatus(true, canvas);
-        canvas.off("mouse:down");
+        // canvas.off("mouse:down");
+        canvas.on("mouse:down", function (o) {
+            mouseDown(o, canvas);
+        });
         canvas.off("mouse:move");
         canvas.off("mouse:up");
         canvas.on("object:moving", function (o) {

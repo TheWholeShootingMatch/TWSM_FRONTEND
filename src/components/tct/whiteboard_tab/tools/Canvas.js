@@ -114,6 +114,7 @@ export default function Canvas({ activeSlide }) {
 export const getObjectById = (id, canvas) => {
     for (let i = 0; i < canvas._objects.length; i++) {
         if (canvas._objects[i].id === id) {
+            console.log("true");
             return canvas._objects[i];
         }
     }
@@ -134,26 +135,29 @@ export const onCanvasUpdate = (newObject, canvas) => {
                             circle.selectable = false;
                             circle.evented = false;
                             canvas.add(circle);
+                            if (typeof circle.zIndex !== "undefined") {
+                                canvas.moveTo(circle, circle.zIndex);
+                            }
                         }
                     }
                 } else if (type === "text") {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseFigure = JSON.parse(options);
-                        console.log(parseFigure.id);
                         if (!getObjectById(parseFigure.id, canvas)) {
                             const textbox = new fabric.Textbox("", parseFigure);
                             textbox.selectable = false;
                             textbox.evented = false;
                             canvas.add(textbox);
+                            if (typeof textbox.zIndex !== "undefined") {
+                                canvas.moveTo(textbox, textbox.zIndex);
+                            }
                         }
                     }
                 } else if (type === "image") {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseImage = JSON.parse(options);
-                        console.log(parseImage.id);
-                        console.log(getObjectById(parseImage.id, canvas));
                         if (!getObjectById(parseImage.id, canvas)) {
                             let img = new Image();
                             img.src = parseImage.src;
@@ -171,6 +175,9 @@ export const onCanvasUpdate = (newObject, canvas) => {
                                 uploadedImg.selectable = false;
                                 uploadedImg.evented = false;
                                 canvas.add(uploadedImg);
+                                if (typeof uploadedImg.zIndex !== "undefined") {
+                                    canvas.moveTo(uploadedImg, uploadedImg.zIndex);
+                                }
                             };
                         }
                     }
@@ -185,6 +192,9 @@ export const onCanvasUpdate = (newObject, canvas) => {
                             drawing.selectable = false;
                             drawing.evented = false;
                             canvas.add(drawing);
+                            if (typeof drawing.zIndex !== "undefined") {
+                                canvas.moveTo(drawing, drawing.zIndex);
+                            }
                         }
                     }
                 }
