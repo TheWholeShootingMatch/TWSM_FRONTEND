@@ -152,6 +152,8 @@ export const onCanvasUpdate = (newObject, canvas) => {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseImage = JSON.parse(options);
+                        console.log(parseImage.id);
+                        console.log(getObjectById(parseImage.id, canvas));
                         if (!getObjectById(parseImage.id, canvas)) {
                             let img = new Image();
                             img.src = parseImage.src;
@@ -178,10 +180,7 @@ export const onCanvasUpdate = (newObject, canvas) => {
                         const parseOptions = JSON.parse(options);
                         if (!getObjectById(parseOptions.id, canvas)) {
                             const paths = parseOptions.path;
-                            const drawing = new fabric.Path(
-                                paths,
-                                parseOptions
-                            );
+                            const drawing = new fabric.Path(paths, parseOptions);
                             drawing.id = parseOptions.id;
                             drawing.selectable = false;
                             drawing.evented = false;
@@ -192,18 +191,14 @@ export const onCanvasUpdate = (newObject, canvas) => {
             });
         } else if (drawElements.delete) {
             /* delete specific objects */
-            const currentObjectIds = Array.from(
-                shared.drawingContent.get()
-            ).map(drawElement => {
+            const currentObjectIds = Array.from(shared.drawingContent.get()).map(drawElement => {
                 const options = drawElement.get("options").toArray()[0];
                 const parseOptions = JSON.parse(options);
                 return parseOptions.id;
             });
 
             const canvasObjects = canvas.getObjects();
-            const deletedObject = canvasObjects.filter(
-                obj => currentObjectIds.includes(obj.id) === false
-            );
+            const deletedObject = canvasObjects.filter(obj => currentObjectIds.includes(obj.id) === false);
             console.log(currentObjectIds, deletedObject);
             canvas.remove(...deletedObject);
         }

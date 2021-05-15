@@ -36,7 +36,6 @@ const whiteboardContext = createContext();
 
 function WhiteBoard() {
     const { TcTnum } = useParams();
-    console.log(TcTnum);
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
     let [title, setTitle] = useState("");
