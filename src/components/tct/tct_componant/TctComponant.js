@@ -260,7 +260,7 @@ function Header({ TcTnum, title }) {
                     </span>
                 ))}
             </div>
-            <TcTnumcontext.Provider TcTnum={TcTnum}>
+            <TcTnumcontext.Provider value={TcTnum}>
                 <InviteUser />
             </TcTnumcontext.Provider>
         </header>

@@ -1,3 +1,5 @@
+@import "../../../variable.scss";
+
 $--menu-border-color: #707070;
 $--menubox-border-color: #ebebeb;
 $--tct-font-size: 1rem;
@@ -77,8 +79,7 @@ $--tct-font--size-verySmall: 0.725rem;
                 margin: 35px 20px;
                 width: 442px;
                 border-radius: 2px;
-                box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.12),
-                    0 1px 2px rgba(0, 0, 0, 0.24);
+                box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
                 box-sizing: border-box;
 
                 .profile_wrapper {
@@ -307,15 +308,27 @@ $--tct-font--size-verySmall: 0.725rem;
 }
 
 .note_area {
-    width: 80%;
-    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+
+    .timeline {
+        border-left: 1px solid $--tct-color-gray-3;
+        position: relative;
+        margin: 0 40px;
+
+        .timeline_icon {
+            position: absolute;
+            top: 50%;
+            right: -8px;
+        }
+    }
 
     .note_tag {
         display: inline-block;
-        margin: 20px 0 0 20px;
-        border: 1px solid black;
-        padding: 5px;
-        border-radius: 16px;
+        margin: 20px 0 0 15px;
+        border: none;
+        padding: 10px;
+        border-radius: 14px;
         font-size: $--tct-font--size-verySmall;
     }
 
