@@ -88,7 +88,7 @@ function CollaborationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="collaborate_form" onSubmit={handleSubmit}>
       <div className="overview">
         <div className="title_area">
           <label htmlFor="title">Title</label>
@@ -214,7 +214,7 @@ function CollaborationForm() {
         </div>
       </div>
 
-      <button type="submit">save</button>
+      <button className="submit_but" type="submit">save</button>
     </form>
   )
 }

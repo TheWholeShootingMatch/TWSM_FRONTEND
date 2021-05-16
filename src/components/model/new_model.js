@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import {CountryOption} from "../common/country"
-import "./new_model.css"
+import "./new_model.scss"
 // import Language from "../common/language"
 
 // function Country({citiesArr, setCitiesArr}) {

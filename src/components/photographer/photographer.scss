@@ -140,3 +140,115 @@ div.main_header {
 .pageControll {
   text-align: center;
 }
+
+div.photographer_compcard {
+  background-color: white;
+  border: {
+    style: solid;
+    color: black;
+    width: 3px;
+    radius: 50px;
+  }
+  width: 1200px;
+  height: 600px;
+  margin: auto;
+  margin-top: 50px;
+  position: relative;
+
+  div.photographer_info {
+    div.left_content {
+      float: left;
+      width: 600px;
+      margin: 0;
+      display: inline-block;
+    }
+
+    div.right_content {
+      float: right;
+      width: 600px;
+      margin: 0;
+      display: inline-block;
+    }
+  }
+
+  div.photographer_img {
+    margin: 60px;
+    margin-bottom: 20px;
+    top: 0;
+    left: 0;
+    height: 380px;
+    width: 380px;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  div.photographer_name {
+    margin: 0 60px;
+    width: 350px;
+    height: 40px;
+
+    h2 {
+      text-align: center;
+      line-height: 40px;
+      font-size: 35px;
+      font-weight: bolder;
+    }
+  }
+
+  div.photographer_contact {
+    margin: 10px 60px;
+    width: 350px;
+    height: auto;
+
+    p {
+      line-height: 30px;
+      font-size: 20px;
+    }
+  }
+
+  div.photographer_size {
+    margin-top: 60px;
+    margin-left: 60px;
+
+    p {
+      line-height: 30px;
+      font-size: 20px;
+    }
+  }
+
+  div.like_btn_div {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+
+    button.like_btn {
+      float: top right;
+      color: black;
+      background-color: rgba(0, 0, 0, 0);
+      border: none;
+      height: 40px;
+      font-size: 25px;
+    }
+  }
+
+  a.view_more{
+    border: {
+      style: solid;
+      color: black;
+      width: 3px;
+      radius: 50px;
+    }
+    width: 100px;
+    height: 40px;
+    position: absolute;
+    bottom: 40px;
+    left: 580px;
+    line-height: 40px;
+    text-align: center;
+  }
+
+
+}

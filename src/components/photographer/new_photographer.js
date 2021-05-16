@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import {CountryOption} from "../common/country"
-import "./new_photographer.css"
+import "./new_photographer.scss"
 // import Language from "../common/language"
 
 // function Country() {

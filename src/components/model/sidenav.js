@@ -5,6 +5,7 @@ import { useHistory, useLocation } from "react-router-dom";
 // import Language from "../common/language"
 import {CountryOption} from "../common/country"
 import Slider from '@material-ui/core/Slider';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 // function Age({find,history,location}) {
 //   const [value, setValue] = React.useState([10, 90]);
@@ -39,6 +40,39 @@ import Slider from '@material-ui/core/Slider';
 //   )
 // }
 
+const HeightSlider = withStyles({
+  root: {
+    color: "#707070",
+    height: 20,
+  },
+  thumb: {
+    height: 24,
+    width: 24,
+    color: "#707070",
+    backgroundColor: '#fff',
+    border: '2px solid currentColor',
+    marginTop: -8,
+    marginLeft: -12,
+    '&:focus, &:hover, &$active': {
+      boxShadow: 'inherit',
+    },
+  },
+  active: {},
+  valueLabel: {
+    left: 'calc(-50% + 4px)',
+  },
+  track: {
+    color: "#FFDD00",
+    height: 8,
+    borderRadius: 4,
+  },
+  rail: {
+    color: "#707070",
+    height: 8,
+    borderRadius: 4,
+  },
+})(Slider);
+
 function Height({find,history,location}) {
   const [value, setValue] = React.useState([140, 190]);
 
@@ -57,7 +91,7 @@ function Height({find,history,location}) {
   return (
     <div className="height">
       <h3>height</h3>
-      <Slider
+      <HeightSlider
         value={value}
         onChange={handleChange}
         valueLabelDisplay="auto"
