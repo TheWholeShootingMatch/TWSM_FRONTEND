@@ -10,7 +10,6 @@ font-size: 25px;
 color: #707070;
 }
 
-.notifications_wrap {
-  height: 85%;
-  overflow-y: scroll;
+.notifications {
+  margin-top: 20px;
 }

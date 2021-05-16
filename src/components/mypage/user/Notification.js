@@ -8,8 +8,9 @@ function Notification({ isLogin }) {
     console.log(notifications);
 
     return (
-        <UserMyPage user="user" header="Notification" isLogin={isLogin}>
-          <div className="notifications_wrap">
+        <UserMyPage user="user" isLogin={isLogin}>
+          <h2 className="MyPage_h2">Notification</h2>
+          <div className="project_area">
             <table className="notifications">
                 {notifications.map((notification, index) => (
                     <NotificationTable

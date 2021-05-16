@@ -1,37 +1,9 @@
-/* my page header*/
-
-// .mypage_header {
-//     font-size: 25px;
-//     font-weight: bold;
-//     margin-top: 24px;
-// }
-
-// .mypage_contents {
-//     margin-top: 13px;
-// }
-
-// .contents_upper_flex {
-//     display: flex;
-//     justify-content: flex-end;
-//
-//     a {
-//         border: 1px solid #d4d4d4;
-//         display: block;
-//         /* padding: 15px; */
-//         padding: 5px 11px;
-//         width: 33px;
-//         border-radius: 8px;
-//         text-align: center;
-//         margin: 0 0 14px 0;
-//     }
-// }
-
 /* mypage wrapper */
 .mypage_wrapper {
     display: flex;
     width: 98%;
-    margin: 0 1%;
-    padding: 0;
+    margin: 0;
+    padding: 0 1%;
 }
 
 .profile_nav {
@@ -41,8 +13,8 @@
     font-size: 25px;
 
     li {
-        padding: 25px;
         height: 30px;
+        padding: 25px;
 
         display: inline-block;
 
@@ -69,48 +41,44 @@
 /* mypage - main */
 .mypage_wrapper main {
     width : 78%;
-    padding : 2%;
     height: 720px;
+
+    padding : 2%;
     margin-top: 20px;
 
     border-radius: 25px;
     background: #ececec;
-
-    h2 {
-      padding-bottom: 35px;
-      margin-bottom: 30px;
-
-      font-weight: 600;
-      font-size: 45px;
-      color: #141414;
-    }
-
-    table {
-        tr {
-            a:hover {
-                text-decoration: underline;
-            }
-        }
-    }
 }
 
-.mypage_contents {
-  form h3 {
-    margin-bottom: 15px;
-    font-size: 35px;
-    color: #707070;
-    margin-bottom: 40px;
-  }
+.MyPage_h2 {
+  padding: 1%;
+  padding-bottom: 2%;
+
+  font-weight: 600;
+  font-size: 45px;
+  color: #141414;
+
+  border-bottom: 1px solid #B1B1B1;
 }
 
 .box_long {
-    .box_long_upper {
-        span:first-child {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        span:last-child {
-            float: right;
-        }
-    }
+  height: 80px;
+  width: 96%;
+
+  font-size: 35px;
+  color: #707070;
+
+  padding : 2%;
+  margin: 1% 0;
+
+  background-color: white;
+  box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.16);
+  border-radius: 20px;
+
+  display: inline-block;
+}
+
+.project_area {
+  height: 85%;
+  overflow-y: scroll;
 }

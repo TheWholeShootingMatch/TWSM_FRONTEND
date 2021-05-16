@@ -1,10 +1,11 @@
 import React from "react";
 import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
+import "./RequestedProject.scss";
 
 function RequestedProject({isLogin}){
     return(
-        <UserMyPage user="user" header="Requested Project" isLogin={isLogin}>
+        <UserMyPage user="user" isLogin={isLogin}>
             <RequestedProjectList/>
         </UserMyPage>
     )
@@ -17,11 +18,11 @@ function RequestDetail({ request }) {
     return (
         <div className="box_long">
             <div className="box_long_upper">
-                <span>{title}</span>
-                <span>{new Date(request_time).toLocaleDateString()}</span>
+                <span className="req_box_title">{title}</span>
+                <span className="req_box_date">{new Date(request_time).toLocaleDateString()}</span>
             </div>
-            <p>{description}</p>
-            <span>{status}</span>
+            <p className="req_box_des">{description}</p>
+            {/*<span>{status}</span>*/}
         </div>
     )
 }
@@ -34,6 +35,7 @@ function RequestedProjectList() {
 
     return (
         <>
+            <h2 className="MyPage_h2">Requested Project</h2>
             <div className="project_area">
                 <div>
                     {requestedProject.map((request) => <RequestDetail request={request} />)}

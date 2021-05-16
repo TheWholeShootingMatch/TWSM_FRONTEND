@@ -7,7 +7,8 @@ import "./CreateProject.scss";
 function CreateProject({ isLogin }) {
     console.log(isLogin);
     return (
-        <UserMyPage user="user" header="Create Project" isLogin={isLogin}>
+        <UserMyPage user="user" isLogin={isLogin}>
+            <h2 className="MyPage_h2">Create Project</h2>
             <ProjectForm />
         </UserMyPage>
     );

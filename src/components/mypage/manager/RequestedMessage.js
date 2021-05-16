@@ -8,10 +8,10 @@ function RequestedMessage({ isLogin, userType }) {
 
     return (
         <ManagerPage
-            header="Requested project"
             user={userType}
             isLogin={isLogin}
         >
+            <h2 className="MyPage_h2">Requested Projects</h2>
             <tbody className="requested_projects">
                 {requestedMessage.map((message, index) => (
                     <RequestedProject key={index} message={message} />
@@ -84,12 +84,12 @@ function RequestedProject({ message }) {
             <td className="status">{newStatus}</td>
             <td className="approve_btn">
                 <button onClick={() => onApprove()} disabled={approveToggleBtn}>
-                    approve btn
+                    approve
                 </button>
             </td>
             <td className="deny_btn">
                 <button onClick={() => onDeny()} disabled={denyToggleBtn}>
-                    deny btn
+                    deny
                 </button>
             </td>
         </tr>

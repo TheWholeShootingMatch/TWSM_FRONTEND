@@ -1,0 +1,29 @@
+.requested_projects {
+
+  font-size: 20px;
+  width: 100%;
+
+  th, td {
+    padding: 15px 3% 0;
+    width: 5%;
+  }
+
+  .date {
+    width: 10%;
+  }
+
+  .title {
+    width: 30%;
+  }
+
+  .approve_btn, .deny_btn {
+    padding: 0px;
+  }
+
+  button {
+    padding: 10px 20px;;
+    background: #f5f5f5;
+    border-radius: 10px;
+    border: none;
+  }
+}
