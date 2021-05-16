@@ -114,6 +114,7 @@ export default function Canvas({ activeSlide }) {
 export const getObjectById = (id, canvas) => {
     for (let i = 0; i < canvas._objects.length; i++) {
         if (canvas._objects[i].id === id) {
+            console.log("true");
             return canvas._objects[i];
         }
     }
@@ -134,18 +135,23 @@ export const onCanvasUpdate = (newObject, canvas) => {
                             circle.selectable = false;
                             circle.evented = false;
                             canvas.add(circle);
+                            if (typeof circle.zIndex !== "undefined") {
+                                canvas.moveTo(circle, circle.zIndex);
+                            }
                         }
                     }
                 } else if (type === "text") {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseFigure = JSON.parse(options);
-                        console.log(parseFigure.id);
                         if (!getObjectById(parseFigure.id, canvas)) {
                             const textbox = new fabric.Textbox("", parseFigure);
                             textbox.selectable = false;
                             textbox.evented = false;
                             canvas.add(textbox);
+                            if (typeof textbox.zIndex !== "undefined") {
+                                canvas.moveTo(textbox, textbox.zIndex);
+                            }
                         }
                     }
                 } else if (type === "image") {
@@ -169,6 +175,9 @@ export const onCanvasUpdate = (newObject, canvas) => {
                                 uploadedImg.selectable = false;
                                 uploadedImg.evented = false;
                                 canvas.add(uploadedImg);
+                                if (typeof uploadedImg.zIndex !== "undefined") {
+                                    canvas.moveTo(uploadedImg, uploadedImg.zIndex);
+                                }
                             };
                         }
                     }
@@ -178,32 +187,28 @@ export const onCanvasUpdate = (newObject, canvas) => {
                         const parseOptions = JSON.parse(options);
                         if (!getObjectById(parseOptions.id, canvas)) {
                             const paths = parseOptions.path;
-                            const drawing = new fabric.Path(
-                                paths,
-                                parseOptions
-                            );
+                            const drawing = new fabric.Path(paths, parseOptions);
                             drawing.id = parseOptions.id;
                             drawing.selectable = false;
                             drawing.evented = false;
                             canvas.add(drawing);
+                            if (typeof drawing.zIndex !== "undefined") {
+                                canvas.moveTo(drawing, drawing.zIndex);
+                            }
                         }
                     }
                 }
             });
         } else if (drawElements.delete) {
             /* delete specific objects */
-            const currentObjectIds = Array.from(
-                shared.drawingContent.get()
-            ).map(drawElement => {
+            const currentObjectIds = Array.from(shared.drawingContent.get()).map(drawElement => {
                 const options = drawElement.get("options").toArray()[0];
                 const parseOptions = JSON.parse(options);
                 return parseOptions.id;
             });
 
             const canvasObjects = canvas.getObjects();
-            const deletedObject = canvasObjects.filter(
-                obj => currentObjectIds.includes(obj.id) === false
-            );
+            const deletedObject = canvasObjects.filter(obj => currentObjectIds.includes(obj.id) === false);
             console.log(currentObjectIds, deletedObject);
             canvas.remove(...deletedObject);
         }

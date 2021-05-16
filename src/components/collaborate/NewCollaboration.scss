@@ -1,120 +1,105 @@
-form.collaborate_form {
+@import "../../variable.scss";
 
-  margin: 20px 100px;
-  display: block;
+.new_collaborate_wrapper {
+    width: 83%;
+    margin: 30px auto;
+    height: 100vh;
+    .new_collaborate_header {
+        border-bottom: 1px solid $--tct-color-gray-4;
+        padding: 20px 0;
 
-  label{
-  	margin:0 0 3px 0;
-  	padding:0px;
-  	display:block;
-  	font-weight: bold;
-    margin: 10px 0;
-  }
-
-  // .form_top .left {
-  //   float: left;
-  //   display: inline-block;
-  // }
-
-  input[type=text],
-  input[type=date],
-  input[type=datetime],
-  input[type=number],
-  input[type=search],
-  input[type=time],
-  input[type=url],
-  input[type=email],
-  textarea,
-  select{
-  	box-sizing: border-box;
-  	-webkit-box-sizing: border-box;
-  	-moz-box-sizing: border-box;
-  	border:1px solid #BEBEBE;
-    border-radius: 5px;
-  	padding: 7px;
-  	margin:0px;
-  	-webkit-transition: all 0.30s ease-in-out;
-  	-moz-transition: all 0.30s ease-in-out;
-  	-ms-transition: all 0.30s ease-in-out;
-  	-o-transition: all 0.30s ease-in-out;
-  	outline: none;
-    width: 300px;
-  }
-
-  .save-btn {
-  	background: black;
-  	padding: 8px 15px 8px 15px;
-  	border: none;
-  	color: #fff;
-  	margin: 30px 0;
-  }
-
-  .model_form {
-    display: none;
-  }
-
-  .photographer_form {
-    display: none;
-  }
-
-  .active {
-    display: block;
-  }
-
-  .model_button {
-    margin: 10px 0;
-
-    button {
-      background-color: white;
-      border: solid 1px black;
-      color: black;
-      padding: 10px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 20px;
-      margin: 4px 2px;
-      transition-duration: 0.4s;
-      border-radius: 5px;
-      cursor: pointer;
-      overflow: visible;
-      margin-top: 20px;
-      position: inherit;
-      width: 150px;
+        h1 {
+            font-size: $--tct-font--size-verybig;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        p {
+            margin-bottom: 8px;
+        }
     }
-  }
 
-  .photographer_button {
-    margin: 10px 0;
+    .new_collaborate_form {
+        article {
+            padding: 30px 0;
+            border-bottom: 1px solid $--tct-color-gray-4;
 
-    button {
-      background-color: white;
-      border: solid 1px black;
-      color: black;
-      padding: 10px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 20px;
-      margin: 4px 2px;
-      transition-duration: 0.4s;
-      border-radius: 5px;
-      cursor: pointer;
-      overflow: visible;
-      margin-top: 20px;
-      position: inherit;
-      width: 150px;
+            .add_field {
+                button {
+                    border: 0;
+                    padding: 12px 16px;
+                    cursor: pointer;
+                    box-sizing: border-box;
+                    text-align: center;
+                    background-color: $--tct-color-gray-2;
+
+                    &:hover {
+                        background-color: $--tct-color-gray-3;
+                        transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+                    }
+                }
+            }
+            label {
+                margin: 0 20px 20px 0;
+                font-weight: 600;
+            }
+            input {
+                padding: 5px 12px;
+                font-size: 14px;
+                line-height: 20px;
+                vertical-align: middle;
+                border-radius: 6px;
+                border: 1px solid $--tct-color-white;
+                outline: none;
+                background-color: $--tct-input-color-white;
+            }
+        }
+
+        .overview {
+            input {
+                width: 250px;
+            }
+            .overview_input {
+                margin-bottom: 20px;
+            }
+        }
     }
-  }
+    .model_form {
+        display: none;
+        margin-top: 30px;
 
-  .submit_but {
-  	background: black;
-  	padding: 8px 15px 8px 15px;
-  	border: none;
-    border-radius: 5px;
-  	color: #fff;
-  	margin: 30px 0;
-    width: 200px;
-    height: 45px;
-  }
+        .model_input {
+            margin-bottom: 20px;
+        }
+    }
+
+    .photographer_form {
+        display: none;
+        margin-top: 30px;
+        .photographer_input {
+            margin-bottom: 20px;
+        }
+    }
+
+    .active {
+        display: block;
+    }
+
+    .new_collaboration_btn {
+        margin: 30px 0;
+        padding: 5px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        white-space: nowrap;
+        cursor: pointer;
+        background-color: $--tct-color-yellow-5;
+        border: 1px solid $--tct-color-yellow-7;
+        color: #fff;
+        border-radius: 6px;
+
+        &:hover {
+            background-color: $--tct-color-yellow-6;
+            transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+        }
+    }
 }

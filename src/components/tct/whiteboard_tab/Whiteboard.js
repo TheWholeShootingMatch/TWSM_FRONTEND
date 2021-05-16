@@ -1,30 +1,11 @@
-import React, {
-    useRef,
-    useState,
-    useEffect,
-    useCallback,
-    createContext,
-    useContext
-} from "react";
+import React, { useRef, useState, useEffect, useCallback, createContext, useContext } from "react";
 import { Redirect, useParams } from "react-router-dom";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { IconContext } from "react-icons";
 import { GrPan } from "react-icons/gr";
-import {
-    BiShapeSquare,
-    BiPencil,
-    BiTrash,
-    BiNavigation,
-    BiImageAlt,
-    BiText
-} from "react-icons/bi";
-import {
-    connectToRoom,
-    originSuffix,
-    doc,
-    emitVersionDoc
-} from "./tools/SharedTypes";
+import { BiShapeSquare, BiPencil, BiTrash, BiNavigation, BiImageAlt, BiText } from "react-icons/bi";
+import { connectToRoom, originSuffix, doc, emitVersionDoc } from "./tools/SharedTypes";
 import * as Tools from "./tools/Tools";
 import { externalCanvas } from "./tools/Canvas";
 import * as Y from "yjs";
@@ -36,10 +17,8 @@ const whiteboardContext = createContext();
 
 function WhiteBoard() {
     const { TcTnum } = useParams();
-    console.log(TcTnum);
     let [isExist, setExist] = useState(true);
     let [isLoading, setLoading] = useState(false);
-    let [title, setTitle] = useState("");
 
     useEffect(() => {
         setLoading(true);
@@ -57,7 +36,6 @@ function WhiteBoard() {
                     alert("권한이 없습니다!");
                     setExist(false);
                 } else {
-                    setTitle(res.data.title);
                     connectToRoom(TcTnum, res.data.base64Ydoc);
                 }
                 setLoading(false);
@@ -75,7 +53,7 @@ function WhiteBoard() {
         );
     } else {
         return (
-            <TctComponant TcTnum={TcTnum} title={title} linkType={false}>
+            <TctComponant TcTnum={TcTnum} linkType={false}>
                 <WhiteBoardArea />
             </TctComponant>
         );
@@ -226,9 +204,7 @@ function WhiteBoardHeader({
                 </div>
             </IconContext.Provider>
             <div className="history_btn">
-                <button onClick={() => setToggle(!toggleHistoryMenu)}>
-                    history
-                </button>
+                <button onClick={() => setToggle(!toggleHistoryMenu)}>history</button>
             </div>
         </div>
     );
@@ -304,14 +280,8 @@ function HistoryArea() {
             <ul className="history_list">
                 {versionList.map((version, index) => {
                     return (
-                        <li
-                            className="version_info"
-                            key={index}
-                            onClick={() => emitVersionDoc(version.docName)}
-                        >
-                            {new Date(
-                                parseInt(version._id.substring(0, 8), 16) * 1000
-                            ).toLocaleString()}
+                        <li className="version_info" key={index} onClick={() => emitVersionDoc(version.docName)}>
+                            {new Date(parseInt(version._id.substring(0, 8), 16) * 1000).toLocaleString()}
                         </li>
                     );
                 })}

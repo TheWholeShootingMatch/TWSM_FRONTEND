@@ -13,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import { FaCircle } from "react-icons/fa";
 
 const useStyles = makeStyles(() => ({
     inputField: {
@@ -23,6 +24,10 @@ const useStyles = makeStyles(() => ({
     },
     messageField: {
         minWidth: "435px"
+    },
+    accordionField: {
+        width: "80%",
+        margin: "40px 0"
     }
 }));
 
@@ -32,12 +37,7 @@ function Category({ handleChange }) {
     return (
         <>
             <InputLabel id="category">Category</InputLabel>
-            <Select
-                labelId="category"
-                onChange={handleChange}
-                className={classes.selectField}
-                name="category"
-            >
+            <Select labelId="category" onChange={handleChange} className={classes.selectField} name="category">
                 <MenuItem value="" disabled>
                     Select
                 </MenuItem>
@@ -139,6 +139,8 @@ function Comment(props) {
 
 function NoteArea(props) {
     //fetch comment
+    const classes = useStyles();
+
     const param = {
         method: "POST",
         headers: {
@@ -174,10 +176,24 @@ function NoteArea(props) {
 
     return (
         <div className="note_area" id={props._id}>
-            <div className="note_dot"></div>
-            <Accordion>
+            <div className="timeline">
+                <span className="timeline_icon">
+                    {" "}
+                    <FaCircle style={props.category.name === "issue" ? { color: "#EBA1F9" } : { color: "#A1F9C2" }} />
+                </span>
+            </div>
+            <Accordion className={classes.accordionField}>
                 <AccordionSummary>
-                    <span className="note_tag">{props.category.name}</span>
+                    <span
+                        className="note_tag"
+                        style={
+                            props.category.name === "issue"
+                                ? { backgroundColor: "#EBA1F9" }
+                                : { backgroundColor: "#A1F9C2" }
+                        }
+                    >
+                        {props.category.name}
+                    </span>
                     <div className="note_header">
                         <div className="note_header_main">
                             <h3 className="">{props.writer.id}</h3>
@@ -185,8 +201,7 @@ function NoteArea(props) {
                         </div>
                         <div className="note_header_sub">
                             <p>
-                                {new Date(props.logdate).toLocaleString()} |
-                                comment {commentlist.length}
+                                {new Date(props.logdate).toLocaleString()} | comment {commentlist.length}
                             </p>
                         </div>
                     </div>
@@ -196,19 +211,10 @@ function NoteArea(props) {
                 </AccordionSummary>
                 <AccordionDetails>
                     {commentlist.map(({ _id, writer, contents }, index) => (
-                        <Comment
-                            key={index}
-                            _id={_id}
-                            writer={writer.name}
-                            contents={contents}
-                        />
+                        <Comment key={index} _id={_id} writer={writer.name} contents={contents} />
                     ))}
                     <form onSubmit={handleSubmit}>
-                        <input
-                            type="text"
-                            name="contents"
-                            onChange={handleChange}
-                        />
+                        <input type="text" name="contents" onChange={handleChange} />
                         <button type="submit">send</button>
                     </form>
                 </AccordionDetails>
@@ -264,7 +270,6 @@ function Contents() {
                     <Category handleChange={handleChange} />
                 </FormControl>
             </div>
-
             <div className="note_list">
                 {noteList.map((elem, index) => (
                     <NoteArea

@@ -33,12 +33,16 @@ export const connectToRoom = async (suffix, Ydoc) => {
 
     if (originSuffix === null) {
         originSuffix = suffix;
-        try {
-            const persistedYdoc = await persistence.getYDoc("doc");
-            const ecodedUint8Arr = toUint8Array(Ydoc);
-            Y.applyUpdate(doc, ecodedUint8Arr);
-        } catch (e) {
-            console.log("invalid ydoc");
+        if (Ydoc.length > 0) {
+            try {
+                const persistedYdoc = await persistence.getYDoc("doc");
+                const ecodedUint8Arr = toUint8Array(Ydoc);
+                Y.applyUpdate(doc, ecodedUint8Arr);
+            } catch (e) {
+                console.log("invalid ydoc");
+            }
+        } else {
+            console.log("fail to get ydoc from database");
         }
     }
 
