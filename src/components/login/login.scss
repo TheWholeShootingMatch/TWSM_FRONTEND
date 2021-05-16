@@ -1,3 +1,5 @@
+@import "../../variable.scss";
+
 .login_wrapper {
     display: flex;
     justify-content: center;
@@ -15,15 +17,6 @@
                 display: block;
                 margin: 18px;
             }
-
-            // span {
-            //     display: block;
-            //     margin: 18px;
-
-            //     font-size: 0.875rem;
-            //     color: #929292;
-            // }
-
             .login_btn {
                 background-color: #0f0f0f;
                 color: #fff;
@@ -35,13 +28,14 @@
             }
         }
         .signup_btn {
-            background-color: #fff;
-            color: #0f0f0f;
-            width: 225px;
             margin: 18px;
-            height: 40px;
-            border: 1px solid #0f0f0f;
-            cursor: pointer;
+            a {
+                color: $--tct-color-yellow-6;
+                font-weight: bold;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 }

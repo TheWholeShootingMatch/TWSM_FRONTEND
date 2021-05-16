@@ -83,10 +83,9 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
                         <div className="container">
                             <form onSubmit={onSubmit}>
                                 <TextField
-                                    id="outlined-password-input"
+                                    id="outlined-id-input"
                                     type="text"
                                     name="id"
-                                    autoComplete="current-password"
                                     variant="outlined"
                                     placeholder="Id"
                                     size="small"
@@ -111,9 +110,10 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
                                     LOGIN
                                 </button>
                             </form>
-                            <Link to="/signup">
-                                <button className="signup_btn">SIGN UP</button>{" "}
-                            </Link>
+
+                            <p className="signup_btn">
+                                Not a member? <Link to="/signup">Sign up now </Link>
+                            </p>
                         </div>
                     </main>
                 </div>

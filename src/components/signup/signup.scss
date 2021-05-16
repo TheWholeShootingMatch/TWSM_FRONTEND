@@ -1,0 +1,32 @@
+.signup_wrapper {
+    display: flex;
+    justify-content: center;
+
+    h2 {
+        text-align: center;
+        font-weight: bold;
+        margin: 18px;
+    }
+    .container {
+        border: 1px solid #707070;
+        form {
+            p {
+                font-weight: bold;
+                margin: 18px 18px 0 18px;
+            }
+            .input_area {
+                margin: 18px 18px 0 18px;
+            }
+            .signup_btn {
+                background-color: #0f0f0f;
+                color: #fff;
+                width: 222.5px;
+                margin: 18px;
+                height: 40px;
+                border: none;
+                cursor: pointer;
+                display: block;
+            }
+        }
+    }
+}
