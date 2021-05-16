@@ -262,6 +262,23 @@ $--tct-font--size-verySmall: 0.725rem;
     }
     .invite_menu {
         margin: 0 19px;
+
+        .invite_btn {
+            color: #fff;
+            background-color: $--tct-color-gray-5;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #fff;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $--tct-color-gray-6;
+                transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+            }
+        }
     }
 }
 

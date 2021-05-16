@@ -69,12 +69,6 @@ const useStyles = makeStyles({
         color: "#597ef7",
         borderColor: "#597ef7"
     },
-    inviteBtn: {
-        color: "#fff",
-        backgroundColor: "#707070",
-        fontWeight: "bold",
-        minWidth: "50px"
-    },
     paperWidth: {
         maxWidth: "400px"
     }
@@ -143,7 +137,6 @@ function AddUserMenu(props) {
 
 function InviteUser() {
     const [open, setOpen] = React.useState(false);
-    const classes = useStyles();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -155,9 +148,9 @@ function InviteUser() {
 
     return (
         <div className="invite_menu">
-            <Button variant="" onClick={handleClickOpen} className={classes.inviteBtn}>
+            <button className="invite_btn" onClick={handleClickOpen}>
                 +
-            </Button>
+            </button>
             <AddUserMenu open={open} onClose={handleClose} />
         </div>
     );
