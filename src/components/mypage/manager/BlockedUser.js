@@ -14,6 +14,15 @@ function BlockedUser({ isLogin, userType }) {
         >
             <h2 className="MyPage_h2">Blocked User</h2>
             <div className="project_area">
+            <thead className="Thead">
+              <tr>
+                <th className="Busername">Name</th>
+                <th className="Bid">ID</th>
+                <th className="Bemail">Email</th>
+                <th className="approve_btn"></th>
+                <th className="deny_btn"></th>
+              </tr>
+            </thead>
             <tbody className="requested_projects">
                 {userList.map((user, index) => (
                     <UserList key={index} user={user} />
@@ -69,9 +78,9 @@ function UserList({ user }) {
 
     return (
         <tr className="user_info">
-            <td className="username">{name}</td>
-            <td className="id">{id}</td>
-            <td className="email">{email}</td>
+            <td className="Busername">{name}</td>
+            <td className="Bid">{id}</td>
+            <td className="Bemail">{email}</td>
             <td className="approve_btn">
                 <button onClick={() => onRestore()} disabled={restoreBtn}>
                     Restore

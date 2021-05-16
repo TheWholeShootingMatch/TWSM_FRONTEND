@@ -12,6 +12,17 @@ function RequestedMessage({ isLogin, userType }) {
             isLogin={isLogin}
         >
             <h2 className="MyPage_h2">Requested Projects</h2>
+            <thead className="Thead">
+              <tr>
+                <th className="Rusername">Name</th>
+                <th className="Rtitle">Title</th>
+                <th className="Rdescription">Description</th>
+                <th className="Rdate">Date</th>
+                <th className="Rstatus">Status</th>
+                <th className="approve_btn"></th>
+                <th className="deny_btn"></th>
+              </tr>
+            </thead>
             <tbody className="requested_projects">
                 {requestedMessage.map((message, index) => (
                     <RequestedProject key={index} message={message} />
@@ -75,13 +86,13 @@ function RequestedProject({ message }) {
 
     return (
         <tr className="project_info">
-            <td className="username">{username}</td>
-            <td className="title">{title}</td>
-            <td className="description">{description}</td>
-            <td className="date">
+            <td className="Rusername">{username}</td>
+            <td className="Rtitle">{title}</td>
+            <td className="Rdescription">{description}</td>
+            <td className="Rdate">
                 {new Date(request_time).toLocaleDateString()}
             </td>
-            <td className="status">{newStatus}</td>
+            <td className="Rstatus">{newStatus}</td>
             <td className="approve_btn">
                 <button onClick={() => onApprove()} disabled={approveToggleBtn}>
                     approve
