@@ -15,7 +15,7 @@ function Overview({ isLogin, userType }) {
         return <Redirect to={{ pathname: "/login" }} />;
     }
     return (
-        <MyPage header="" isLogin={isLogin} user={userType}>
+        <MyPage isLogin={isLogin} user={userType}>
             <overviewContext.Provider value={userType}>
                 <OverviewPropjects />
             </overviewContext.Provider>
@@ -62,11 +62,11 @@ function ProjectForm({ mainTitle, projects }) {
     };
 
     return (
-        <article className="project_area">
+        <article className="overview_project_area">
             <h3 className="project_area_header">{mainTitle}</h3>
             <div>
                 {projects.map((project, index) => {
-                    if (index < 4 && sliceJson(project)) {
+                    if (index < 2 && sliceJson(project)) {
                         return (
                             <ShortBox
                                 project={sliceJson(project)}
@@ -89,7 +89,14 @@ function OverviewPropjects() {
 
     if (userType === "manager") {
         return (
-            <>
+            <div className="overview_wrap">
+            <div className="Profile_box">
+              <img src={personIcon} alt="personIcon" />
+              <h4>{user.name}</h4>
+              <p>{user.email}</p>
+              <p>{user._id}</p>
+              <button>Edit Profile</button>
+            </div>
                 <ProjectForm
                     mainTitle="requested project"
                     projects={requestedProject}
@@ -98,7 +105,7 @@ function OverviewPropjects() {
                     mainTitle="approved project"
                     projects={requestedProject}
                 />
-            </>
+            </div>
         );
     } else {
         return (

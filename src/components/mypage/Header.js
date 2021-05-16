@@ -43,11 +43,13 @@ export function MHeader() {
     return (
       <ul className="profile_nav">
           <li>
+              <img src={reqIcon} alt="reqIcon" />
               <NavLink to="/mypage/requested-message">
                   requested project
               </NavLink>
           </li>
           <li>
+              <img src={meIcon} alt="meIcon" />
               <NavLink to="/mypage/blocked-user">blocked user</NavLink>
           </li>
       </ul>

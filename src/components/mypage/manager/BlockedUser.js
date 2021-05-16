@@ -2,21 +2,24 @@ import React, { useState, useEffect } from "react";
 import ManagerPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 import axios from "axios";
+import "./BlockedUser.scss";
 
 function BlockedUser({ isLogin, userType }) {
     const [userList] = useFetch("/api/users/user-list");
 
     return (
         <ManagerPage
-            header="Requested project"
             user={userType}
             isLogin={isLogin}
         >
+            <h2 className="MyPage_h2">Blocked User</h2>
+            <div className="project_area">
             <tbody className="requested_projects">
                 {userList.map((user, index) => (
                     <UserList key={index} user={user} />
                 ))}
             </tbody>
+            </div>
         </ManagerPage>
     );
 }
