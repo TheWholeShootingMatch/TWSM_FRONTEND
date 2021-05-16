@@ -2,11 +2,14 @@
 .collaboration_wrapper {
     display: flex;
     height: 100vh;
-
+    justify-content: space-between;
+    width: 86%;
+    margin: 20px auto;
     .side_nav {
         width: 23%;
-        padding: 20px;
         box-sizing: border-box;
+        margin-top: 20px;
+
         .side_nav_item {
             width: 100%;
             margin-bottom: 25px;
@@ -18,8 +21,10 @@
     }
 
     main {
-        width: 77%;
         padding: 20px;
+        width: 75%;
+        margin-top: 20px;
+        padding: 0;
         box-sizing: border-box;
     }
 
