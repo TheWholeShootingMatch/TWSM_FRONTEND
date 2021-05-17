@@ -13,17 +13,18 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+
 import { FaCircle } from "react-icons/fa";
 
 const useStyles = makeStyles(() => ({
     inputField: {
-        minWidth: "250px"
+        minWidth: "300px"
     },
     selectField: {
         minWidth: "150px"
     },
     messageField: {
-        minWidth: "435px"
+        minWidth: "100%"
     },
     accordionField: {
         width: "80%",
@@ -31,16 +32,15 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-function Category({ handleChange }) {
+function Category({ handleChange, inputs }) {
+    console.log(inputs);
     const classes = useStyles();
     const [categorylist, setCategorylist] = useFetch("/api/category");
     return (
         <>
-            <InputLabel id="category">Category</InputLabel>
+            <InputLabel id="category">{typeof inputs === "undefined" ? "Select" : ""}</InputLabel>
             <Select labelId="category" onChange={handleChange} className={classes.selectField} name="category">
-                <MenuItem value="" disabled>
-                    Select
-                </MenuItem>
+                <MenuItem disabled>Select</MenuItem>
                 {categorylist.map((element, index) => (
                     <MenuItem value={element._id}>{element.name}</MenuItem>
                 ))}
@@ -103,7 +103,7 @@ function NewNote({ TcTnum }) {
                         </label>
                         <br />
                         <FormControl variant="outlined" size="small">
-                            <Category handleChange={handleChange} />{" "}
+                            <Category handleChange={handleChange} inputs={inputs["category"]} />{" "}
                         </FormControl>
                     </div>
                 </div>
@@ -120,6 +120,8 @@ function NewNote({ TcTnum }) {
                     onChange={handleChange}
                     size="small"
                     className={classes.messageField}
+                    multiline
+                    rows={5}
                 />
                 <button type="submit">save</button>
             </form>
@@ -258,7 +260,6 @@ function Contents() {
     const handleChange = e => {
         e.preventDefault();
         find.set(e.target.name, e.target.value);
-
         history.push(`/TctWorkflow/${TcTnum}?${find}`);
     };
 
@@ -267,7 +268,7 @@ function Contents() {
             <NewNote TcTnum={TcTnum} />
             <div className="category_area">
                 <FormControl variant="outlined" size="small">
-                    <Category handleChange={handleChange} />
+                    <Category handleChange={handleChange} inputs={findInput.category} />
                 </FormControl>
             </div>
             <div className="note_list">
