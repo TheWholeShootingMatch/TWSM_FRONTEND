@@ -44,7 +44,7 @@ function ProjectForm() {
                 withCredentials: true
             })
             .then(res => {
-                history.push(`/mypage/project`)
+                history.push(`/mypage/requested-project`)
             });
         setLoading(false);
     };
