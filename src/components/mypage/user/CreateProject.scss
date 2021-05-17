@@ -39,6 +39,14 @@ main {
 
 }
 
+.project_form::-webkit-scrollbar {
+    width: 5px; /*스크롤바의 너비*/
+}
+
+.project_form::-webkit-scrollbar-thumb {
+    background-color: #ffd321; /*스크롤바의 색상*/
+}
+
 .title input {
     width: 600px;
     height: 50px;

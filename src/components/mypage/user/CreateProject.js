@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import UserMyPage from "../common/MyPage";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 
 import "./CreateProject.scss";
@@ -32,6 +33,8 @@ function ProjectForm() {
         });
     };
 
+    let history = useHistory();
+
     const onSubmitForm = e => {
         e.preventDefault();
         setLoading(true);
@@ -41,7 +44,7 @@ function ProjectForm() {
                 withCredentials: true
             })
             .then(res => {
-                console.log(res.data);
+                history.push(`/mypage/project`)
             });
         setLoading(false);
     };

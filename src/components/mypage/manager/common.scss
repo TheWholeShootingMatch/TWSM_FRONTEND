@@ -1,0 +1,52 @@
+.requested_projects {
+
+  font-size: 20px;
+  width: 100%;
+
+  th, td {
+    padding: 20px 0 0;
+  }
+
+  tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  tr:last-of-type {
+    border-bottom: 2px solid #009879;
+  }
+
+  button {
+    padding: 10px 20px;;
+    background: white;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+
+  .approve_btn button {
+    border: 2px solid #31bd6b;
+    color : #31bd6b;
+  }
+
+  .deny_btn button {
+    border: 2px solid #ff0051;
+    color : #ff0051;
+  }
+
+  .deny_btn button:disabled, .approve_btn button:disabled {
+    color: #bfbfbf;
+    border: 2px solid #bfbfbf;
+  }
+}
+
+.approve_btn, .deny_btn {
+  width: 6%;
+  text-align: right;
+}
+
+.Thead tr th{
+  text-align: left;
+  padding: 20px 0px;
+  border-bottom: 1px solid grey;
+  font-weight: 600;
+  color : #5c5c5c;
+}
