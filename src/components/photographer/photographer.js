@@ -130,9 +130,7 @@ function GetPhotographer ({location, sort, skip, setPhotographerLeng, isLogin}) 
               </div>
               <div className="photographer_name">
                 <p>{elem.Name}</p>
-                {
-                  isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
-                }
+                <Like id={elem._id} isLogin={isLogin}/>
               </div>
             </div>
           );
@@ -142,7 +140,7 @@ function GetPhotographer ({location, sort, skip, setPhotographerLeng, isLogin}) 
   );
 }
 
-function Compcard() {
+function Compcard({isLogin}) {
   //for photographer info
   const photographerC = useContext(PhotographerContext);
 
@@ -169,9 +167,7 @@ function Compcard() {
         <div className="right_content">
         </div>
       </div>
-      <div className="like_btn_div">
-        <Like id={photographerC.photographer.id}/>
-      </div>
+      <Like id={photographerC.photographer.id} isLogin={isLogin}/>
       <Link className="view_more" to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
         View More
       </Link>
@@ -262,6 +258,7 @@ function Main() {
       <SideNav/>
 
       <GetPhotographer location={location} skip={skip} sort ={sort} setPhotographerLeng={setPhotographerLeng} isLogin={isLogin}/>
+      <Compcard isLogin={isLogin}/>
 
       <ul className="pageControll">
         {page}
@@ -314,7 +311,7 @@ function Photographer(props) {
 
       <PhotographerContext.Provider value={photographer}>
       <ModalContext.Provider value={bool}>
-        <Compcard />
+
         <Main />
       </ModalContext.Provider>
       </PhotographerContext.Provider>

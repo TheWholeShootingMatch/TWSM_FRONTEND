@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { CountryOption } from "../common/country";
+import { countries } from "../common/country";
 import Slider from "@material-ui/core/Slider";
 import "./Collaboration.scss";
 import Select from "@material-ui/core/Select";
@@ -102,7 +102,12 @@ function SideNav() {
                 <FormControl variant="filled" className={classes.item}>
                     <InputLabel id="country">Country</InputLabel>
                     <Select labelId="country" onChange={handleChange} name="country">
-                        <CountryOption />
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      {countries.map((elem, index) => (
+                        <MenuItem value={elem.name} key={index}>{elem.name}</MenuItem>
+                      ))}
                     </Select>
                 </FormControl>
             </div>

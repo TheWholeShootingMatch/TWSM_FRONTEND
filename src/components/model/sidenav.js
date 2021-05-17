@@ -90,7 +90,7 @@ function Height({find,history,location}) {
 
   return (
     <div className="height">
-      <h3>height</h3>
+      <h3>Height</h3>
       <HeightSlider
         value={value}
         onChange={handleChange}

@@ -145,9 +145,7 @@ function GetModel({location, sort, skip, setModelLeng, isLogin}) {
               </div>
               <div className="model_name">
                 <p>{elem.Name}</p>
-                {
-                  isLogin ? <Like id={elem._id} /> : <button className="like_btn">♡</button>
-                }
+                <Like id={elem._id} isLogin={isLogin}/>
               </div>
             </div>
           );
@@ -157,7 +155,7 @@ function GetModel({location, sort, skip, setModelLeng, isLogin}) {
   );
 }
 
-function Compcard() {
+function Compcard({isLogin}) {
   //for model info
   const modelC = useContext(ModelContext);
 
@@ -190,9 +188,7 @@ function Compcard() {
           </div>
         </div>
       </div>
-      <div className="like_btn_div">
-        <Like id={modelC.model._id}/>
-      </div>
+      <Like id={modelC.model._id} isLogin={isLogin}/>
       <Link className="view_more" to={`/model/Model_Detail/${modelC.model._id}`}>
         View More
       </Link>
@@ -284,6 +280,7 @@ function Main() {
       <SideNav/>
 
       <GetModel location={location} skip={skip} sort ={sort} setModelLeng={setModelLeng} isLogin={isLogin} />
+      <Compcard isLogin={isLogin}/>
 
       <ul className="pageControll">
         {page}
@@ -340,7 +337,6 @@ function Model(props) {
 
       <ModelContext.Provider value={model}>
       <ModalContext.Provider value={bool}>
-        <Compcard />
         <Main />
       </ModalContext.Provider>
       </ModelContext.Provider>

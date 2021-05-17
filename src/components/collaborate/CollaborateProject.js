@@ -39,6 +39,10 @@ function param({ find, sort }) {
         findInput.height_min = { $gte: heightMin, $lt: heightMax };
     }
 
+    if (find.get("country") != null  && find.get("country") !== "") {
+      findInput.country = find.get("country");
+    }
+
     if (find.get("category") === "M") {
         findInput.model = true;
     } else if (find.get("category") === "P") {
@@ -87,10 +91,12 @@ function CollaborateProject({ isLogin }) {
     const pageCollaboration = paginate(collaborationProjects, currentPage, pageSize);
 
     const handlePageChange = page => {
-        if (0 < page < collaborationProjects.length / pageSize + 1) {
-            history.push(`/collaboration/project/${page}/${sort}`);
-            console.log(currentPage);
-        }
+      if (page !== 0 && page < collaborationProjects.length / pageSize + 1) {
+        history.push(`/collaboration/project/${page}/${sort}`);
+      }
+      else {
+        console.log("page length error");
+      }
     };
 
     const handleChange = e => {
@@ -164,7 +170,7 @@ function Pagination({ projectSize, pageSize, currentPage, onPageChange }) {
         <div>
             <ul className="pagination">
                 <li className="page-item">
-                    <Link onClick={() => onPageChange(currentPage - 1)}>prev</Link>
+                    <Link onClick={() => onPageChange(Number(currentPage) - 1)}>prev</Link>
                 </li>
                 {pages.map(page => (
                     <li key={page} className="page-item">
@@ -174,7 +180,7 @@ function Pagination({ projectSize, pageSize, currentPage, onPageChange }) {
                     </li>
                 ))}
                 <li className="page-item">
-                    <Link onClick={() => onPageChange(currentPage + 1)}>next</Link>
+                    <Link onClick={() => onPageChange(Number(currentPage) + 1)}>next</Link>
                 </li>
             </ul>
         </div>

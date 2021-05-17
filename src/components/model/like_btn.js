@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
-export function Like({id}){
+export function Like({id, isLogin}){
 
   //세션 로그인 정보로 유저의 fav에 해당 모델이 있는지 컴색해보고 렌더링
   const [check, setCheck] = useState([]);
@@ -38,12 +39,31 @@ export function Like({id}){
     setCheck(false);
   };
 
-  if (check) {
-    return <button className="like_btn" onClick={() => handleDel()}>♥</button>
+  if(isLogin) {
+    if (check) {
+      return (
+        <div className="like_btn_div check">
+          <button className="like_btn check" onClick={() => handleDel()}>like</button>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div className="like_btn_div">
+          <button className="like_btn" onClick={() => handlePush()}>like</button>
+        </div>
+      )
+    }
   }
   else {
-    return <button className="like_btn" onClick={() => handlePush()}>♡</button>
+    return (
+      <div className="like_btn_div">
+        <button className="like_btn" onClick={() => handlePush()}><Link className="like_btn" to="/login">like</Link></button>
+      </div>
+    )
   }
+
+
 }
 
 export default Like;
