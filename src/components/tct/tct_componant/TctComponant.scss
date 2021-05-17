@@ -288,14 +288,14 @@ $--tct-font--size-verySmall: 0.725rem;
     background-color: #ececec;
     padding: 30px;
 
+    form {
+        width: 50%;
+    }
     .note_upper {
         display: flex;
         align-items: center;
         margin-bottom: 30px;
-
-        div:first-of-type {
-            margin-right: 30px;
-        }
+        justify-content: space-between;
     }
 
     .main_label {
