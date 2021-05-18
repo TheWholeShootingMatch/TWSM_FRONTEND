@@ -1,11 +1,12 @@
+@import "../../variable.scss";
+
 header.main_header {
     height: 100px;
     width: auto;
     position: inherit;
     z-index: 1;
     display: block;
-    border-bottom-width: thin;
-    border-bottom-color: black;
+    border-bottom: 1px solid $--tct-color-gray-3;
 
     a {
         float: left;
