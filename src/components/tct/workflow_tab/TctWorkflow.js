@@ -33,12 +33,21 @@ const useStyles = makeStyles(() => ({
 }));
 
 function Category({ handleChange, inputs }) {
-    console.log(inputs);
     const classes = useStyles();
     const [categorylist, setCategorylist] = useFetch("/api/category");
+    let contentsFieldCategory = "";
+
+    for (let elem of categorylist) {
+        if (elem._id === inputs) {
+            contentsFieldCategory = elem.name;
+        }
+    }
+
     return (
         <>
-            <InputLabel id="category">{typeof inputs === "undefined" ? "Select" : ""}</InputLabel>
+            <InputLabel id="category" shrink={false}>
+                {typeof inputs === "undefined" ? "Select" : contentsFieldCategory}
+            </InputLabel>
             <Select labelId="category" onChange={handleChange} className={classes.selectField} name="category">
                 <MenuItem disabled>Select</MenuItem>
                 {categorylist.map((element, index) => (
@@ -57,8 +66,6 @@ function NewNote({ TcTnum }) {
 
     const handleChange = e => {
         const { value, name } = e.target;
-        console.log(name, value);
-
         setInputs({
             ...inputs,
             [name]: value
@@ -261,6 +268,7 @@ function Contents() {
         e.preventDefault();
         find.set(e.target.name, e.target.value);
         history.push(`/TctWorkflow/${TcTnum}?${find}`);
+        console.log(findInput);
     };
 
     return (
