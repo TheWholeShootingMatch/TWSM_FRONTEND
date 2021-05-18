@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import ManagerPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 import axios from "axios";
+import "./RequestedMessage.scss";
+import "./common.scss";
 
 function RequestedMessage({ isLogin, userType }) {
     const [requestedMessage] = useFetch("/api/project");
@@ -12,22 +14,24 @@ function RequestedMessage({ isLogin, userType }) {
             isLogin={isLogin}
         >
             <h2 className="MyPage_h2">Requested Projects</h2>
-            <thead className="Thead">
-              <tr>
-                <th className="Rusername">Name</th>
-                <th className="Rtitle">Title</th>
-                <th className="Rdescription">Description</th>
-                <th className="Rdate">Date</th>
-                <th className="Rstatus">Status</th>
-                <th className="approve_btn"></th>
-                <th className="deny_btn"></th>
-              </tr>
-            </thead>
-            <tbody className="requested_projects">
-                {requestedMessage.map((message, index) => (
-                    <RequestedProject key={index} message={message} />
-                ))}
-            </tbody>
+            <div className="project_area">
+              <thead className="Thead">
+                <tr>
+                  <th className="Rusername">Name</th>
+                  <th className="Rtitle">Title</th>
+                  <th className="Rdescription">Description</th>
+                  <th className="Rdate">Date</th>
+                  <th className="Rstatus">Status</th>
+                  <th className="approve_btn"></th>
+                  <th className="deny_btn"></th>
+                </tr>
+              </thead>
+              <tbody className="requested_projects">
+                  {requestedMessage.map((message, index) => (
+                      <RequestedProject key={index} message={message} />
+                  ))}
+              </tbody>
+            </div>
         </ManagerPage>
     );
 }

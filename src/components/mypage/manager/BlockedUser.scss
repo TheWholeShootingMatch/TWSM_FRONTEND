@@ -1,54 +1,7 @@
-.requested_projects {
-
-  font-size: 20px;
-  width: 100%;
-
-  th, td {
-    padding: 20px 0 0;
-  }
-
-  tr {
-    border-bottom: 1px solid #dddddd;
-  }
-
-  tr:last-of-type {
-    border-bottom: 2px solid #009879;
-  }
-
-  button {
-    padding: 10px 20px;;
-    background: white;
-    border-radius: 10px;
-  }
-
-  .approve_btn button {
-    border: 2px solid #00cf48;
-    color : #00cf48;
-    font-weight: bold;
-  }
-
-  .deny_btn button {
-    border: 2px solid #ff0051;
-    color : #ff0051;
-    font-weight: bold;
-  }
-}
-
-.Thead tr th{
-  text-align: left;
-  padding: 20px 0px;
-  border-bottom: 1px solid grey;
-}
-
 .Busername, .Bid {
   width: 15%;
 }
 
 .Bemail {
   width: 50%;
-}
-
-.approve_btn, .deny_btn {
-  padding: 0px;
-  width: 10%;
 }

@@ -82,3 +82,11 @@
   height: 85%;
   overflow-y: scroll;
 }
+
+.project_area::-webkit-scrollbar {
+    width: 5px; /*스크롤바의 너비*/
+}
+
+.project_area::-webkit-scrollbar-thumb {
+    background-color: black; /*스크롤바의 색상*/
+}
