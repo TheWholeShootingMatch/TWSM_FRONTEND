@@ -4,6 +4,10 @@ div#wrapper {
     background-position: top right;
     background-size: contain;
     height: 100vh;
+
+    header {
+        border: none;
+    }
 }
 
 div#wrapper header.main_header div.header_nav_right a {
