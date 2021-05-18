@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 import TextField from "@material-ui/core/TextField";
-import logo from "../common/logo.png";
-import Header from "../common/header";
+import logo from "../tct/tct_componant/TWSM_logo.png";
 import "./login.scss";
 
 export function Logout({ setIsLogin, setUserType }) {
@@ -76,10 +75,11 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
     } else {
         return (
             <>
-                <Header isLogin={false} />
                 <div className="login_wrapper">
                     <main>
-                        <h2>Sign in to TWSM</h2>
+                        <Link to="/" className="login_logo">
+                            <img src={logo} alt="TWSM_LOGO" />
+                        </Link>
                         <div className="container">
                             <form onSubmit={onSubmit}>
                                 <TextField

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
-import Header from "../common/header";
+import logo from "../tct/tct_componant/TWSM_logo.png";
 import TextField from "@material-ui/core/TextField";
 import "./signup.scss";
 
@@ -63,10 +63,11 @@ function Signup() {
     } else {
         return (
             <>
-                <Header isLogin={false} />
                 <div className="signup_wrapper">
                     <main>
-                        <h2>Sign up to TWSM</h2>
+                        <Link to="/" className="login_logo">
+                            <img src={logo} alt="TWSM_logo" />
+                        </Link>
                         <div className="container">
                             <form onSubmit={onSubmit}>
                                 <p>ID</p>

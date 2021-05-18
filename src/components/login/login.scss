@@ -1,39 +1,53 @@
 @import "../../variable.scss";
 
 .login_wrapper {
+    height: 100vh;
     display: flex;
     justify-content: center;
+    justify-items: center;
+    align-items: center;
+    background-color: #ececec;
 
-    h2 {
-        text-align: center;
-        font-weight: bold;
-        margin: 18px;
-    }
-    .container {
-        border: 1px solid #707070;
-        form {
-            .id_area,
-            .pw_area {
-                display: block;
-                margin: 18px;
-            }
-            .login_btn {
-                background-color: #0f0f0f;
-                color: #fff;
-                width: 225px;
-                margin: 0 18px;
-                height: 40px;
-                border: none;
-                cursor: pointer;
+    main {
+        .login_logo {
+            display: block;
+            text-align: center;
+            margin-bottom: 25px;
+            img {
+                width: 68%;
             }
         }
-        .signup_btn {
-            margin: 18px;
-            a {
-                color: $--tct-color-yellow-6;
-                font-weight: bold;
-                &:hover {
-                    text-decoration: underline;
+        .container {
+            background-color: #fff;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            padding: 13px;
+
+            form {
+                .id_area,
+                .pw_area {
+                    display: block;
+                    margin: 18px;
+                }
+                .login_btn {
+                    background-color: #0f0f0f;
+                    color: #fff;
+                    width: 225px;
+                    margin: 0 18px;
+                    height: 40px;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 4px;
+                }
+            }
+            .signup_btn {
+                margin: 18px;
+                color: $--tct-color-gray-6;
+                a {
+                    color: $--tct-color-yellow-6;
+                    font-weight: bold;
+                    &:hover {
+                        text-decoration: underline;
+                    }
                 }
             }
         }
