@@ -313,10 +313,7 @@ export const setToolOption = (type, canvas) => {
         canvas.selection = true;
         canvas.isDrawingMode = false;
         changeStatus(true, canvas);
-        // canvas.off("mouse:down");
-        canvas.on("mouse:down", function (o) {
-            mouseDown(o, canvas);
-        });
+        canvas.off("mouse:down");
         canvas.off("mouse:move");
         canvas.off("mouse:up");
         canvas.on("object:moving", function (o) {
