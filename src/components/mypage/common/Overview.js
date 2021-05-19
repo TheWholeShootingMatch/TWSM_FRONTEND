@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import MyPage from "./MyPage";
 import { useFetch } from "../../common/useFetch";
+import { useHistory } from "react-router-dom";
 import personIcon from "../Icons/person.png";
 import axios from "axios";
 
@@ -28,24 +29,22 @@ function ShortBox(project, mainTitle) {
     const date = new Date(request_time);
 
     return (
-        <div className="box_short">
-          <div className="box_short_left">
-            <h4>{title}</h4>
-            <p>
-                {date.getDate() +
-                    "/" +
-                    date.getMonth() +
-                    "/" +
-                    date.getFullYear()}
-            </p>
-          </div>
-          <button onClick={() => window.open(`/whiteboard/${_id}`, "_blank")}>open</button>
+        <div className="box_short_left">
+          <h4>{title}</h4>
+          <p>
+              {date.getDate() +
+              "/" +
+              date.getMonth() +
+              "/" +
+              date.getFullYear()}
+          </p>
         </div>
     );
 }
 
 function ProjectForm({ mainTitle, projects }) {
     const userType = useContext(overviewContext);
+    let history = useHistory();
 
     const sliceJson = project => {
         if (project) {
@@ -61,23 +60,73 @@ function ProjectForm({ mainTitle, projects }) {
         }
     };
 
-    return (
-        <article className="overview_project_area">
-            <h3 className="project_area_header">{mainTitle}</h3>
-            <div>
+    if (userType === "manager") {
+      return (
+          <article className="overview_project_area">
+              <h3 className="project_area_header">{mainTitle}</h3>
+              <div>
+                  {projects.map((project, index) => {
+                      if (index < 2 && sliceJson(project)) {
+                          return (
+                            <div className="box_short">
+                              <ShortBox
+                                project={sliceJson(project)}
+                                mainTitle={mainTitle}
+                              />
+                              <button onClick={() => history.push(`/mypage/requested-message`)}>view</button>
+                            </div>
+                          );
+                      }
+                  })}
+              </div>
+          </article>
+      );
+    }
+
+    if (mainTitle === "requested project") {
+      return (
+          <article className="overview_project_area">
+              <h3 className="project_area_header">{mainTitle}</h3>
+              <div>
+                  {projects.map((project, index) => {
+                      if (index < 2 && sliceJson(project)) {
+                          return (
+                            <div className="box_short">
+                              <ShortBox
+                                project={sliceJson(project)}
+                                mainTitle={mainTitle}
+                              />
+                              <button onClick={() => history.push(`/mypage/requested-project`)}>view</button>
+                            </div>
+                          );
+                      }
+                  })}
+              </div>
+          </article>
+      );
+    }
+    else {
+      return (
+          <article className="overview_project_area">
+              <h3 className="project_area_header">{mainTitle}</h3>
+              <div>
                 {projects.map((project, index) => {
                     if (index < 2 && sliceJson(project)) {
                         return (
+                          <div className="box_short">
                             <ShortBox
-                                project={sliceJson(project)}
-                                mainTitle={mainTitle}
+                              project={sliceJson(project)}
+                              mainTitle={mainTitle}
                             />
+                            <button onClick={() => window.open(`/whiteboard/${sliceJson(project)._id}`, "_blank")}>open</button>
+                          </div>
                         );
                     }
                 })}
-            </div>
-        </article>
-    );
+              </div>
+          </article>
+      );
+    }
 }
 
 function OverviewPropjects() {
