@@ -42,7 +42,7 @@ function NotificationTable({ notification }) {
 
     return (
         <tr className="message">
-            <td className="msg_checked">{status ? "안 읽음" : "읽음"}</td>
+            <td className="msg_checked">{status ? "unread" : "read"}</td>
             <td className="sender">{sender}</td>
             <td className="title">
                 <Link to={`/notification/notification_Detail/${_id}`}>
