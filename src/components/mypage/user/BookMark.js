@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import UserMyPage from "../common/MyPage";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
-
+import { HiOutlineMail } from "react-icons/hi";
+import { FaInstagram } from "react-icons/fa";
 import "./BookMark.scss";
 
 function BookMark({ isLogin }) {
@@ -41,20 +42,14 @@ function BookMarkArea() {
             body: JSON.stringify({ skipNum, category })
         });
         const result = await getBookmarkList.json();
-        const filterResult =
-            category === "model"
-                ? result[0].fav_models
-                : result[0].fav_photographers;
+        const filterResult = category === "model" ? result[0].fav_models : result[0].fav_photographers;
         console.log(category, result, bookmarkList);
         setBookmarkList([...bookmarkList, ...filterResult]);
     };
 
     const onScroll = () => {
         const { documentElement, body } = window.document;
-        const scrollHeight = Math.max(
-            documentElement.scrollHeight,
-            body.scrollHeight
-        );
+        const scrollHeight = Math.max(documentElement.scrollHeight, body.scrollHeight);
         const scrollTop = Math.max(documentElement.scrollTop, body.scrollTop);
         const clientHeight = documentElement.clientHeight;
 
@@ -78,14 +73,10 @@ function BookMarkArea() {
             <div className="bookmark_area_header">
                 <ul>
                     <li onClick={() => onClickCategory("model")}>
-                        <span className={isActive.model ? "active" : ""}>
-                            model
-                        </span>
+                        <span className={isActive.model ? "active" : ""}>model</span>
                     </li>
                     <li onClick={() => onClickCategory("photographer")}>
-                        <span className={isActive.photographer ? "active" : ""}>
-                            photographer
-                        </span>
+                        <span className={isActive.photographer ? "active" : ""}>photographer</span>
                     </li>
                 </ul>
             </div>
@@ -108,11 +99,8 @@ const useStyles = makeStyles(theme => ({
         width: "fit-content",
         height: "fit-content",
         backgroundColor: theme.palette.background.paper,
-        border: "2px solid #000",
         boxShadow: theme.shadows[5],
-        padding: "24px",
-        display: "flex",
-        justifyContent: "space-between"
+        padding: "20px"
     }
 }));
 
@@ -130,24 +118,45 @@ function BookmarkModal({ list }) {
 
     const body = (
         <div className={classes.paper}>
-            <article className="bm_profile_main">
-                <img src={list.profile_img} alt={list.Name} />
-                <p>Name : {list.Name}</p>
-                <p>email : {list.email}</p>
-                <p>instagram : {list.instagram}</p>
-            </article>
-            <article className="bm_profile_sub">
-                <p>Age : {list.Age}</p>
-                <p>Gender : {list.Gender}</p>
-                <p>Busto : {list.Busto}</p>
-                <p>Cintura : {list.Cintura}</p>
-                <p>height : {list.height}</p>
-                <p>Quadril : {list.Quadril}</p>
-                <p>career : {list.career}</p>
-                <p>country : {list.country}</p>
-                <p>locations : {list.locations}</p>
-                <p>self_introduction : {list.self_introduction}</p>
-            </article>
+            <div className="bm_profile_wrapper">
+                <h1>{list.Name}</h1>
+                <div className="bm_profile">
+                    <article className="bm_profile_img">
+                        <img src={list.profile_img} alt={list.Name} />
+                    </article>
+                    <article className="bm_profile_info">
+                        <h2>
+                            AGE <span>{list.Age}</span>
+                        </h2>
+                        <h2>
+                            GENDER <span>{list.Gender}</span>
+                        </h2>
+                        <h2>
+                            BUSTO <span>{list.Busto}</span>
+                        </h2>
+                        <h2>
+                            CINTURA <span>{list.Cintura}</span>
+                        </h2>
+                        <h2>
+                            HEIGHT <span>{list.height}</span>
+                        </h2>
+                        <h2>
+                            QUADRIL <span>{list.Quadril}</span>
+                        </h2>
+                        <h2>COUNTRY</h2>
+                        <p>{list.country}</p>
+                        <h2>CONTACT</h2>
+                        <p>
+                            <HiOutlineMail />
+                            <span>{list.email}</span>
+                        </p>
+                        <p>
+                            <FaInstagram />
+                            <span>{list.instagram}</span>
+                        </p>
+                    </article>
+                </div>
+            </div>
         </div>
     );
 
