@@ -189,7 +189,7 @@ function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
 function Main() {
     let location = useLocation();
     let history = useHistory();
-    const { skip } = useParams();
+    const { skip,TcTnum } = useParams();
 
     //for page
     const page = [];
@@ -203,7 +203,7 @@ function Main() {
             <li
                 key={-1}
                 onClick={() => {
-                    history.push(`/TctPhotographer/${skip * 1 - 1}`);
+                    history.push(`/TctPhotographer/${skip * 1 - 1}/${TcTnum}`);
                 }}
             >
                 prev
@@ -220,7 +220,7 @@ function Main() {
                     key={i}
                     onClick={() => {
                         history.push(
-                            `/TctPhotographer/${pageSet * pageNum + i}`
+                            `/TctPhotographer/${pageSet * pageNum + i}/${TcTnum}`
                         );
                     }}
                 >
@@ -233,7 +233,7 @@ function Main() {
                     key={i}
                     onClick={() => {
                         history.push(
-                            `/TctPhotographer/${pageSet * pageNum + i}`
+                            `/TctPhotographer/${pageSet * pageNum + i}/${TcTnum}`
                         );
                     }}
                 >
@@ -247,7 +247,7 @@ function Main() {
         <li
             key={100}
             onClick={() => {
-                history.push(`/TctPhotographer/${skip * 1 + 1}`);
+                history.push(`/TctPhotographer/${skip * 1 + 1}/${TcTnum}`);
             }}
         >
             next
@@ -255,7 +255,7 @@ function Main() {
     );
 
     const handleChange = e => {
-        history.push(`/TctPhotographer/${skip}`);
+        history.push(`/TctPhotographer/${skip}/${TcTnum}`);
     };
 
     // for selected list

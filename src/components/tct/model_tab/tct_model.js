@@ -203,7 +203,7 @@ function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
 function Main() {
     let location = useLocation();
     let history = useHistory();
-    const { skip } = useParams();
+    const { skip,TcTnum } = useParams();
 
     //for page
     const page = [];
@@ -217,7 +217,7 @@ function Main() {
             <li
                 key={-1}
                 onClick={() => {
-                    history.push(`/TctModel/${skip * 1 - 1}`);
+                    history.push(`/TctModel/${skip * 1 - 1}/${TcTnum}`);
                 }}
             >
                 prev
@@ -233,7 +233,7 @@ function Main() {
                 <li
                     key={i}
                     onClick={() => {
-                        history.push(`/TctModel/${pageSet * pageNum + i}`);
+                        history.push(`/TctModel/${pageSet * pageNum + i}/${TcTnum}`);
                     }}
                 >
                     <b>{pageSet * pageNum + i + 1}</b>
@@ -244,7 +244,7 @@ function Main() {
                 <li
                     key={i}
                     onClick={() => {
-                        history.push(`/TctModel/${pageSet * pageNum + i}`);
+                        history.push(`/TctModel/${pageSet * pageNum + i}/${TcTnum}`);
                     }}
                 >
                     {pageSet * pageNum + i + 1}
@@ -257,7 +257,7 @@ function Main() {
         <li
             key={100}
             onClick={() => {
-                history.push(`/TctModel/${skip * 1 + 1}`);
+                history.push(`/TctModel/${skip * 1 + 1}/${TcTnum}`);
             }}
         >
             next
