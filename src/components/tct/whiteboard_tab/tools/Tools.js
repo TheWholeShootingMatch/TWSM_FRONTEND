@@ -37,6 +37,7 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
             });
             uploadedImg.id = id;
             externalCanvas.centerObject(uploadedImg);
+            externalCanvas.add(uploadedImg);
             const jsonObject = JSON.stringify(uploadedImg);
             const yArray = new Y.Array();
             const drawElement = new Y.Map();
@@ -102,10 +103,8 @@ export const mouseDown = (o, canvas) => {
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
-        console.log("add text", textbox);
         canvas.add(textbox);
         drawElement.set("type", "text");
-
         canvas.setActiveObject(textbox);
         textbox.enterEditing();
         canvas.renderAll();
@@ -190,7 +189,6 @@ export const changeStatus = (value, canvas) => {
 export const objectModified = o => {
     if (o.target) {
         let actObj = o.target;
-        console.log("object modified", actObj.text);
         shared.coordinate.push([
             {
                 id: actObj.id,
@@ -238,7 +236,6 @@ export const afterObjectModified = o => {
                 }
             }
         });
-        console.log("emitlastDoc");
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
         shared.emitYDoc(encodeDoc, "modifiedObj");
     }
@@ -250,8 +247,6 @@ export const deleteObject = () => {
         const actObjId =
             typeof actObj._objects === "undefined" ? [actObj.id] : actObj._objects.map(object => object.id);
 
-        console.log(actObjId);
-
         shared.doc.transact(() => {
             actObjId.map(id => {
                 shared.drawingContent.get().forEach((drawElement, index) => {
@@ -260,12 +255,6 @@ export const deleteObject = () => {
                         const parseObject = JSON.parse(options);
                         if (typeof parseObject !== "undefined") {
                             if (parseObject.id === id) {
-                                console.log(
-                                    index,
-                                    drawElement,
-                                    shared.drawingContent.get()._length,
-                                    shared.drawingContent.get().toArray()
-                                );
                                 shared.drawingContent.get().delete(index, 1);
                             }
                         }

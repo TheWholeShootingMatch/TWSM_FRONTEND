@@ -49,8 +49,22 @@ export default function Canvas({ activeSlide }) {
     shared.drawingContent.get().observe(function (event) {
         if (canvas) {
             if (needTodraw) {
-                console.log(event);
-                onCanvasUpdate(event.changes.delta, canvas);
+                const newObject = event.changes.delta;
+                newObject.forEach(drawElements => {
+                    if (drawElements.insert) {
+                        drawElements.insert.forEach(drawElement => {
+                            const options = drawElement.get("options").toArray()[0];
+                            if (options) {
+                                const parseFigure = JSON.parse(options);
+                                if (getObjectById(parseFigure.id, canvas) === false) {
+                                    onCanvasUpdate(event.changes.delta, canvas);
+                                }
+                            }
+                        });
+                    } else if (drawElements.delete) {
+                        onCanvasUpdate(event.changes.delta, canvas);
+                    }
+                });
             } else {
                 needTodraw = true;
             }
@@ -83,8 +97,7 @@ export default function Canvas({ activeSlide }) {
     const updateObject = (yaEvent, canvas) => {
         if (canvas) {
             const activeObj = getObjectById(yaEvent.id, canvas);
-            console.log("update object", activeObj);
-            if (typeof activeObj !== "undefined") {
+            if (activeObj) {
                 if (activeObj.type === "textbox") {
                     activeObj.text = yaEvent.text;
                 }
@@ -112,16 +125,19 @@ export default function Canvas({ activeSlide }) {
 }
 
 export const getObjectById = (id, canvas) => {
+    let result = false;
     for (let i = 0; i < canvas._objects.length; i++) {
         if (canvas._objects[i].id === id) {
-            console.log("true");
+            result = true;
             return canvas._objects[i];
         }
+    }
+    if (result === false) {
+        return result;
     }
 };
 
 export const onCanvasUpdate = (newObject, canvas) => {
-    console.log(newObject);
     newObject.forEach(drawElements => {
         if (drawElements.insert) {
             drawElements.insert.forEach(drawElement => {
@@ -130,7 +146,7 @@ export const onCanvasUpdate = (newObject, canvas) => {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseFigure = JSON.parse(options);
-                        if (!getObjectById(parseFigure.id, canvas)) {
+                        if (getObjectById(parseFigure.id, canvas) === false) {
                             const circle = new fabric.Circle(parseFigure);
                             circle.selectable = false;
                             circle.evented = false;
@@ -144,7 +160,8 @@ export const onCanvasUpdate = (newObject, canvas) => {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseFigure = JSON.parse(options);
-                        if (!getObjectById(parseFigure.id, canvas)) {
+                        if (getObjectById(parseFigure.id, canvas) === false) {
+                            console.log("here");
                             const textbox = new fabric.Textbox("", parseFigure);
                             textbox.selectable = false;
                             textbox.evented = false;
@@ -158,7 +175,7 @@ export const onCanvasUpdate = (newObject, canvas) => {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseImage = JSON.parse(options);
-                        if (!getObjectById(parseImage.id, canvas)) {
+                        if (getObjectById(parseImage.id, canvas) === false) {
                             let img = new Image();
                             img.src = parseImage.src;
                             img.onload = function () {
@@ -185,7 +202,7 @@ export const onCanvasUpdate = (newObject, canvas) => {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseOptions = JSON.parse(options);
-                        if (!getObjectById(parseOptions.id, canvas)) {
+                        if (getObjectById(parseOptions.id, canvas) === false) {
                             const paths = parseOptions.path;
                             const drawing = new fabric.Path(paths, parseOptions);
                             drawing.id = parseOptions.id;
@@ -209,7 +226,6 @@ export const onCanvasUpdate = (newObject, canvas) => {
 
             const canvasObjects = canvas.getObjects();
             const deletedObject = canvasObjects.filter(obj => currentObjectIds.includes(obj.id) === false);
-            console.log(currentObjectIds, deletedObject);
             canvas.remove(...deletedObject);
         }
     });
