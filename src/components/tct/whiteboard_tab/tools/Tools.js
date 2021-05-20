@@ -65,7 +65,6 @@ export const mouseDown = (o, canvas) => {
     drawElement = new Y.Map();
     if (currentType === "drawing") {
         isDown = true;
-        canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.color = "#000";
         canvas.freeDrawingBrush.width = 4;
         drawElement.set("type", "drawing");
@@ -165,15 +164,6 @@ export const mouseUp = (o, canvas) => {
         isDown = false;
         if (currentType === "text" || currentType === "figure") {
             getObject(o);
-        } else if (currentType === "drawing") {
-            let pointer = canvas.getPointer(o.e);
-            sharedLine.push([
-                {
-                    x: pointer.x,
-                    y: pointer.y,
-                    event: "up"
-                }
-            ]);
         }
     }
 };
@@ -278,7 +268,11 @@ export const setToolOption = (type, canvas) => {
         canvas.toggleDragMode(false);
         canvas.discardActiveObject();
         canvas.selection = false;
-        canvas.isDrawingMode = false;
+        if (type === "drawing") {
+            canvas.isDrawingMode = true;
+        } else {
+            canvas.isDrawingMode = false;
+        }
         changeStatus(false, canvas);
         canvas.off("object:moving");
         canvas.off("object:scaling");
@@ -305,6 +299,7 @@ export const setToolOption = (type, canvas) => {
         canvas.off("mouse:down");
         canvas.off("mouse:move");
         canvas.off("mouse:up");
+        canvas.off("path:created");
         canvas.on("object:moving", function (o) {
             objectModified(o);
         });
