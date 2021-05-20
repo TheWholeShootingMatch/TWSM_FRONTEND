@@ -43,14 +43,7 @@ const YelllowCheckbox = withStyles({
 })(props => <Checkbox color="default" {...props} />);
 
 // photographer listing
-function GetPhotographer({
-    location,
-    skip,
-    setPhotographerLeng,
-    sendSelectedList,
-    TcTnum,
-    selectedDBId
-}) {
+function GetPhotographer({ location, skip, setPhotographerLeng, sendSelectedList, TcTnum, selectedDBId }) {
     let skipInput = 0;
     let limitInput = postNum * pageNum;
 
@@ -104,10 +97,7 @@ function GetPhotographer({
     return (
         <div className="profile_list">
             {photographerlist.map((elem, index) => {
-                if (
-                    indexLow * postNum <= index &&
-                    index < indexLow * postNum + postNum
-                ) {
+                if (indexLow * postNum <= index && index < indexLow * postNum + postNum) {
                     return (
                         <Compcard
                             elem={elem}
@@ -157,13 +147,7 @@ function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
                 <h2>{elem.Name}</h2>
                 <FormControlLabel
                     style={{ margin: "0" }}
-                    control={
-                        <YelllowCheckbox
-                            checked={checked}
-                            onChange={handleChange}
-                            name="checkedG"
-                        />
-                    }
+                    control={<YelllowCheckbox checked={checked} onChange={handleChange} name="checkedG" />}
                 />
             </div>
             <div className="profile_wrapper">
@@ -189,7 +173,7 @@ function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
 function Main() {
     let location = useLocation();
     let history = useHistory();
-    const { skip,TcTnum } = useParams();
+    const { skip, TcTnum } = useParams();
 
     //for page
     const page = [];
@@ -219,9 +203,7 @@ function Main() {
                 <li
                     key={i}
                     onClick={() => {
-                        history.push(
-                            `/TctPhotographer/${pageSet * pageNum + i}/${TcTnum}`
-                        );
+                        history.push(`/TctPhotographer/${pageSet * pageNum + i}/${TcTnum}`);
                     }}
                 >
                     <b>{pageSet * pageNum + i + 1}</b>
@@ -232,9 +214,7 @@ function Main() {
                 <li
                     key={i}
                     onClick={() => {
-                        history.push(
-                            `/TctPhotographer/${pageSet * pageNum + i}/${TcTnum}`
-                        );
+                        history.push(`/TctPhotographer/${pageSet * pageNum + i}/${TcTnum}`);
                     }}
                 >
                     {pageSet * pageNum + i + 1}
@@ -259,7 +239,6 @@ function Main() {
     };
 
     // for selected list
-    const { TcTnum } = useParams();
     const { selectedList, sendSelectedList } = useSocket(TcTnum);
     const [selectedStatus, setSelectedStatus] = useState(false);
     const [selectedDB, setSelectedDB] = useState([]);
@@ -293,11 +272,7 @@ function Main() {
         <main>
             <div
                 className="selected_area"
-                style={
-                    selectedStatus
-                        ? { border: "1px solid #ebebeb" }
-                        : { border: "none" }
-                }
+                style={selectedStatus ? { border: "1px solid #ebebeb" } : { border: "none" }}
             >
                 <h2>Choose your photographer</h2>
 

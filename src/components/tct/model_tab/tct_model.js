@@ -47,14 +47,7 @@ const YelllowCheckbox = withStyles({
 })(props => <Checkbox color="default" {...props} />);
 
 // model listing
-function GetModel({
-    location,
-    skip,
-    setModelLeng,
-    sendSelectedList,
-    TcTnum,
-    selectedDBId
-}) {
+function GetModel({ location, skip, setModelLeng, sendSelectedList, TcTnum, selectedDBId }) {
     let skipInput = 0;
     let limitInput = postNum * pageNum;
 
@@ -109,10 +102,7 @@ function GetModel({
     return (
         <div className="profile_list">
             {modellist.map((elem, index) => {
-                if (
-                    indexLow * postNum <= index &&
-                    index < indexLow * postNum + postNum
-                ) {
+                if (indexLow * postNum <= index && index < indexLow * postNum + postNum) {
                     return (
                         <Compcard
                             elem={elem}
@@ -162,13 +152,7 @@ function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
                 <h2>{elem.Name}</h2>
                 <FormControlLabel
                     style={{ margin: "0" }}
-                    control={
-                        <YelllowCheckbox
-                            checked={checked}
-                            onChange={handleChange}
-                            name="checkedG"
-                        />
-                    }
+                    control={<YelllowCheckbox checked={checked} onChange={handleChange} name="checkedG" />}
                 />
             </div>
             <div className="profile_wrapper">
@@ -203,7 +187,7 @@ function Compcard({ elem, index, sendSelectedList, TcTnum, selectedDBId }) {
 function Main() {
     let location = useLocation();
     let history = useHistory();
-    const { skip,TcTnum } = useParams();
+    const { skip, TcTnum } = useParams();
 
     //for page
     const page = [];
@@ -269,7 +253,6 @@ function Main() {
     // };
 
     // for selected list
-    const { TcTnum } = useParams();
     const { selectedList, sendSelectedList } = useSocket(TcTnum);
     const [selectedStatus, setSelectedStatus] = useState(false);
     const [selectedDB, setSelectedDB] = useState([]);
@@ -303,11 +286,7 @@ function Main() {
         <main>
             <div
                 className="selected_area"
-                style={
-                    selectedStatus
-                        ? { borderBottom: "1px solid #ebebeb" }
-                        : { borderBottom: "none" }
-                }
+                style={selectedStatus ? { borderBottom: "1px solid #ebebeb" } : { borderBottom: "none" }}
             >
                 <h2>Choose your model</h2>
                 <div className="selected_list">
