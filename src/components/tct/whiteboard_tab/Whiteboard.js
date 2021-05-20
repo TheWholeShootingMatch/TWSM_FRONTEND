@@ -3,7 +3,7 @@ import { Redirect, useParams } from "react-router-dom";
 import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { IconContext } from "react-icons";
-import { GrPan } from "react-icons/gr";
+import { BsArrowsMove } from "react-icons/bs";
 import { BiShapeSquare, BiPencil, BiTrash, BiNavigation, BiImageAlt, BiText } from "react-icons/bi";
 import { connectToRoom, originSuffix, doc, emitVersionDoc } from "./tools/SharedTypes";
 import * as Tools from "./tools/Tools";
@@ -103,6 +103,8 @@ function WhiteBoardHeader({
     onClickImageInput,
     onChangeImageInput
 }) {
+    const [toolActive, setActive] = useState("");
+
     return (
         <div className="whiteboard_header">
             <IconContext.Provider value={{ className: "tool_icons" }}>
@@ -111,38 +113,47 @@ function WhiteBoardHeader({
                         <li
                             id="select"
                             onClick={() => {
+                                setActive("select");
                                 Tools.setToolOption("select", externalCanvas);
                             }}
+                            className={toolActive === "select" && "active"}
                         >
                             <BiNavigation />
                         </li>
                         <li
                             id="panning"
                             onClick={() => {
+                                setActive("panning");
                                 Tools.setToolOption("panning", externalCanvas);
                             }}
+                            className={toolActive === "panning" && "active"}
                         >
-                            <GrPan />
+                            <BsArrowsMove />
                         </li>
                         <li
                             id="figure"
                             onClick={() => {
+                                setActive("figure");
                                 Tools.setToolOption("figure", externalCanvas);
                             }}
+                            className={toolActive === "figure" && "active"}
                         >
                             <BiShapeSquare />
                         </li>
                         <li
                             id="text"
                             onClick={() => {
+                                setActive("text");
                                 Tools.setToolOption("text", externalCanvas);
                             }}
+                            className={toolActive === "text" && "active"}
                         >
                             <BiText />
                         </li>
                         <li
                             id="image"
                             onClick={() => {
+                                setActive("image");
                                 onClickImageInput();
                                 Tools.setToolOption("image", externalCanvas);
                             }}
@@ -159,8 +170,10 @@ function WhiteBoardHeader({
                         <li
                             id="drawing"
                             onClick={() => {
+                                setActive("drawing");
                                 Tools.setToolOption("drawing", externalCanvas);
                             }}
+                            className={toolActive === "drawing" && "active"}
                         >
                             <BiPencil />
                         </li>
@@ -185,21 +198,13 @@ function WhiteBoardHeader({
                         <li
                             id="delete"
                             onClick={() => {
+                                setActive("delete");
                                 setType("delete");
                                 Tools.deleteObject();
                             }}
                         >
                             <BiTrash value={{ className: "tool_icons" }} />
                         </li>
-                        {/* <li
-                        id="trash"
-                        onClick={() => {
-                            setType('trash');
-                            Tools.deleteAllDrawing();
-                        }}
-                    >
-                        trash
-                    </li> */}
                     </ul>
                 </div>
             </IconContext.Provider>

@@ -1,3 +1,4 @@
+$--tct-color-brown: #707070;
 $--menubox-border-color: #ebebeb;
 $--history-btn-color: #e8eaed;
 $--history-text-color: #597ef7;
@@ -11,9 +12,6 @@ $--history-text-color: #597ef7;
     justify-content: center;
     .tools {
         width: 90%;
-        .tool_icons {
-            font-size: 1.3em;
-        }
 
         ul {
             display: flex;
@@ -21,6 +19,19 @@ $--history-text-color: #597ef7;
                 list-style: none;
                 margin: 0 8px;
                 cursor: pointer;
+                padding: 4px;
+                border-radius: 4px;
+
+                .tool_icons {
+                    font-size: 1.3em;
+                }
+
+                &.active {
+                    background-color: $--tct-color-brown;
+                    .tool_icons {
+                        color: white;
+                    }
+                }
 
                 img {
                     width: 50px;
