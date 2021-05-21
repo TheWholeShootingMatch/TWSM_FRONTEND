@@ -35,18 +35,24 @@ const useStyles = makeStyles(() => ({
 function Category({ handleChange, inputs }) {
     const classes = useStyles();
     const [categorylist, setCategorylist] = useFetch("/api/category");
-    let contentsFieldCategory = "";
+    const [contentsFieldCategory, setContentsFieldCategory] = useState("");
 
-    for (let elem of categorylist) {
-        if (elem._id === inputs) {
-            contentsFieldCategory = elem.name;
+    useEffect(() => {
+        if (inputs === undefined) {
+            setContentsFieldCategory("Select");
+        } else {
+            for (let elem of categorylist) {
+                if (elem._id === inputs) {
+                    setContentsFieldCategory(elem.name);
+                }
+            }
         }
-    }
+    }, [inputs]);
 
     return (
         <>
             <InputLabel id="category" shrink={false}>
-                {typeof inputs === "undefined" ? "Select" : contentsFieldCategory}
+                {contentsFieldCategory}
             </InputLabel>
             <Select labelId="category" onChange={handleChange} className={classes.selectField} name="category">
                 <MenuItem disabled>Select</MenuItem>
@@ -164,7 +170,6 @@ function NoteArea(props) {
 
     const handleChange = e => {
         const { value, name } = e.target;
-        console.log(value);
         setInputs({
             ...inputs,
             [name]: value
@@ -234,6 +239,7 @@ function NoteArea(props) {
 
 function Contents() {
     const { TcTnum } = useParams();
+    const [input, setInput] = useState("");
     let history = useHistory();
     let location = useLocation();
     const find = new URLSearchParams(location.search);
@@ -261,6 +267,7 @@ function Contents() {
 
     useEffect(() => {
         fetchUrl();
+        setInput(findInput.category);
     }, [useLocation()]);
 
     // category filter
@@ -268,7 +275,6 @@ function Contents() {
         e.preventDefault();
         find.set(e.target.name, e.target.value);
         history.push(`/TctWorkflow/${TcTnum}?${find}`);
-        console.log(findInput);
     };
 
     return (
@@ -276,7 +282,7 @@ function Contents() {
             <NewNote TcTnum={TcTnum} />
             <div className="category_area">
                 <FormControl variant="outlined" size="small">
-                    <Category handleChange={handleChange} inputs={findInput.category} />
+                    <Category handleChange={handleChange} inputs={input} />
                 </FormControl>
             </div>
             <div className="note_list">

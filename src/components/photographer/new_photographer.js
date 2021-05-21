@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import {CountryOption} from "../common/country"
-import "./new_photographer.scss"
+import { CountryOption } from "../common/country";
+import "./new_photographer.scss";
+import Header from "../common/header";
+
 // import Language from "../common/language"
 
 // function Country() {
@@ -122,114 +124,121 @@ import "./new_photographer.scss"
 // }
 
 function ProfileForm() {
-  // for get user information
-  const [photographer, setPhotographer] = useState({
-    _id : "",
-    Name : "",
-    instagram : "",
-    email : "",
-    self_introduction : "",
-    career : "",
-    country : "",
-    locations : "",
-    profile_img: ""
-  });
-
-  async function fetchUrl() {
-    const response = await fetch("/api/photographer/searchForUid");
-    const json = await response.json();
-    if (json !== null) {
-      setPhotographer(json);
-    }
-  }
-
-  useEffect(() => {
-    fetchUrl();
-  }, []);
-
-  const handleChange = (e) => {
-    const { value, name } = e.target;
-    setPhotographer({
-      ...photographer,
-      [name]: value
+    // for get user information
+    const [photographer, setPhotographer] = useState({
+        _id: "",
+        Name: "",
+        instagram: "",
+        email: "",
+        self_introduction: "",
+        career: "",
+        country: "",
+        locations: "",
+        profile_img: ""
     });
-  };
 
-  // for form post
-  let history = useHistory();
+    async function fetchUrl() {
+        const response = await fetch("/api/photographer/searchForUid");
+        const json = await response.json();
+        if (json !== null) {
+            setPhotographer(json);
+        }
+    }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    useEffect(() => {
+        fetchUrl();
+    }, []);
 
-    const formData = new FormData();
-    formData.append('file', e.target.photo.files[0]);
-    formData.append('Name', e.target.Name.value);
-    formData.append('instagram', e.target.instagram.value);
-    formData.append('email', e.target.email.value);
-    formData.append('self_introduction', e.target.self_introduction.value);
-    formData.append('career', e.target.career.value);
-    // formData.append('language', e.target.language.value);
-    formData.append('country', e.target.country.value);
-    formData.append('locations', e.target.locations.value);
+    const handleChange = e => {
+        const { value, name } = e.target;
+        setPhotographer({
+            ...photographer,
+            [name]: value
+        });
+    };
 
-    axios
-    .post('/api/photographer/new', formData)
-    .then((response) => { history.push(`/photographer/P_portfolio`) });
-  };
+    // for form post
+    let history = useHistory();
 
-  return (
-    <form className="photographer_form" encType='multipart/form-data' onSubmit={handleSubmit}>
-      <div className="form_top">
+    const handleSubmit = e => {
+        e.preventDefault();
 
-        <div className="left" id="photo_area">
-          <label htmlFor="photo">Profile photo</label>
-          {(photographer.profile_img !== "")?
-          <img src={photographer.profile_img} alt={photographer.Name}/> : null}
-          <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
-        </div>
+        const formData = new FormData();
+        formData.append("file", e.target.photo.files[0]);
+        formData.append("Name", e.target.Name.value);
+        formData.append("instagram", e.target.instagram.value);
+        formData.append("email", e.target.email.value);
+        formData.append("self_introduction", e.target.self_introduction.value);
+        formData.append("career", e.target.career.value);
+        // formData.append('language', e.target.language.value);
+        formData.append("country", e.target.country.value);
+        formData.append("locations", e.target.locations.value);
 
-        <div className="right" id="basic_info">
-          <label htmlFor="Name">Name</label>
-          <input type="text" value={photographer.Name} name="Name" onChange={handleChange}/>
+        axios.post("/api/photographer/new", formData).then(response => {
+            history.push(`/photographer/P_portfolio`);
+        });
+    };
 
-          <label htmlFor="instagram">instagram</label>
-          <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange}/>
+    return (
+        <form className="photographer_form" encType="multipart/form-data" onSubmit={handleSubmit}>
+            <div className="form_top">
+                <div className="left" id="photo_area">
+                    <label htmlFor="photo">Profile photo</label>
+                    {photographer.profile_img !== "" ? (
+                        <img src={photographer.profile_img} alt={photographer.Name} />
+                    ) : null}
+                    <input type="file" name="photo" accept="image/jpg, image/png, image/jpeg" />
+                </div>
 
-          <label htmlFor="email">email</label>
-          <input type="text" name="email" value={photographer.email} onChange={handleChange}/>
-        </div>
-      </div>
+                <div className="right" id="basic_info">
+                    <label htmlFor="Name">Name</label>
+                    <input type="text" value={photographer.Name} name="Name" onChange={handleChange} />
 
-      <div className="form_bottom">
-        <label htmlFor="self_introduction">self introduction</label>
-        <input type="text" name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
+                    <label htmlFor="instagram">instagram</label>
+                    <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange} />
 
-        <label htmlFor="career">career</label>
-        <input type="text" name="career" value={photographer.career} onChange={handleChange}/>
+                    <label htmlFor="email">email</label>
+                    <input type="text" name="email" value={photographer.email} onChange={handleChange} />
+                </div>
+            </div>
 
-        <label htmlFor="country">country</label>
-        <select name="country" value={photographer.country} onChange={handleChange}>
-          <CountryOption />
-        </select>
+            <div className="form_bottom">
+                <label htmlFor="self_introduction">self introduction</label>
+                <input
+                    type="text"
+                    name="self_introduction"
+                    value={photographer.self_introduction}
+                    onChange={handleChange}
+                />
 
-        <label htmlFor="locations">locations</label>
-        <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
-      </div>
+                <label htmlFor="career">career</label>
+                <input type="text" name="career" value={photographer.career} onChange={handleChange} />
 
-      <button className="save-btn" type="submit">NEXT</button>
-    </form>
-  );
+                <label htmlFor="country">country</label>
+                <select name="country" value={photographer.country} onChange={handleChange}>
+                    <CountryOption />
+                </select>
+
+                <label htmlFor="locations">locations</label>
+                <input type="text" name="locations" value={photographer.locations} onChange={handleChange} />
+            </div>
+
+            <button className="save-btn" type="submit">
+                NEXT
+            </button>
+        </form>
+    );
 }
 
-function New_Photographer(props) {
-  return (
-    <>
-      {props.children}
-      <main>
-        <ProfileForm />
-      </main>
-    </>
-  );
+function New_Photographer({ isLogin }) {
+    return (
+        <>
+            <Header isLogin={isLogin} />
+            <main>
+                <ProfileForm />
+            </main>
+        </>
+    );
 }
 
 export default New_Photographer;

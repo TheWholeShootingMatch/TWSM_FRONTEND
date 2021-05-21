@@ -1,119 +1,140 @@
 import React, { useState, useEffect } from "react";
-import { useFetch } from "../common/useFetch"
-import { useParams } from 'react-router-dom';
-
+import { useFetch } from "../common/useFetch";
+import { useParams } from "react-router-dom";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaInstagram } from "react-icons/fa";
 import Like from "./like_btn";
+import Header from "../common/header";
+import "../common/detail_page.scss";
 
-function Portfolio({Uid}) {
-  const [portfolio, setPortfolio] = useState({
-    _id: "",
-    id: Uid,
-    link: "",
-  });
-
-  async function fetchUrl() {
-    const response = await fetch('/api/photographer/portfolio',
-    {
-      method: "POST",
-      headers: {
-              'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id : Uid })
+function Portfolio({ Uid }) {
+    const [portfolio, setPortfolio] = useState({
+        _id: "",
+        id: Uid,
+        link: ""
     });
 
-    const json = await response.json();
-    if (json !== null) {
-      setPortfolio(json);
+    async function fetchUrl() {
+        const response = await fetch("/api/photographer/portfolio", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id: Uid })
+        });
+
+        const json = await response.json();
+        if (json !== null) {
+            setPortfolio(json);
+        }
     }
-  }
 
-  useEffect(() => {
-    fetchUrl();
-  }, [Uid]);
+    useEffect(() => {
+        fetchUrl();
+    }, [Uid]);
 
-  return (portfolio.link !== "")?
-  <a href={portfolio.link}>download</a>:null;
+    return portfolio.link !== "" ? <a href={portfolio.link}>download</a> : null;
 }
 
-function Main({photographerId}) {
-  // get photographer
-  // const param = {
-  //   method: "POST",
-  //   headers: {
-  //           'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({ _id : photographerId })
-  // }
-  // const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
+function Main({ photographerId, isLogin }) {
+    // get photographer
+    // const param = {
+    //   method: "POST",
+    //   headers: {
+    //           'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ _id : photographerId })
+    // }
+    // const [photographer, setPhotographer] = useFetch('/api/photographer/fetch',param);
 
-  const [photographer, setPhotographer] = useState({
-    _id: "",
-    Name: "",
-    instagram: "",
-    email: "",
-    self_introduction: "",
-    career: "",
-    country : "",
-    locations : "",
-  });
-
-  async function fetchUrl() {
-    const response = await fetch('/api/photographer/fetch',
-    {
-      method: "POST",
-      headers: {
-              'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ _id : photographerId })
+    const [photographer, setPhotographer] = useState({
+        _id: "",
+        Name: "",
+        instagram: "",
+        email: "",
+        self_introduction: "",
+        career: "",
+        country: "",
+        locations: ""
     });
 
-    const json = await response.json();
-    setPhotographer(json);
-  }
+    async function fetchUrl() {
+        const response = await fetch("/api/photographer/fetch", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ _id: photographerId })
+        });
 
-  useEffect(() => {
-    fetchUrl();
-  }, []);
+        const json = await response.json();
+        setPhotographer(json);
+    }
 
-  return (
-    <main>
-      <div className="photographer_info">
-        <div className="photographer_img">
-          <img src={photographer.profile_img} alt={photographer.Name}/>
-        </div>
-        <h2>{photographer.Name}</h2>
-        <p>E-mail : {photographer.email}</p>
-        <p>Instagram : {photographer.instagram}</p>
-        <h3>self introduction</h3>
-        <p>{photographer.self_introduction}</p>
-        <h3>career</h3>
-        <p>{photographer.career}</p>
-        <div className="photographer_loc">
-          <h3>Valid Location</h3>
-          <p>{photographer.country}</p>
-          <p>{photographer.locations}</p>
-        </div>
-      </div>
-      <Like id={photographerId}/>
-      <h3>Portfolio</h3>
-      <Portfolio Uid={photographer.Uid}/>
-    </main>
-  );
+    useEffect(() => {
+        fetchUrl();
+    }, []);
+
+    return (
+        <main>
+            <div className="detail_profile_wrapper">
+                <article className="detail_section_left">
+                    <div className="profile_img">
+                        <img src={photographer.profile_img} alt={photographer.Name} />
+                    </div>
+                    <div className="standard_info">
+                        <h1>{photographer.Name}</h1>
+                        <section>
+                            <h2>Contact</h2>
+                            <p>
+                                <HiOutlineMail />
+                                <span>{photographer.email}</span>
+                            </p>
+                            <p>
+                                <FaInstagram />
+                                <span>{photographer.instagram}</span>
+                            </p>
+                        </section>
+                        <section>
+                            <h2>Valid Location</h2>
+                            <p>{photographer.country}</p>
+                            <p>{photographer.locations}</p>
+                        </section>
+                        <Like id={photographerId} isLogin={isLogin} />
+                    </div>
+                </article>
+                <article className="detail_section_right">
+                    <div className="detail_box">
+                        <h2>Slef Introduction</h2>
+                        <p>{photographer.self_introduction}</p>
+                    </div>
+                    <div className="detail_box">
+                        <h2>Career</h2>
+                        <p>{photographer.career}</p>
+                    </div>
+                    <div className="detail_box">
+                        <h2>Portfolio</h2>
+                        <Portfolio Uid={photographer.Uid} />
+                    </div>
+                </article>
+            </div>
+        </main>
+    );
 }
 
-function Photographer_Detail(props) {
-  // get photographer id in query
-  let {photographerId} = useParams();
-  if (typeof photographerId == "undefined") {
-    return <p> Warning : incorrect path </p>
-  }
+function Photographer_Detail(isLogin) {
+    // get photographer id in query
+    let { photographerId } = useParams();
+    if (typeof photographerId == "undefined") {
+        return <p> Warning : incorrect path </p>;
+    }
 
-  return (
-    <>
-      {props.children}
-      <Main photographerId = {photographerId}/>
-    </>
-  );
+    return (
+        <>
+            <Header isLogin={isLogin} />
+            <Main photographerId={photographerId} isLogin={isLogin} />
+        </>
+    );
 }
 
 export default Photographer_Detail;

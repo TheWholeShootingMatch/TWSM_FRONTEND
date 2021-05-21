@@ -1,21 +1,20 @@
 import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
-import { BrowserRouter, Route, Switch, Router } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import Header from "../components/common/header";
 import MainPage from "../components/main/MainPage";
 
 /* explore - model pages */
 import Model from "../components/model/model";
-import Model_Detail from "../components/model/model_detail";
-import New_Model from "../components/model/new_model";
-import M_portfolio from "../components/model/model_portfolio";
+import ModelDetail from "../components/model/model_detail";
+import NewModel from "../components/model/new_model";
+import Mportfolio from "../components/model/model_portfolio";
 
 /* explore - Photographer pages */
 import Photographer from "../components/photographer/photographer";
-import Photographer_Detail from "../components/photographer/photographer_detail";
-import New_Photographer from "../components/photographer/new_photographer";
-import P_portfolio from "../components/photographer/photographer_portfolio";
+import PhotographerDetail from "../components/photographer/photographer_detail";
+import NewPhotographer from "../components/photographer/new_photographer";
+import Pportfolio from "../components/photographer/photographer_portfolio";
 
 /* TCT pages */
 import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
@@ -99,10 +98,7 @@ function Routes() {
                         <CreateProject isLogin={isLogin} />
                     </Route>
                     <Route path="/mypage/requested-message">
-                        <RequestedMessage
-                            isLogin={isLogin}
-                            userType={userType}
-                        />
+                        <RequestedMessage isLogin={isLogin} userType={userType} />
                     </Route>
                     <Route path="/mypage/blocked-user">
                         <BlockedUser isLogin={isLogin} userType={userType} />
@@ -112,17 +108,10 @@ function Routes() {
                     </Route>
 
                     <Route path="/login">
-                        <Login
-                            setIsLogin={setIsLogin}
-                            isLogin={isLogin}
-                            setUserType={setUserType}
-                        />
+                        <Login setIsLogin={setIsLogin} isLogin={isLogin} setUserType={setUserType} />
                     </Route>
                     <Route path="/logout">
-                        <Logout
-                            setIsLogin={setIsLogin}
-                            setUserType={setUserType}
-                        />
+                        <Logout setIsLogin={setIsLogin} setUserType={setUserType} />
                     </Route>
                     <Route path="/signup">
                         <Signup />
@@ -142,53 +131,29 @@ function Routes() {
                     </Route>
 
                     <Route path="/model/Model/:skip/:sort">
-                        <Model>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </Model>
+                        <Model isLogin={isLogin} />
                     </Route>
                     <Route path="/model/Model_Detail/:modelId">
-                        <Model_Detail>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </Model_Detail>
+                        <ModelDetail isLogin={isLogin} />
                     </Route>
                     <Route path="/model/New_Model">
-                        <New_Model>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </New_Model>
+                        <NewModel isLogin={isLogin} />
                     </Route>
                     <Route path="/model/M_portfolio">
-                        <M_portfolio>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </M_portfolio>
+                        <Mportfolio isLogin={isLogin} />
                     </Route>
 
                     <Route path="/Photographer/Photographer/:skip/:sort">
-                        <Photographer>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </Photographer>
+                        <Photographer isLogin={isLogin} />
                     </Route>
                     <Route path="/Photographer/Photographer_Detail/:photographerId">
-                        <Photographer_Detail>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </Photographer_Detail>
+                        <PhotographerDetail isLogin={isLogin} />
                     </Route>
                     <Route path="/Photographer/New_Photographer">
-                        <New_Photographer>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </New_Photographer>
+                        <NewPhotographer isLogin={isLogin} />
                     </Route>
                     <Route path="/Photographer/P_portfolio">
-                        <P_portfolio>
-                            {" "}
-                            <Header isLogin={isLogin} />{" "}
-                        </P_portfolio>
+                        <Pportfolio isLogin={isLogin} />
                     </Route>
 
                     <Route path="/notification/notification_Detail/:notificationNum">
