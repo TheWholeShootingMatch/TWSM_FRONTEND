@@ -3,6 +3,8 @@ import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 import { Link } from "react-router-dom";
 
+import "./Notification.css";
+
 function Notification({ isLogin }) {
     const [notifications] = useFetch("/api/notification");
     console.log(notifications);

@@ -6,18 +6,19 @@ import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import "./Collaboration.scss";
+import locationIcon from "./icon/outline_location_on_black_24dp.png";
 
 function NewButton({ isLogin }) {
     if (isLogin) {
         return (
             <Link to="/collaboration/Create_Project">
-                <button>New</button>
+                <button>create job notice</button>
             </Link>
         );
     }
     return (
         <Link to="/login">
-            <button>New</button>
+            <button>create job notice</button>
         </Link>
     );
 }
@@ -114,7 +115,14 @@ function CollaborateProject({ isLogin }) {
             <>
                 <Header isLogin={isLogin} />
                 <div className="collaboration_wrapper">
+                    <div className="left">
+                    <div className="new_box">
+                      <h3>Create Job Notice</h3>
+                      <p>Create notice of job opening post.</p>
+                      <NewButton isLogin={isLogin} />
+                    </div>
                     <SideNav />
+                    </div>
                     <main>
                         <div className="collaboration_header">
                             <div className="sorting_bar">
@@ -126,28 +134,15 @@ function CollaborateProject({ isLogin }) {
                                     <option value="O">Oldest</option>
                                 </select>
                             </div>
-                            <NewButton isLogin={isLogin} />
                         </div>
                         <div className="collaboration_table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Index</th>
-                                        <th>Subject</th>
-                                        <th>Cooperation</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {pageCollaboration.map((project, index) => (
-                                        <Project
-                                            project={project}
-                                            key={index}
-                                            index={(currentPage - 1) * pageSize + index}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
+                        {pageCollaboration.map((project, index) => (
+                            <Project
+                                project={project}
+                                key={index}
+                                index={(currentPage - 1) * pageSize + index}
+                            />
+                        ))}
                         </div>
                         <Pagination
                             projectSize={collaborationProjects.length}
@@ -188,17 +183,26 @@ function Pagination({ projectSize, pageSize, currentPage, onPageChange }) {
 }
 
 function Project({ project, index }) {
-    const { _id, Pdate, title, corporation_name } = project;
+    const { _id, Pdate, title, corporation_name, location, id } = project;
     const date = new Date(Pdate);
     return (
-        <tr key={index}>
-            <td>{index + 1}</td>
-            <td className="title">
-                <Link to={`/collaboration/CollaborateDetail/${_id}`}>{title}</Link>
-            </td>
-            <td>{corporation_name}</td>
-            <td>{date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}</td>
-        </tr>
+        <div key={index} className="small_box">
+          <div className="small_left">
+            <div className="title">
+              <h3>{index + 1}</h3>
+              <h2>{title}</h2>
+              </div>
+              <div className="location">
+              <img src={locationIcon} alt="locationIcon" />
+              <p>{location}</p>
+              </div>
+              <p className="name">{corporation_name}</p>
+          </div>
+          <div className="small_right">
+            <p className="date">{date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()}</p>
+            <Link to={`/collaboration/CollaborateDetail/${_id}`}><button>View More</button></Link>
+          </div>
+        </div>
     );
 }
 

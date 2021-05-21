@@ -4,7 +4,7 @@ import UserMyPage from "../common/MyPage";
 import { useFetch } from "../../common/useFetch";
 import axios from "axios";
 
-import "./Notification.css";
+import "./NotificationDetail.scss";
 
 function NotificationDetail({ isLogin, props }) {
     let { notificationNum } = useParams();
@@ -73,7 +73,13 @@ function MsgContent({ type, TcTnum }) {
                 </p>
             );
         } else if (type === "B") {
-            return <button onClick={handleAccept}>Accept</button>;
+            return (
+                <p>
+                  If you want to accept the invitation, press the button below.
+                  <br />
+                  <button onClick={handleAccept}>Accept</button>
+                </p>
+            );
       }
         else if (type === "D") {
           return (
