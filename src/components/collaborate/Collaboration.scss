@@ -5,10 +5,45 @@
     justify-content: space-between;
     width: 86%;
     margin: 20px auto;
+
+    .left {
+      display: inline-block;
+      width: 23%;
+    }
+
+    .new_box {
+      width: 80%;
+      padding: 10%;
+      height: 130px;
+      border-radius: 25px;
+      background: #fffcec;
+      float: left;
+
+      h3 {
+        font-weight: 600;
+        font-size: 25px;
+        color: #777;
+      }
+
+      p {
+        margin: 20px 0;
+      }
+
+      button {
+        border-radius: 10px;
+        background: #ffc62a;
+        color: white;
+        border: none;
+        font-size: 20px;
+        padding: 10px 20px;
+      }
+    }
+
     .side_nav {
-        width: 23%;
+        width: 100%;
         box-sizing: border-box;
         margin-top: 20px;
+        float: left;
 
         .side_nav_item {
             width: 100%;
@@ -26,6 +61,9 @@
         margin-top: 20px;
         padding: 0;
         box-sizing: border-box;
+
+        border-radius: 25px;
+        background: #efefef;
     }
 
     .collaboration_header {
@@ -33,6 +71,7 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 25px;
+        padding: 20px;
 
         .sorting_bar {
             label {
@@ -68,28 +107,92 @@
     }
 
     .collaboration_table {
-        thead {
-            border-top: 1px solid $--tct-color-gray-4;
-            border-bottom: 1px solid $--tct-color-gray-4;
+      .small_box {
+        width: 93%;
+        margin: 0 1.5%;
+        height: 130px;
+        border-radius: 25px;
+        background: #fff;
+        margin-bottom: 20px;
+        padding: 2%;
 
-            tr {
-                th {
-                    padding: 8px;
-                }
-            }
+        .small_left {
+          float: left;
         }
-        tbody {
-            tr {
-                border-bottom: 1px solid $--tct-color-gray-4;
 
-                td {
-                    padding: 8px;
-                    &.title:hover {
-                        text-decoration: underline;
-                    }
-                }
-            }
+        .small_right {
+          float: right;
+          text-align: left;
+          border-left: 1px solid #e3e3e3;
+          padding-left: 20px;
         }
+
+        p {
+          color: #777;
+        }
+
+        .title {
+          * {
+            display: inline-block;
+            line-height: 40px;
+          }
+
+          h3 {
+            border-radius: 10px;
+            background: #efefef;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 20px;
+          }
+
+          h2 {
+            font-size: 25px;
+            font-weight: bold;
+            margin-left: 15px;
+          }
+        }
+
+        .location {
+          margin-left: 20%;
+          margin-top: 15px;
+          display: inline-block;
+
+          * {
+            float: left;
+          }
+
+          img {
+            width: 25px;
+            height: 25px;
+          }
+
+          p {
+            height: 25px;
+            margin-left: 10px;
+          }
+        }
+
+        .name {
+          margin-top: 20px;
+          margin-left: 30%;
+        }
+
+        .date {
+          font-size: 25px;
+        }
+
+        button {
+          border-radius: 15px;
+          background: linear-gradient(#ffe500 0%, #ffc25b 100%);
+          color: white;
+          border: none;
+          margin-top: 40px;
+          font-size: 23px;
+          padding: 15px 35px;
+        }
+      }
     }
 }
 .pagination {
