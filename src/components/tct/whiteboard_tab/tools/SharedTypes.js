@@ -57,7 +57,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
     });
 
     socketClient.current.on("objectEvent", req => {
-        coordinate.push(req);
+        coordinate.push([JSON.parse(req)]);
     });
 
     socketClient.current.on("versionEvent", req => {
