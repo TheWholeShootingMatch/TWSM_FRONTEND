@@ -186,6 +186,7 @@ function Compcard({ isLogin }) {
             <Link className="view_more" to={`/model/Model_Detail/${modelC.model._id}`}>
               View More
             </Link>
+          </div>
         </div>
       </Modal>
     );
