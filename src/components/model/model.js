@@ -1,14 +1,14 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
+import Header from "../common/header";
 import SideNav from "./sidenav";
 import Like from "./like_btn";
-import Header from "../common/header";
+import "./model.scss";
 import Modal from "@material-ui/core/Modal";
-import "./photographer.scss";
 
 // post in one page && page
-const postNum = 3;
+const postNum = 20;
 const pageNum = 3;
 
 const ModalContext = createContext({
@@ -16,17 +16,21 @@ const ModalContext = createContext({
     toggle: () => {}
 });
 
-// photographer inside modal
-const PhotographerContext = createContext({
-    photographer: {
+// model info inside modal
+const ModelContext = createContext({
+    model: {
         id: "",
         profile_img: "",
         Name: "",
         email: "",
-        instagram: ""
+        instagram: "",
+        height: "",
+        Busto: "",
+        Quadril: "",
+        Cintura: ""
     },
 
-    setPhotographerContext: () => {}
+    setModelContext: () => {}
 });
 
 // get query - side_nav condition
@@ -38,9 +42,25 @@ function MakeParam({ find, sort, skip }) {
     let cityInput = "";
 
     // find
-    if (find.get("language") != null) {
-        findInput.language = find.get("language");
+    if (find.get("gender") !== null && find.get("gender") !== "") {
+        findInput.Gender = find.get("gender");
     }
+
+    if (find.get("heightMin") != null) {
+        const heightMin = find.get("heightMin");
+        const heightMax = find.get("heightMax");
+        findInput.height = { $gte: heightMin, $lt: heightMax };
+    }
+
+    // if (find.get("ageMin") != null) {
+    //   const ageMin = find.get("ageMin");
+    //   const ageMax = find.get("ageMax");
+    //   findInput.Age = { $gte: ageMin, $lt: ageMax };
+    // }
+
+    // if (find.get("language") != null && find.get("language") !== "") {
+    //   findInput.language = find.get("language");
+    // }
 
     if (find.get("country") != null && find.get("country") !== "") {
         findInput.country = find.get("country");
@@ -61,11 +81,6 @@ function MakeParam({ find, sort, skip }) {
         limitInput = (parseInt(skip / pageNum) + 1) * postNum * pageNum;
     }
 
-    //city
-    // if (find.get("city") != null) {
-    //   cityInput = find.get("city");
-    // }
-
     return {
         find: findInput,
         sort: sortInput,
@@ -74,15 +89,15 @@ function MakeParam({ find, sort, skip }) {
     };
 }
 
-// photographer listing
-function GetPhotographer({ location, sort, skip, setPhotographerLeng, isLogin }) {
-    //for get photographers
+// model listing
+function GetModel({ location, sort, skip, setModelLeng, isLogin }) {
+    //for get models
     const find = new URLSearchParams(location.search);
 
-    const [photographerlist, setPhotographerlist] = useState([]);
+    const [modellist, setModellist] = useState([]);
 
     async function fetchUrl() {
-        const response = await fetch("/api/photographer", {
+        const response = await fetch("/api/model", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -91,8 +106,8 @@ function GetPhotographer({ location, sort, skip, setPhotographerLeng, isLogin })
         });
 
         const json = await response.json();
-        setPhotographerLeng(json.length);
-        setPhotographerlist(json);
+        setModelLeng(json.length);
+        setModellist(json);
     }
 
     useEffect(() => {
@@ -101,10 +116,10 @@ function GetPhotographer({ location, sort, skip, setPhotographerLeng, isLogin })
 
     // for copmpcard
     const { toggle } = useContext(ModalContext);
-    const { setPhotographerContext } = useContext(PhotographerContext);
+    const { setModelContext } = useContext(ModelContext);
 
     const handleClick = input => {
-        setPhotographerContext(input);
+        setModelContext(input);
         toggle();
     };
 
@@ -115,15 +130,15 @@ function GetPhotographer({ location, sort, skip, setPhotographerLeng, isLogin })
     }
 
     return (
-        <div className="photographer_list">
-            {photographerlist.map((elem, index) => {
+        <div className="model_list">
+            {modellist.map((elem, index) => {
                 if (indexLow * postNum <= index && index < indexLow * postNum + postNum) {
                     return (
-                        <div className="photographer" key={index}>
-                            <div className="photographer_img">
+                        <div className="model" key={index}>
+                            <div className="model_img">
                                 <img src={elem.profile_img} alt={elem.Name} onClick={() => handleClick(elem)} />
                             </div>
-                            <div className="photographer_name">
+                            <div className="model_name">
                                 <p>{elem.Name}</p>
                                 <Like id={elem._id} isLogin={isLogin} />
                             </div>
@@ -136,8 +151,8 @@ function GetPhotographer({ location, sort, skip, setPhotographerLeng, isLogin })
 }
 
 function Compcard({ isLogin }) {
-    //for photographer info
-    const photographerC = useContext(PhotographerContext);
+    //for model info
+    const modelC = useContext(ModelContext);
 
     //for modal
     const open = useContext(ModalContext);
@@ -145,27 +160,33 @@ function Compcard({ isLogin }) {
 
     return (
       <Modal open={open.bool} onClose={toggle}>
-        <div className="photographer_compcard">
-          <div className="photographer_info">
+        <div className="model_compcard">
+          <div className="model_info">
             <div className="left_content">
-              <div className="photographer_img">
-                <img src={photographerC.photographer.profile_img} alt={photographerC.photographer.Name}/>
+              <div className="model_img">
+                <img src={modelC.model.profile_img} alt={modelC.model.Name}/>
               </div>
-              <div className="photographer_name">
-                <h2>{photographerC.photographer.Name}</h2>
+              <div className="model_name">
+                <h2>{modelC.model.Name}</h2>
               </div>
             </div>
             <div className="right_content">
-              <div className="photographer_contact">
-                <p>E-mail : {photographerC.photographer.email}</p>
-                <p>Instagram : {photographerC.photographer.instagram}</p>
+              <div className="model_size">
+                <p>Height : {modelC.model.height}</p>
+                <p>Busto : {modelC.model.Busto}</p>
+                <p>Quardil : {modelC.model.Quadril}</p>
+                <p>Cintura : {modelC.model.Cintura}</p>
+              </div>
+              <div className="model_contect">
+                <p>E-mail : {modelC.model.email}</p>
+                <p>Instagram : {modelC.model.instagram}</p>
               </div>
             </div>
+            <Like id={modelC.model._id} isLogin={isLogin} />
+            <Link className="view_more" to={`/model/Model_Detail/${modelC.model._id}`}>
+              View More
+            </Link>
           </div>
-          <Like id={photographerC.photographer.id} isLogin={isLogin}/>
-          <Link className="view_more" to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
-            View More
-          </Link>
         </div>
       </Modal>
     );
@@ -173,19 +194,19 @@ function Compcard({ isLogin }) {
 
 function NewButton({ isLogin }) {
     //check is user logined
-    const [isPhotographer, setIsPhotographer] = useState(false);
+    const [isModel, setIsModel] = useState(false);
 
     if (isLogin) {
-        axios.get("/api/photographer/isPhotographer").then(res => {
+        axios.get("/api/model/ismodel").then(res => {
             if (res.data === true) {
-                setIsPhotographer(true);
+                setIsModel(true);
             }
         });
 
-        if (isPhotographer) {
-            return <Link to="/photographer/New_Photographer">Edit Profile</Link>;
+        if (isModel) {
+            return <Link to="/model/New_Model">Edit Profile</Link>;
         }
-        return <Link to="/photographer/New_Photographer">Registration</Link>;
+        return <Link to="/model/New_Model">Registration</Link>;
     }
     return <Link to="/login">Registration</Link>;
 }
@@ -205,7 +226,7 @@ function Main() {
     //for page
     const page = [];
 
-    const [photographerLeng, setPhotographerLeng] = useState(1);
+    const [modelLeng, setModelLeng] = useState(1);
 
     let pageSet = 0;
     if (skip != 0) {
@@ -214,7 +235,7 @@ function Main() {
             <li
                 key={-1}
                 onClick={() => {
-                    history.push(`/photographer/photographer/${skip * 1 - 1}/${sort}${location.search}`);
+                    history.push(`/model/Model/${skip * 1 - 1}/${sort}${location.search}`);
                 }}
             >
                 prev
@@ -224,13 +245,13 @@ function Main() {
         page.push(<li key={-1}>prev</li>);
     }
 
-    for (let i = 0; i < parseInt(photographerLeng / postNum) + 1; i++) {
+    for (let i = 0; i < parseInt(modelLeng / postNum) + 1; i++) {
         if (pageSet * pageNum + i == skip) {
             page.push(
                 <li
                     key={i}
                     onClick={() => {
-                        history.push(`/photographer/photographer/${pageSet * pageNum + i}/${sort}${location.search}`);
+                        history.push(`/model/Model/${pageSet * pageNum + i}/${sort}${location.search}`);
                     }}
                 >
                     <strong>{pageSet * pageNum + i + 1}</strong>
@@ -241,7 +262,7 @@ function Main() {
                 <li
                     key={i}
                     onClick={() => {
-                        history.push(`/photographer/photographer/${pageSet * pageNum + i}/${sort}${location.search}`);
+                        history.push(`/model/Model/${pageSet * pageNum + i}/${sort}${location.search}`);
                     }}
                 >
                     {pageSet * pageNum + i + 1}
@@ -254,7 +275,7 @@ function Main() {
         <li
             key={100}
             onClick={() => {
-                history.push(`/photographer/photographer/${skip * 1 + 1}/${sort}${location.search}`);
+                history.push(`/model/Model/${skip * 1 + 1}/${sort}${location.search}`);
             }}
         >
             next
@@ -262,12 +283,12 @@ function Main() {
     );
 
     const handleChange = e => {
-        history.push(`/photographer/photographer/${skip}/${e.target.value}${location.search}`);
+        history.push(`/model/Model/${skip}/${e.target.value}${location.search}`);
     };
 
     return (
-        <main className="photographer_content">
-            <h1 className="title">PHOTOGRAPHER</h1>
+        <main className="model_content">
+            <h1 className="title">MODEL</h1>
             <div className="main_header">
                 <div className="sorting_bar">
                     <label htmlFor="sort">sort as </label>
@@ -279,18 +300,13 @@ function Main() {
                         <option value="P">Popular</option>
                     </select>
                 </div>
+
                 <NewButton isLogin={isLogin} />
             </div>
             <hr />
             <SideNav />
 
-            <GetPhotographer
-                location={location}
-                skip={skip}
-                sort={sort}
-                setPhotographerLeng={setPhotographerLeng}
-                isLogin={isLogin}
-            />
+            <GetModel location={location} skip={skip} sort={sort} setModelLeng={setModelLeng} isLogin={isLogin} />
             <Compcard isLogin={isLogin} />
 
             <ul className="pageControll">{page}</ul>
@@ -298,7 +314,7 @@ function Main() {
     );
 }
 
-function Photographer({ isLogin }) {
+function Model({ isLogin }) {
     //for modal status
     const toggle = () => {
         setBool(prevState => {
@@ -315,37 +331,41 @@ function Photographer({ isLogin }) {
     });
 
     // for modal contents
-    const setPhotographerContext = input => {
-        setPhotographer(prevState => {
+    const setModelContext = input => {
+        setModel(prevState => {
             return {
                 ...prevState,
-                photographer: input
+                model: input
             };
         });
     };
 
-    const [photographer, setPhotographer] = useState({
-        photographer: {
+    const [model, setModel] = useState({
+        model: {
             id: "",
             profile_img: "",
             Name: "",
             email: "",
-            instagram: ""
+            instagram: "",
+            height: "",
+            Busto: "",
+            Quadril: "",
+            Cintura: ""
         },
-        setPhotographerContext
+        setModelContext
     });
 
     //get header as children
     return (
         <>
             <Header isLogin={isLogin} />
-            <PhotographerContext.Provider value={photographer}>
+            <ModelContext.Provider value={model}>
                 <ModalContext.Provider value={bool}>
                     <Main />
                 </ModalContext.Provider>
-            </PhotographerContext.Provider>
+            </ModelContext.Provider>
         </>
     );
 }
 
-export default Photographer;
+export default Model;
