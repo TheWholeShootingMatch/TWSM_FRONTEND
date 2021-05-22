@@ -144,29 +144,30 @@ function Compcard({ isLogin }) {
     const { toggle } = useContext(ModalContext);
 
     return (
-        <Modal open={open.bool} onClose={toggle}>
-            <div className="photographer_compcard">
-                <div className="photographer_info">
-                    <div className="left_content">
-                        <div className="photographer_img">
-                            <img src={photographerC.photographer.profile_img} alt={photographerC.photographer.Name} />
-                        </div>
-                        <div className="photographer_name">
-                            <h2>{photographerC.photographer.Name}</h2>
-                        </div>
-                        <div className="photographer_contact">
-                            <p>E-mail : {photographerC.photographer.email}</p>
-                            <p>Instagram : {photographerC.photographer.instagram}</p>
-                        </div>
-                    </div>
-                    <div className="right_content"></div>
-                </div>
-                <Like id={photographerC.photographer.id} isLogin={isLogin} />
-                <Link className="view_more" to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
-                    View More
-                </Link>
+      <Modal open={open.bool} onClose={toggle}>
+        <div className="photographer_compcard">
+          <div className="photographer_info">
+            <div className="left_content">
+              <div className="photographer_img">
+                <img src={photographerC.photographer.profile_img} alt={photographerC.photographer.Name}/>
+              </div>
+              <div className="photographer_name">
+                <h2>{photographerC.photographer.Name}</h2>
+              </div>
             </div>
-        </Modal>
+            <div className="right_content">
+              <div className="photographer_contact">
+                <p>E-mail : {photographerC.photographer.email}</p>
+                <p>Instagram : {photographerC.photographer.instagram}</p>
+              </div>
+            </div>
+          </div>
+          <Like id={photographerC.photographer.id} isLogin={isLogin}/>
+          <Link className="view_more" to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
+            View More
+          </Link>
+        </div>
+      </Modal>
     );
 }
 
