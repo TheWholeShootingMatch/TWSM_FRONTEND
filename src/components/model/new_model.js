@@ -179,100 +179,103 @@ function ProfileForm() {
         formData.append("locations", e.target.locations.value);
 
         // formData.append('photographicArea', citiesArr);
+    };
+    return (
+        <div className="new_model_wrapper">
+            <div className="new_model_header">
+                <h1></h1>
+                <p></p>
+            </div>
+            <form className="new_model_form" encType="multipart/form-data" onSubmit={handleSubmit}>
+                <article className="model_form">
+                    <div className="model_input">
+                        <label htmlFor="photo">Profile photo</label>
+                        {model.profile_img !== "" ? <img src={model.profile_img} alt={model.Name} /> : null}
+                        <input type="file" name="photo" accept="image/jpg, image/png, image/jpeg" />
+                    </div>
 
-  return (
-      <div className="new_model_wrapper">
-        <div className="new_model_header">
-          <h1></h1>
-          <p>
-          </p>
+                    <div className="model_input">
+                        <label htmlFor="Name">Name</label>
+                        <input type="text" value={model.Name} name="Name" onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="Age">Age</label>
+                        <input type="text" name="Age" value={model.Age} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="Gender">Gender</label>
+                        <select name="Gender" value={model.Gender} onChange={handleChange}>
+                            <option value="select">select</option>
+                            <option value="F">Female</option>
+                            <option value="M">Male</option>
+                            <option value="N">Not on the list</option>
+                        </select>
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="height">height</label>
+                        <input type="text" name="height" value={model.height} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="Busto">Busto</label>
+                        <input type="text" name="Busto" value={model.Busto} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="Quadril">Quadril</label>
+                        <input type="text" name="Quadril" value={model.Quadril} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="Cintura">Cintura</label>
+                        <input type="text" name="Cintura" value={model.Cintura} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="instagram">instagram</label>
+                        <input type="text" name="instagram" value={model.instagram} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="email">email</label>
+                        <input type="text" name="email" value={model.email} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="self_introduction">self introduction</label>
+                        <input
+                            type="text"
+                            name="self_introduction"
+                            value={model.self_introduction}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="career">career</label>
+                        <input type="text" name="career" value={model.career} onChange={handleChange} />
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="country">country</label>
+                        <select name="country" value={model.country} onChange={handleChange}>
+                            <CountryOption />
+                        </select>
+                    </div>
+
+                    <div className="model_input">
+                        <label htmlFor="locations">locations</label>
+                        <input type="text" name="locations" value={model.locations} onChange={handleChange} />
+                    </div>
+                </article>
+
+                <input type="submit" value="NEXT" className="save_btn" />
+            </form>
         </div>
-        <form className="new_model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
-          <article className="model_form">
-            <div className="model_input">
-              <label htmlFor="photo">Profile photo</label>
-              {(model.profile_img !== "")?
-              <img src={model.profile_img} alt={model.Name}/> : null}
-              <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="Name">Name</label>
-              <input type="text" value={model.Name} name="Name" onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="Age">Age</label>
-              <input type="text" name="Age" value={model.Age} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="Gender">Gender</label>
-              <select name="Gender" value={model.Gender} onChange={handleChange}>
-                <option value="select">select</option>
-                <option value="F">Female</option>
-                <option value="M">Male</option>
-                <option value="N">Not on the list</option>
-              </select>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="height">height</label>
-              <input type="text" name="height" value={model.height} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="Busto">Busto</label>
-              <input type="text" name="Busto" value={model.Busto} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="Quadril">Quadril</label>
-              <input type="text" name="Quadril" value={model.Quadril} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="Cintura">Cintura</label>
-              <input type="text" name="Cintura" value={model.Cintura} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="instagram">instagram</label>
-              <input type="text" name="instagram" value={model.instagram} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="email">email</label>
-              <input type="text" name="email" value={model.email} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="self_introduction">self introduction</label>
-              <input type="text" name="self_introduction" value={model.self_introduction} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="career">career</label>
-              <input type="text" name="career" value={model.career} onChange={handleChange}/>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="country">country</label>
-              <select name="country" value={model.country} onChange={handleChange}>
-                <CountryOption />
-              </select>
-            </div>
-
-            <div className="model_input">
-              <label htmlFor="locations">locations</label>
-              <input type="text" name="locations" value={model.locations} onChange={handleChange}/>
-            </div>
-          </article>
-
-          <input type="submit" value="NEXT" className="save_btn"/>
-        </form>
-      </div>
-  );
+    );
 }
 
 function New_Model({ isLogin }) {

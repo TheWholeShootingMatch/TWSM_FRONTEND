@@ -159,35 +159,36 @@ function Compcard({ isLogin }) {
     const { toggle } = useContext(ModalContext);
 
     return (
-      <Modal open={open.bool} onClose={toggle}>
-        <div className="model_compcard">
-          <div className="model_info">
-            <div className="left_content">
-              <div className="model_img">
-                <img src={modelC.model.profile_img} alt={modelC.model.Name}/>
-              </div>
-              <div className="model_name">
-                <h2>{modelC.model.Name}</h2>
-              </div>
+        <Modal open={open.bool} onClose={toggle}>
+            <div className="model_compcard">
+                <div className="model_info">
+                    <div className="left_content">
+                        <div className="model_img">
+                            <img src={modelC.model.profile_img} alt={modelC.model.Name} />
+                        </div>
+                        <div className="model_name">
+                            <h2>{modelC.model.Name}</h2>
+                        </div>
+                    </div>
+                    <div className="right_content">
+                        <div className="model_size">
+                            <p>Height : {modelC.model.height}</p>
+                            <p>Busto : {modelC.model.Busto}</p>
+                            <p>Quardil : {modelC.model.Quadril}</p>
+                            <p>Cintura : {modelC.model.Cintura}</p>
+                        </div>
+                        <div className="model_contect">
+                            <p>E-mail : {modelC.model.email}</p>
+                            <p>Instagram : {modelC.model.instagram}</p>
+                        </div>
+                    </div>
+                    <Like id={modelC.model._id} isLogin={isLogin} />
+                    <Link className="view_more" to={`/model/Model_Detail/${modelC.model._id}`}>
+                        View More
+                    </Link>
+                </div>
             </div>
-            <div className="right_content">
-              <div className="model_size">
-                <p>Height : {modelC.model.height}</p>
-                <p>Busto : {modelC.model.Busto}</p>
-                <p>Quardil : {modelC.model.Quadril}</p>
-                <p>Cintura : {modelC.model.Cintura}</p>
-              </div>
-              <div className="model_contect">
-                <p>E-mail : {modelC.model.email}</p>
-                <p>Instagram : {modelC.model.instagram}</p>
-              </div>
-            </div>
-            <Like id={modelC.model._id} isLogin={isLogin} />
-            <Link className="view_more" to={`/model/Model_Detail/${modelC.model._id}`}>
-              View More
-            </Link>
-        </div>
-      </Modal>
+        </Modal>
     );
 }
 
