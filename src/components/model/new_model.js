@@ -179,6 +179,7 @@ function ProfileForm() {
         formData.append("locations", e.target.locations.value);
 
         // formData.append('photographicArea', citiesArr);
+    }
 
   return (
       <div className="new_model_wrapper">
