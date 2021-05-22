@@ -124,14 +124,14 @@ function SideNav() {
       <div className="country">
         <h3>Country</h3>
 
-        <select name="country" onChange={handleChange}>
+        <select name="country" value={find.get('country')} onChange={handleChange}>
           <CountryOption />
         </select>
       </div>
 
       <div className="gender">
         <h3>Gender</h3>
-        <select name="gender" onChange={handleChange}>
+        <select name="gender" value={find.get('gender')} onChange={handleChange}>
           <option value="">gender</option>
           <option value="F">female</option>
           <option value="M">male</option>

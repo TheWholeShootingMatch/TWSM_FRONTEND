@@ -24,7 +24,7 @@ function SideNav() {
       <div className="country">
         <h3>Country</h3>
 
-        <select name="country" onChange={handleChange}>
+        <select name="country" value={find.get('country')} onChange={handleChange}>
           <CountryOption />
         </select>
       </div>

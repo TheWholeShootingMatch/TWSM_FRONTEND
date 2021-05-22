@@ -292,7 +292,7 @@ function Main() {
             <div className="main_header">
                 <div className="sorting_bar">
                     <label htmlFor="sort">sort as </label>
-                    <select name="sort" onChange={handleChange}>
+                    <select name="sort" value={sort} onChange={handleChange}>
                         <option value="L" defaultValue>
                             Latest
                         </option>
