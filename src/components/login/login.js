@@ -47,7 +47,7 @@ export function Login({ setUserType, setIsLogin, isLogin }) {
                 withCredentials: true
             })
             .then(res => {
-                if (res.data.id === "") {
+                if (res.data.name === "") {
                     //login 실패시
                     alert("login fail");
                     setIsLogin(false);
