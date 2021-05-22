@@ -145,89 +145,99 @@ function ProfileForm() {
         }
     }
 
-    useEffect(() => {
-        fetchUrl();
-    }, []);
+  useEffect(() => {
+      fetchUrl();
+  }, []);
 
-    const handleChange = e => {
-        const { value, name } = e.target;
-        setPhotographer({
-            ...photographer,
-            [name]: value
-        });
-    };
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setPhotographer({
+      ...photographer,
+      [name]: value
+    });
+  };
 
-    // for form post
-    let history = useHistory();
+  // for form post
+  let history = useHistory();
 
-    const handleSubmit = e => {
-        e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-        const formData = new FormData();
-        formData.append("file", e.target.photo.files[0]);
-        formData.append("Name", e.target.Name.value);
-        formData.append("instagram", e.target.instagram.value);
-        formData.append("email", e.target.email.value);
-        formData.append("self_introduction", e.target.self_introduction.value);
-        formData.append("career", e.target.career.value);
-        // formData.append('language', e.target.language.value);
-        formData.append("country", e.target.country.value);
-        formData.append("locations", e.target.locations.value);
+    const formData = new FormData();
+    formData.append('file', e.target.photo.files[0]);
+    formData.append('Name', e.target.Name.value);
+    formData.append('instagram', e.target.instagram.value);
+    formData.append('email', e.target.email.value);
+    formData.append('self_introduction', e.target.self_introduction.value);
+    formData.append('career', e.target.career.value);
+    // formData.append('language', e.target.language.value);
+    formData.append('country', e.target.country.value);
+    formData.append('locations', e.target.locations.value);
 
-        axios.post("/api/photographer/new", formData).then(response => {
-            history.push(`/photographer/P_portfolio`);
-        });
-    };
+    axios
+    .post('/api/photographer/new', formData)
+    .then((response) => { history.push(`/photographer/P_portfolio`) });
+  };
 
-    return (
-        <form className="photographer_form" encType="multipart/form-data" onSubmit={handleSubmit}>
-            <div className="form_top">
-                <div className="left" id="photo_area">
-                    <label htmlFor="photo">Profile photo</label>
-                    {photographer.profile_img !== "" ? (
-                        <img src={photographer.profile_img} alt={photographer.Name} />
-                    ) : null}
-                    <input type="file" name="photo" accept="image/jpg, image/png, image/jpeg" />
-                </div>
+  return (
+    <div className="new_photographer_wrapper">
+      <div className="new_photographer_header">
+        <h1></h1>
+        <p>
+        </p>
+      </div>
+      <form className="photographer_form" encType='multipart/form-data' onSubmit={handleSubmit}>
+        <article className="photographer_form">
 
-                <div className="right" id="basic_info">
-                    <label htmlFor="Name">Name</label>
-                    <input type="text" value={photographer.Name} name="Name" onChange={handleChange} />
+          <div className="photographer_input">
+            <label htmlFor="photo">Profile photo</label>
+            {(photographer.profile_img !== "")?
+            <img src={photographer.profile_img} alt={photographer.Name}/> : null}
+            <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
+          </div>
 
-                    <label htmlFor="instagram">instagram</label>
-                    <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange} />
+          <div className="photographer_input">
+            <label htmlFor="Name">Name</label>
+            <input type="text" value={photographer.Name} name="Name" onChange={handleChange}/>
+          </div>
 
-                    <label htmlFor="email">email</label>
-                    <input type="text" name="email" value={photographer.email} onChange={handleChange} />
-                </div>
-            </div>
+          <div className="photographer_input">
+            <label htmlFor="instagram">instagram</label>
+            <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange}/>
+          </div>
 
-            <div className="form_bottom">
-                <label htmlFor="self_introduction">self introduction</label>
-                <input
-                    type="text"
-                    name="self_introduction"
-                    value={photographer.self_introduction}
-                    onChange={handleChange}
-                />
+          <div className="photographer_input">
+            <label htmlFor="email">email</label>
+            <input type="text" name="email" value={photographer.email} onChange={handleChange}/>
+          </div>
 
-                <label htmlFor="career">career</label>
-                <input type="text" name="career" value={photographer.career} onChange={handleChange} />
+          <div className="photographer_input">
+            <label htmlFor="self_introduction">self introduction</label>
+            <input type="text" name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
+          </div>
 
-                <label htmlFor="country">country</label>
-                <select name="country" value={photographer.country} onChange={handleChange}>
-                    <CountryOption />
-                </select>
+          <div className="photographer_input">
+            <label htmlFor="career">career</label>
+            <input type="text" name="career" value={photographer.career} onChange={handleChange}/>
+          </div>
 
-                <label htmlFor="locations">locations</label>
-                <input type="text" name="locations" value={photographer.locations} onChange={handleChange} />
-            </div>
+          <div className="photographer_input">
+            <label htmlFor="country">country</label>
+            <select name="country" value={photographer.country} onChange={handleChange}>
+              <CountryOption />
+            </select>
+          </div>
 
-            <button className="save-btn" type="submit">
-                NEXT
-            </button>
-        </form>
-    );
+          <div className="photographer_input">
+            <label htmlFor="locations">locations</label>
+            <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
+          </div>
+        </article>
+
+        <button className="save-btn" type="submit">NEXT</button>
+      </form>
+    </div>
+  );
 }
 
 function New_Photographer({ isLogin }) {

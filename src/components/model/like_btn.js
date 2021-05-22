@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import {FaHeart} from "react-icons/fa";
+import {IconContext} from "react-icons";
 
 export function Like({id, isLogin}){
 
@@ -42,24 +44,24 @@ export function Like({id, isLogin}){
   if(isLogin) {
     if (check) {
       return (
-        <div className="like_btn_div check">
-          <button className="like_btn check" onClick={() => handleDel()}>like</button>
-        </div>
+
+          <button className="like_btn check" onClick={() => handleDel()}><FaHeart className="like_icon"/><span> Like</span></button>
+
       )
     }
     else {
       return (
-        <div className="like_btn_div">
-          <button className="like_btn" onClick={() => handlePush()}>like</button>
-        </div>
+
+          <button className="like_btn" onClick={() => handlePush()}><FaHeart className="like_icon"/><span> Like</span></button>
+
       )
     }
   }
   else {
     return (
-      <div className="like_btn_div">
-        <button className="like_btn" onClick={() => handlePush()}><Link className="like_btn" to="/login">like</Link></button>
-      </div>
+
+        <button className="like_btn" onClick={() => handlePush()}><Link className="like_btn" to="/login"><FaHeart className="like_icon"/><span> Like</span></Link></button>
+
     )
   }
 

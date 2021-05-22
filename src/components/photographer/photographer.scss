@@ -43,7 +43,7 @@ main.photographer_content {
       border: {
         style: solid;
         width: 1px;
-        color: #FFDD00;
+        color: #ff8800;
         radius: 5px;
       }
       display: inline-block;
@@ -54,63 +54,64 @@ main.photographer_content {
 
       .like_btn {
         border: none;
-        color: #FFDD00;
+        color: #ff8800;
         text-align: center;
         line-height: 27px;
         display: block;
         background-color: white;
         &.check {
-          background-color: #FFDD00;
+          background-color: #ff8800;
           color: white;
         }
       }
 
       &.check {
-        background-color: #FFDD00;
+        background-color: #ff8800;
       }
     }
-}
 
-h1.title {
-    font-size: 35px;
-    font-weight: bold;
-    margin: 10px;
-    margin-bottom: 35px;
-}
-
-div.main_header {
-    display: block;
-    height: 40px;
-    margin: 10px;
-
-    div.sorting_bar {
-        display: inline-block;
-        float: left;
-
-        label {
-            display: inline-block;
-            padding: 0px 10px;
-        }
-
-        select {
-            display: inline-block;
-            width: 100px;
-            height: 30px;
-            border: 1px solid black;
-            border-radius: 4px;
-            margin: 5px;
-            // padding: 10px;
-        }
+    h1.title {
+        font-size: 35px;
+        font-weight: bold;
+        margin: 10px;
+        margin-bottom: 35px;
     }
 
-    a {
+    div.main_header {
+        display: block;
         height: 40px;
-        width: 130px;
-        line-height: 40px;
-        float: right;
-        background: linear-gradient(45deg, #f8ff2e, #ff8800);
-        text-align: center;
-        border-radius: 12px;
+        margin: 10px;
+
+        div.sorting_bar {
+            display: inline-block;
+            float: left;
+
+            label {
+                display: inline-block;
+                padding: 0px 10px;
+            }
+
+            select {
+                display: inline-block;
+                width: 100px;
+                height: 30px;
+                border: 1px solid black;
+                border-radius: 4px;
+                margin: 5px;
+                // padding: 10px;
+            }
+        }
+
+        a {
+            height: 40px;
+            width: 130px;
+            line-height: 40px;
+            float: right;
+            background: linear-gradient(45deg, #ffdc2e, #ff8800);
+            text-align: center;
+            border-radius: 12px;
+            color: white;
+        }
     }
 }
 
@@ -170,7 +171,7 @@ div.photographer_compcard {
     width: 3px;
     radius: 50px;
   }
-  width: 1200px;
+  width: 1000px;
   height: 600px;
   margin: auto;
   margin-top: 50px;
@@ -179,16 +180,17 @@ div.photographer_compcard {
   div.photographer_info {
     div.left_content {
       float: left;
-      width: 600px;
+      width: 500px;
       margin: 0;
       display: inline-block;
     }
 
     div.right_content {
       float: right;
-      width: 600px;
+      width: 500px;
       margin: 0;
       display: inline-block;
+      padding-top: 60px;
     }
   }
 
@@ -226,7 +228,7 @@ div.photographer_compcard {
     height: auto;
 
     p {
-      line-height: 30px;
+      line-height: 40px;
       font-size: 20px;
     }
   }
@@ -248,7 +250,7 @@ div.photographer_compcard {
     border: {
       style: solid;
       width: 1px;
-      color: #FFDD00;
+      color: #ff8800;
       radius: 5px;
     }
     display: inline-block;
@@ -259,20 +261,20 @@ div.photographer_compcard {
 
     .like_btn {
       border: none;
-      color: #FFDD00;
+      color: #ff8800;
       text-align: center;
       line-height: 27px;
       display: block;
       background-color: white;
 
       &.check {
-        background-color: #FFDD00;
+        background-color: #ff8800;
         color: white;
       }
     }
 
     &.check {
-      background-color: #FFDD00;
+      background-color: #ff8800;
     }
   }
 
