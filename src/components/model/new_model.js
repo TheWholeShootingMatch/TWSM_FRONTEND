@@ -159,6 +159,7 @@ function ProfileForm() {
     let history = useHistory();
 
     const handleSubmit = e => {
+        console.log("model");
         e.preventDefault();
 
         const formData = new FormData();
@@ -179,24 +180,32 @@ function ProfileForm() {
         formData.append("locations", e.target.locations.value);
 
         // formData.append('photographicArea', citiesArr);
+
+        axios
+        .post('/api/model/new', formData)
+        .then((response) => { history.push(`/model/M_portfolio`) });
     }
 
   return (
       <div className="new_model_wrapper">
         <div className="new_model_header">
-          <h1></h1>
+          <h1>Your Model Profile</h1>
           <p>
+            Set up your profile
           </p>
         </div>
         <form className="new_model_form" encType='multipart/form-data' onSubmit={handleSubmit}>
           <article className="model_form">
-            <div className="model_input">
+            <div className="left">
+            <div className="model_input model_img">
               <label htmlFor="photo">Profile photo</label>
               {(model.profile_img !== "")?
               <img src={model.profile_img} alt={model.Name}/> : null}
               <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
             </div>
+            </div>
 
+            <div className="right">
             <div className="model_input">
               <label htmlFor="Name">Name</label>
               <input type="text" value={model.Name} name="Name" onChange={handleChange}/>
@@ -268,9 +277,10 @@ function ProfileForm() {
               <label htmlFor="locations">locations</label>
               <input type="text" name="locations" value={model.locations} onChange={handleChange}/>
             </div>
+            </div>
           </article>
 
-          <input type="submit" value="NEXT" className="save_btn"/>
+          <button className="save_btn" type="submit">NEXT</button>
         </form>
       </div>
   );

@@ -3,7 +3,8 @@
 .new_model_wrapper {
   width: 83%;
   margin: 30px auto;
-  .new_collaborate_hdeader {
+
+  .new_model_header {
     border-bottom: 1px solid $--tct-color-gray-4;
     padding: 20px 0;
 
@@ -21,10 +22,12 @@
     article {
       padding: 30px 0;
       border-bottom: 1px solid $--tct-color-gray-4;
+      display: flow-root;
 
       label {
           margin: 0 20px 20px 0;
           font-weight: 600;
+          display: inline-block;
       }
       input {
           padding: 5px 12px;
@@ -47,28 +50,50 @@
           background-color: $--tct-input-color-white;
       }
 
+      p {
+        line-height: 20px;
+        margin: 0 20px 10px 0;
+      }
+
+      img {
+        width: 200px;
+        height: 250px;
+        object-fit: cover;
+
+      }
+
+      .left {
+        float: left;
+        display: block;
+      }
+
+      .right {
+        float: right;
+        display: block;
+      }
+
       .model_input {
         margin-bottom: 20px;
       }
     }
+  }
+}
 
-    .save_btn {
-      margin: 30px 0;
-      padding: 5px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 20px;
-      white-space: nowrap;
-      cursor: pointer;
-      background-color: $--tct-color-yellow-5;
-      border: 1px solid $--tct-color-yellow-7;
-      color: #fff;
-      border-radius: 6px;
+.save_btn {
+  margin: 30px 0;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  background-color: $--tct-color-yellow-5;
+  border: 1px solid $--tct-color-yellow-7;
+  color: #fff;
+  border-radius: 6px;
 
-      &:hover {
-          background-color: $--tct-color-yellow-6;
-          transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
-      }
-    }
+  &:hover {
+      background-color: $--tct-color-yellow-6;
+      transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
   }
 }
