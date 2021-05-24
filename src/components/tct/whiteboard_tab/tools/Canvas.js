@@ -191,7 +191,9 @@ export const onCanvasUpdate = (newObject, canvas) => {
                                 uploadedImg.id = parseImage.id;
                                 uploadedImg.selectable = false;
                                 uploadedImg.evented = false;
-                                canvas.add(uploadedImg);
+                                if (!getObjectById(parseImage.id, canvas)) {
+                                    canvas.add(uploadedImg);
+                                }
                                 if (typeof uploadedImg.zIndex !== "undefined") {
                                     canvas.moveTo(uploadedImg, uploadedImg.zIndex);
                                 }

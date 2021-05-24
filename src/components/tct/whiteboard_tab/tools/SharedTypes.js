@@ -57,15 +57,23 @@ export const connectToRoom = async (suffix, Ydoc) => {
     });
 
     socketClient.current.on("objectEvent", req => {
-        coordinate.push(req);
+        coordinate.push([JSON.parse(req)]);
     });
 
-    socketClient.current.on("versionEvent", req => {
-        const docUint8Array = toUint8Array(req);
-        const newYdoc = new Y.Doc();
-        Y.applyUpdate(newYdoc, docUint8Array);
-        Y.applyUpdate(doc, docUint8Array);
-        drawingContent.init(newYdoc.getArray(""));
+    socketClient.current.on("versionEvent", async req => {
+        try {
+            drawingContent.clear();
+            const docUint8Array = toUint8Array(req);
+            const ydoc = new Y.Doc();
+            Y.applyUpdate(ydoc, docUint8Array);
+            ydoc.getArray("").map(elem => {
+                const drawElement = elem.clone();
+                console.log(drawingContent.get().toArray());
+                drawingContent.get().push([drawElement]);
+            });
+        } catch (e) {
+            console.log("invalid ydoc");
+        }
         const objects = externalCanvas.getObjects();
         externalCanvas.remove(...objects);
         restoreVersion();
@@ -158,20 +166,19 @@ export const slideNum = {
 };
 
 export const drawingContent = {
-    drawingContent: doc.getArray(slideNum.get()),
+    drawingContent: doc.getArray(""),
     get() {
         return this.drawingContent;
     },
     init(data) {
         this.drawingContent = data;
     },
-    set(value) {
-        this.drawingContent = doc.getArray(value);
+    set() {
+        this.drawingContent = doc.getArray("");
         console.log(this.drawingContent);
     },
     clear() {
-        console.log(this.drawingContent.length);
-        this.drawingContent.delete(0, this.drawingContent.length);
+        drawingContent.get().delete(0, drawingContent.get().length);
     }
 };
 

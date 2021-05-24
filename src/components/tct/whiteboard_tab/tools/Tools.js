@@ -111,20 +111,18 @@ export const mouseDown = (o, canvas) => {
 };
 
 export const mouseMove = (o, canvas) => {
-    if (currentType === "figure") {
-        if (!isDown) {
-            return;
+    if (!isDown) {
+        return;
+    } else {
+        if (currentType === "figure") {
+            let pointer = canvas.getPointer(o.e);
+            circle.set({ radius: Math.abs(origX - pointer.x) });
+            canvas.renderAll();
+        } else if (currentType === "text") {
+            let pointer = canvas.getPointer(o.e);
+            textbox.set({ width: Math.abs(textbox.left - pointer.x) });
+            canvas.renderAll();
         }
-        let pointer = canvas.getPointer(o.e);
-        circle.set({ radius: Math.abs(origX - pointer.x) });
-        canvas.renderAll();
-    } else if (currentType === "text") {
-        if (!isDown) {
-            return;
-        }
-        let pointer = canvas.getPointer(o.e);
-        textbox.set({ width: Math.abs(textbox.left - pointer.x) });
-        canvas.renderAll();
     }
 };
 
@@ -190,18 +188,16 @@ export const objectModified = o => {
                 text: actObj.text
             }
         ]);
-        const modifiedInfo = [
-            {
-                id: actObj.id,
-                left: actObj.left,
-                top: actObj.top,
-                scaleX: actObj.scaleX,
-                scaleY: actObj.scaleY,
-                angle: actObj.angle,
-                text: actObj.text
-            }
-        ];
-        shared.emitObject(modifiedInfo);
+        const modifiedInfo = {
+            id: actObj.id,
+            left: actObj.left,
+            top: actObj.top,
+            scaleX: actObj.scaleX,
+            scaleY: actObj.scaleY,
+            angle: actObj.angle,
+            text: actObj.text
+        };
+        shared.emitObject(JSON.stringify(modifiedInfo));
     }
 };
 
@@ -258,10 +254,28 @@ export const deleteObject = () => {
     }
 };
 
-let initType = true;
-
 export const setToolOption = (type, canvas) => {
     currentType = type;
+    canvas.on("object:moving", function (o) {
+        objectModified(o);
+    });
+    canvas.on("object:scaling", function (o) {
+        objectModified(o);
+    });
+    canvas.on("object:rotating", function (o) {
+        objectModified(o);
+    });
+    canvas.on("object:modified", function (o) {
+        objectModified(o);
+    });
+    canvas.on("object:modified", function (o) {
+        afterObjectModified(o);
+    });
+    canvas.on("text:changed", function (o) {
+        objectModified(o);
+    });
+    canvas.off("mouse:down");
+    canvas.off("path:created");
     if (type === "panning") {
         externalCanvas.toggleDragMode(true);
     } else if (type !== "select") {
@@ -274,11 +288,6 @@ export const setToolOption = (type, canvas) => {
             canvas.isDrawingMode = false;
         }
         changeStatus(false, canvas);
-        canvas.off("object:moving");
-        canvas.off("object:scaling");
-        canvas.off("object:rotating");
-        canvas.off("object:modified");
-        canvas.off("text: changed");
         canvas.on("mouse:down", function (o) {
             mouseDown(o, canvas);
         });
@@ -300,23 +309,5 @@ export const setToolOption = (type, canvas) => {
         canvas.off("mouse:move");
         canvas.off("mouse:up");
         canvas.off("path:created");
-        canvas.on("object:moving", function (o) {
-            objectModified(o);
-        });
-        canvas.on("object:scaling", function (o) {
-            objectModified(o);
-        });
-        canvas.on("object:rotating", function (o) {
-            objectModified(o);
-        });
-        canvas.on("object:modified", function (o) {
-            objectModified(o);
-        });
-        canvas.on("object:modified", function (o) {
-            afterObjectModified(o);
-        });
-        canvas.on("text:changed", function (o) {
-            objectModified(o);
-        });
     }
 };
