@@ -1,51 +1,105 @@
-form.photographer_form {
-  margin: 20px 100px;
-  display: block;
+@import "../../variable.scss";
 
-  label{
-  	margin:0 0 3px 0;
-  	padding:0px;
-  	display:block;
-  	font-weight: bold;
-    margin: 10px 0;
+.new_photographer_wrapper {
+  width: 83%;
+  margin: 30px auto;
+
+  .new_photographer_header {
+    border-bottom: 1px solid $--tct-color-gray-4;
+    padding: 20px 0;
+
+    h1 {
+      font-size: $--tct-font--size-verybig;
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+    p {
+      margin-bottom: 8px;
+    }
   }
 
-  input[type=text],
-  input[type=date],
-  input[type=datetime],
-  input[type=number],
-  input[type=search],
-  input[type=time],
-  input[type=url],
-  input[type=email],
-  textarea,
-  select{
-  	box-sizing: border-box;
-  	-webkit-box-sizing: border-box;
-  	-moz-box-sizing: border-box;
-  	border:1px solid #BEBEBE;
-  	padding: 7px;
-  	margin:0px;
-  	-webkit-transition: all 0.30s ease-in-out;
-  	-moz-transition: all 0.30s ease-in-out;
-  	-ms-transition: all 0.30s ease-in-out;
-  	-o-transition: all 0.30s ease-in-out;
-  	outline: none;
-    width: 300px;
-  }
+  .new_photographer_form {
+    article {
+      padding: 30px 0;
+      border-bottom: 1px solid $--tct-color-gray-4;
+      display: flow-root;
 
-  input[type=submit], .form-style-1 input[type=button]{
-  	background: #4B99AD;
-  	padding: 8px 15px 8px 15px;
-  	border: none;
-  	color: #fff;
-  }
+      label {
+          margin: 0 20px 20px 0;
+          font-weight: 600;
+          display: inline-block;
+      }
+      input {
+          padding: 5px 12px;
+          font-size: 14px;
+          line-height: 20px;
+          vertical-align: middle;
+          border-radius: 6px;
+          border: 1px solid $--tct-color-white;
+          outline: none;
+          background-color: $--tct-input-color-white;
+      }
+      select {
+          padding: 5px 12px;
+          font-size: 14px;
+          line-height: 20px;
+          vertical-align: middle;
+          border-radius: 6px;
+          border: 1px solid $--tct-color-white;
+          outline: none;
+          background-color: $--tct-input-color-white;
+      }
 
-  .save-btn {
-  	background: black;
-  	padding: 8px 15px 8px 15px;
-  	border: none;
-  	color: #fff;
-  	margin: 30px 0;
+      p {
+        line-height: 20px;
+        margin: 0 20px 10px 0;
+      }
+
+      img {
+        width: 200px;
+        height: 250px;
+        object-fit: cover;
+
+      }
+
+      .left {
+        float: left;
+        display: inline-block;
+      }
+
+      .right {
+        display: inline-block;
+        margin-left: 50px;
+      }
+
+      .photographer_input {
+        margin-bottom: 20px;
+      }
+
+      .photographer_img {
+        label, img, input {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.save_btn {
+  margin: 30px 0;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  background-color: $--tct-color-yellow-5;
+  border: 1px solid $--tct-color-yellow-7;
+  color: #fff;
+  border-radius: 6px;
+
+  &:hover {
+      background-color: $--tct-color-yellow-6;
+      transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
   }
 }

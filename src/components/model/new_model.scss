@@ -64,16 +64,22 @@
 
       .left {
         float: left;
-        display: block;
+        display: inline-block;
       }
 
       .right {
-        float: right;
-        display: block;
+        display: inline-block;
+        margin-left: 50px;
       }
 
       .model_input {
         margin-bottom: 20px;
+      }
+
+      .model_img {
+        label, img, input {
+          display: block;
+        }
       }
     }
   }
