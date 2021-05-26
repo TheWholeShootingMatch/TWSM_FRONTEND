@@ -216,7 +216,7 @@ function ProfileForm() {
 
             <div className="photographer_input">
               <label htmlFor="self_introduction">self introduction</label>
-              <input type="text" name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
+              <textarea name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
             </div>
 
             <div className="photographer_input">

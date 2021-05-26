@@ -162,7 +162,7 @@ function Compcard({ isLogin }) {
               </div>
             </div>
           </div>
-          <Like id={photographerC.photographer.id} isLogin={isLogin}/>
+          <Like id={photographerC.photographer._id} isLogin={isLogin}/>
           <Link className="view_more" to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
             View More
           </Link>
