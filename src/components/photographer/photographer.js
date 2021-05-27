@@ -8,7 +8,7 @@ import Modal from "@material-ui/core/Modal";
 import "./photographer.scss";
 
 // post in one page && page
-const postNum = 3;
+const postNum = 16;
 const pageNum = 3;
 
 const ModalContext = createContext({

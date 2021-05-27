@@ -88,7 +88,7 @@ function CollaborateProject({ isLogin }) {
 
     // const [collaborationProjects] = useFetch('/api/collaboration', JSON.stringify(param({find, sort})));
 
-    const pageSize = 3;
+    const pageSize = 10;
     const pageCollaboration = paginate(collaborationProjects, currentPage, pageSize);
 
     const handlePageChange = page => {
