@@ -121,7 +121,7 @@ export const mouseDown = (o, canvas) => {
             top: pointer.y,
             width: 10,
             fontSize: 12,
-            backgroundColor: "white",
+            backgroundColor: "transparent",
             fontFamily: "Inconsolata"
         });
         let id = new Date().getTime().toString();
