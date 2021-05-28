@@ -49,6 +49,19 @@
           outline: none;
           background-color: $--tct-input-color-white;
       }
+      textarea {
+        padding: 5px 12px;
+        font-size: 14px;
+        line-height: 20px;
+        vertical-align: middle;
+        border-radius: 6px;
+        border: 1px solid $--tct-color-white;
+        outline: none;
+        background-color: $--tct-input-color-white;
+        resize: none;
+        width: 100%;
+        height: 100px;
+      }
 
       p {
         line-height: 20px;
@@ -64,16 +77,22 @@
 
       .left {
         float: left;
-        display: block;
+        display: inline-block;
       }
 
       .right {
-        float: right;
-        display: block;
+        display: inline-block;
+        margin-left: 50px;
       }
 
       .model_input {
         margin-bottom: 20px;
+      }
+
+      .model_img {
+        label, img, input {
+          display: block;
+        }
       }
     }
   }

@@ -8,7 +8,7 @@ import "./model.scss";
 import Modal from "@material-ui/core/Modal";
 
 // post in one page && page
-const postNum = 20;
+const postNum = 16;
 const pageNum = 3;
 
 const ModalContext = createContext({

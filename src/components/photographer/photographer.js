@@ -8,7 +8,7 @@ import Modal from "@material-ui/core/Modal";
 import "./photographer.scss";
 
 // post in one page && page
-const postNum = 3;
+const postNum = 16;
 const pageNum = 3;
 
 const ModalContext = createContext({
@@ -162,7 +162,7 @@ function Compcard({ isLogin }) {
               </div>
             </div>
           </div>
-          <Like id={photographerC.photographer.id} isLogin={isLogin}/>
+          <Like id={photographerC.photographer._id} isLogin={isLogin}/>
           <Link className="view_more" to={`/photographer/photographer_Detail/${photographerC.photographer._id}`}>
             View More
           </Link>

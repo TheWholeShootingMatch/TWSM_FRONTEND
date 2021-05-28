@@ -10,7 +10,7 @@ export function Like({id, isLogin}){
   const [check, setCheck] = useState([]);
 
   async function fetchUrl() {
-    const response = await fetch("/api/users/fav_model",
+    const response = await fetch("/api/users/fav_photographer",
     {
       method: "POST",
       headers: {
@@ -29,14 +29,14 @@ export function Like({id, isLogin}){
 
   const handlePush = () => {
     axios
-    .post('/api/users/fav_models_push', {id:id})
+    .post('/api/users/fav_photographers_push', {id:id})
     .catch(err => { console.error(err); });
     setCheck(true);
   };
 
   const handleDel = () => {
     axios
-    .post('/api/users/fav_models_del', {id:id})
+    .post('/api/users/fav_photographers_del', {id:id})
     .catch(err => { console.error(err); });
     setCheck(false);
   };

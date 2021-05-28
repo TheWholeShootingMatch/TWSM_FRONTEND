@@ -252,8 +252,7 @@ function ProfileForm() {
               </div>
               <div className="model_input">
                   <label htmlFor="self_introduction">self introduction</label>
-                  <input
-                      type="text"
+                  <textarea
                       name="self_introduction"
                       value={model.self_introduction}
                       onChange={handleChange}

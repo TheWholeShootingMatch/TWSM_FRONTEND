@@ -110,7 +110,7 @@ function CollaborationForm({ isLogin }) {
                         </div>
                         <div className="overview_input">
                             <label htmlFor="about_project">Description</label>
-                            <input type="text" name="about_project" onChange={handleChange} required />
+                            <textarea type="text" name="about_project" onChange={handleChange} required />
                         </div>
                         <div className="overview_input">
                             <label htmlFor="location">Shooting Location</label>
@@ -233,7 +233,7 @@ function CollaborationForm({ isLogin }) {
                             </div>
                             <div className="model_input">
                                 <label htmlFor="model_detail">More Information</label>
-                                <input type="text" name="model_detail" onChange={handleChange} />
+                                <textarea name="model_detail" onChange={handleChange} />
                             </div>
                         </div>
                     </article>
@@ -294,7 +294,7 @@ function CollaborationForm({ isLogin }) {
                             </div>
                             <div className="photographer_input">
                                 <label htmlFor="photographer_detail">More Information</label>
-                                <input type="text" name="photographer_detail" onChange={handleChange} />
+                                <textarea name="photographer_detail" onChange={handleChange} />
                             </div>
                         </div>
                     </article>

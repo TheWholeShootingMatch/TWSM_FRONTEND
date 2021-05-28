@@ -182,59 +182,63 @@ function ProfileForm() {
   return (
     <div className="new_photographer_wrapper">
       <div className="new_photographer_header">
-        <h1></h1>
+        <h1>Your Photographer Profile</h1>
         <p>
+          Set up your profile
         </p>
       </div>
-      <form className="photographer_form" encType='multipart/form-data' onSubmit={handleSubmit}>
+      <form className="new_photographer_form" encType='multipart/form-data' onSubmit={handleSubmit}>
         <article className="photographer_form">
-
-          <div className="photographer_input">
-            <label htmlFor="photo">Profile photo</label>
-            {(photographer.profile_img !== "")?
-            <img src={photographer.profile_img} alt={photographer.Name}/> : null}
-            <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
+          <div className="left">
+            <div className="photographer_input photographer_img">
+              <label htmlFor="photo">Profile photo</label>
+              {(photographer.profile_img !== "")?
+              <img src={photographer.profile_img} alt={photographer.Name}/> : null}
+              <input type="file" name="photo" accept='image/jpg, image/png, image/jpeg' />
+            </div>
           </div>
 
-          <div className="photographer_input">
-            <label htmlFor="Name">Name</label>
-            <input type="text" value={photographer.Name} name="Name" onChange={handleChange}/>
-          </div>
+          <div className="right">
+            <div className="photographer_input">
+              <label htmlFor="Name">Name</label>
+              <input type="text" value={photographer.Name} name="Name" onChange={handleChange}/>
+            </div>
 
-          <div className="photographer_input">
-            <label htmlFor="instagram">instagram</label>
-            <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange}/>
-          </div>
+            <div className="photographer_input">
+              <label htmlFor="instagram">instagram</label>
+              <input type="text" name="instagram" value={photographer.instagram} onChange={handleChange}/>
+            </div>
 
-          <div className="photographer_input">
-            <label htmlFor="email">email</label>
-            <input type="text" name="email" value={photographer.email} onChange={handleChange}/>
-          </div>
+            <div className="photographer_input">
+              <label htmlFor="email">email</label>
+              <input type="text" name="email" value={photographer.email} onChange={handleChange}/>
+            </div>
 
-          <div className="photographer_input">
-            <label htmlFor="self_introduction">self introduction</label>
-            <input type="text" name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
-          </div>
+            <div className="photographer_input">
+              <label htmlFor="self_introduction">self introduction</label>
+              <textarea name="self_introduction" value={photographer.self_introduction} onChange={handleChange}/>
+            </div>
 
-          <div className="photographer_input">
-            <label htmlFor="career">career</label>
-            <input type="text" name="career" value={photographer.career} onChange={handleChange}/>
-          </div>
+            <div className="photographer_input">
+              <label htmlFor="career">career</label>
+              <input type="text" name="career" value={photographer.career} onChange={handleChange}/>
+            </div>
 
-          <div className="photographer_input">
-            <label htmlFor="country">country</label>
-            <select name="country" value={photographer.country} onChange={handleChange}>
-              <CountryOption />
-            </select>
-          </div>
+            <div className="photographer_input">
+              <label htmlFor="country">country</label>
+              <select name="country" value={photographer.country} onChange={handleChange}>
+                <CountryOption />
+              </select>
+            </div>
 
-          <div className="photographer_input">
-            <label htmlFor="locations">locations</label>
-            <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
+            <div className="photographer_input">
+              <label htmlFor="locations">locations</label>
+              <input type="text" name="locations" value={photographer.locations} onChange={handleChange}/>
+            </div>
           </div>
         </article>
 
-        <button className="save-btn" type="submit">NEXT</button>
+        <button className="save_btn" type="submit">NEXT</button>
       </form>
     </div>
   );
