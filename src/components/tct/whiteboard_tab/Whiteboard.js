@@ -4,7 +4,7 @@ import TctComponant from "../tct_componant/TctComponant";
 import Canvas from "./tools/Canvas";
 import { IconContext } from "react-icons";
 import { BsArrowsMove } from "react-icons/bs";
-import { BiShapeSquare, BiPencil, BiTrash, BiNavigation, BiImageAlt, BiText } from "react-icons/bi";
+import { BiCircle, BiRectangle, BiPencil, BiTrash, BiNavigation, BiImageAlt, BiText } from "react-icons/bi";
 import { connectToRoom, originSuffix, doc, emitVersionDoc } from "./tools/SharedTypes";
 import * as Tools from "./tools/Tools";
 import { externalCanvas } from "./tools/Canvas";
@@ -131,14 +131,24 @@ function WhiteBoardHeader({
                             <BsArrowsMove />
                         </li>
                         <li
-                            id="figure"
+                            id="circle"
                             onClick={() => {
-                                setActive("figure");
-                                Tools.setToolOption("figure", externalCanvas);
+                                setActive("circle");
+                                Tools.setToolOption("circle", externalCanvas);
                             }}
-                            className={toolActive === "figure" && "active"}
+                            className={toolActive === "circle" && "active"}
                         >
-                            <BiShapeSquare />
+                            <BiCircle />
+                        </li>
+                        <li
+                            id="rect"
+                            onClick={() => {
+                                setActive("rect");
+                                Tools.setToolOption("rect", externalCanvas);
+                            }}
+                            className={toolActive === "rect" && "active"}
+                        >
+                            <BiRectangle />
                         </li>
                         <li
                             id="text"

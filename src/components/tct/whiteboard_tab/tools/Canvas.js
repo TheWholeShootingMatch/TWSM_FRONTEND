@@ -142,17 +142,27 @@ export const onCanvasUpdate = (newObject, canvas) => {
         if (drawElements.insert) {
             drawElements.insert.forEach(drawElement => {
                 const type = drawElement.get("type");
-                if (type === "figure") {
+                if (type === "circle" || type === "rect") {
                     const options = drawElement.get("options").toArray()[0];
                     if (options) {
                         const parseFigure = JSON.parse(options);
                         if (getObjectById(parseFigure.id, canvas) === false) {
-                            const circle = new fabric.Circle(parseFigure);
-                            circle.selectable = false;
-                            circle.evented = false;
-                            canvas.add(circle);
-                            if (typeof circle.zIndex !== "undefined") {
-                                canvas.moveTo(circle, circle.zIndex);
+                            if (type === "circle") {
+                                const circle = new fabric.Circle(parseFigure);
+                                circle.selectable = false;
+                                circle.evented = false;
+                                canvas.add(circle);
+                                if (typeof circle.zIndex !== "undefined") {
+                                    canvas.moveTo(circle, circle.zIndex);
+                                }
+                            } else if (type === "rect") {
+                                const rect = new fabric.Rect(parseFigure);
+                                rect.selectable = false;
+                                rect.evented = false;
+                                canvas.add(rect);
+                                if (typeof rect.zIndex !== "undefined") {
+                                    canvas.moveTo(rect, rect.zIndex);
+                                }
                             }
                         }
                     }

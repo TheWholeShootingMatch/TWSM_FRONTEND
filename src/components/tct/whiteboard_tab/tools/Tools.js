@@ -56,7 +56,10 @@ let sharedLine = null; //yarray
 let drawElement = null; //ymap
 let isDown = false;
 let origX;
+let origYR;
+let origXR;
 let circle;
+let rect;
 let textbox;
 let currentType;
 
@@ -70,7 +73,7 @@ export const mouseDown = (o, canvas) => {
         drawElement.set("type", "drawing");
         drawElement.set("color", "#000");
         drawElement.set("width", 4);
-    } else if (currentType === "figure") {
+    } else if (currentType === "circle") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
         let id = new Date().getTime().toString();
@@ -89,7 +92,27 @@ export const mouseDown = (o, canvas) => {
         });
         circle.id = id;
         canvas.add(circle);
-        drawElement.set("type", "figure");
+        drawElement.set("type", "circle");
+    } else if (currentType === "rect") {
+        isDown = true;
+        let pointer = canvas.getPointer(o.e);
+        let id = new Date().getTime().toString();
+        origXR = pointer.x;
+        origYR = pointer.y;
+        rect = new fabric.Rect({
+            left: pointer.x,
+            top: pointer.y,
+            strokeWidth: 1,
+            stroke: "black",
+            fill: "transparent",
+            selectable: false,
+            evented: false,
+            width: 0,
+            height: 0
+        });
+        rect.id = id;
+        canvas.add(rect);
+        drawElement.set("type", "rect");
     } else if (currentType === "text") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
@@ -97,6 +120,7 @@ export const mouseDown = (o, canvas) => {
             left: pointer.x,
             top: pointer.y,
             width: 10,
+            fontSize: 12,
             backgroundColor: "white",
             fontFamily: "Inconsolata"
         });
@@ -114,9 +138,20 @@ export const mouseMove = (o, canvas) => {
     if (!isDown) {
         return;
     } else {
-        if (currentType === "figure") {
+        if (currentType === "circle") {
             let pointer = canvas.getPointer(o.e);
             circle.set({ radius: Math.abs(origX - pointer.x) });
+            canvas.renderAll();
+        } else if (currentType === "rect") {
+            let pointer = canvas.getPointer(o.e);
+
+            var w = Math.abs(pointer.x - origXR),
+                h = Math.abs(pointer.y - origYR);
+
+            if (!w || !h) {
+                return;
+            }
+            rect.set("width", w).set("height", h);
             canvas.renderAll();
         } else if (currentType === "text") {
             let pointer = canvas.getPointer(o.e);
@@ -135,8 +170,13 @@ const emitObject = drawElement => {
 //http://jsfiddle.net/softvar/Nt8f7/
 const getObject = o => {
     if (sharedLine !== null) {
-        if (currentType === "figure") {
+        if (currentType === "circle") {
             const jsonObject = JSON.stringify(circle);
+            sharedLine.push([jsonObject]);
+            drawElement.set("options", sharedLine);
+            emitObject(drawElement);
+        } else if (currentType === "rect") {
+            const jsonObject = JSON.stringify(rect);
             sharedLine.push([jsonObject]);
             drawElement.set("options", sharedLine);
             emitObject(drawElement);
@@ -160,7 +200,7 @@ const getObject = o => {
 export const mouseUp = (o, canvas) => {
     if (o && isDown) {
         isDown = false;
-        if (currentType === "text" || currentType === "figure") {
+        if (currentType === "text" || currentType === "circle" || currentType === "rect") {
             getObject(o);
         }
     }
@@ -185,7 +225,9 @@ export const objectModified = o => {
                 scaleX: actObj.scaleX,
                 scaleY: actObj.scaleY,
                 angle: actObj.angle,
-                text: actObj.text
+                text: actObj.text,
+                width: actObj.width,
+                height: actObj.height
             }
         ]);
         const modifiedInfo = {
@@ -195,7 +237,9 @@ export const objectModified = o => {
             scaleX: actObj.scaleX,
             scaleY: actObj.scaleY,
             angle: actObj.angle,
-            text: actObj.text
+            text: actObj.text,
+            width: actObj.width,
+            height: actObj.height
         };
         shared.emitObject(JSON.stringify(modifiedInfo));
     }
