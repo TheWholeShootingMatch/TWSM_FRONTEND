@@ -68,7 +68,7 @@ function MakeParam({ find, sort, skip }) {
 
     // sort : default "latest"
     if (sort === "P") {
-        sortInput.height = 1;
+        sortInput.like_num = -1;
     } else if (sort === "O") {
         sortInput._id = 1;
     } else {
