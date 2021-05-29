@@ -234,11 +234,12 @@ div.photographer_compcard {
     position: absolute;
     top: 50px;
     right: 50px;
+
+    a {
+      position: initial;
+    }
   }
-
-
 }
-
 
 button.like_btn {
   color: $--tct-color-gray-6;

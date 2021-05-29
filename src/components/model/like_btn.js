@@ -60,7 +60,7 @@ export function Like({id, isLogin}){
   else {
     return (
 
-        <button className="like_btn" onClick={() => handlePush()}><Link className="like_btn" to="/login"><FaHeart className="like_icon"/><span> Like</span></Link></button>
+        <button className="like_btn"><Link className="like_btn" to="/login"><FaHeart className="like_icon"/><span> Like</span></Link></button>
 
     )
   }
