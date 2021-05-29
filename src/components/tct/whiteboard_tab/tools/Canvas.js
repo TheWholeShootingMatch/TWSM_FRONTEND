@@ -53,10 +53,9 @@ export default function Canvas({ activeSlide }) {
                 newObject.forEach(drawElements => {
                     if (drawElements.insert) {
                         drawElements.insert.forEach(drawElement => {
-                            const options = drawElement.get("options").toArray()[0];
-                            if (options) {
-                                const parseFigure = JSON.parse(options);
-                                if (getObjectById(parseFigure.id, canvas) === false) {
+                            const id = JSON.parse(drawElement.get("options")).id;
+                            if (id) {
+                                if (getObjectById(id, canvas) === false) {
                                     onCanvasUpdate(event.changes.delta, canvas);
                                 }
                             }
@@ -141,89 +140,78 @@ export const onCanvasUpdate = (newObject, canvas) => {
     newObject.forEach(drawElements => {
         if (drawElements.insert) {
             drawElements.insert.forEach(drawElement => {
-                const type = drawElement.get("type");
+                const options = drawElement.get("options");
+                const parseFigure = JSON.parse(options);
+                const type = parseFigure.type;
                 if (type === "circle" || type === "rect") {
-                    const options = drawElement.get("options").toArray()[0];
-                    if (options) {
-                        const parseFigure = JSON.parse(options);
-                        if (getObjectById(parseFigure.id, canvas) === false) {
-                            if (type === "circle") {
-                                const circle = new fabric.Circle(parseFigure);
-                                circle.selectable = false;
-                                circle.evented = false;
-                                canvas.add(circle);
-                                if (typeof circle.zIndex !== "undefined") {
-                                    canvas.moveTo(circle, circle.zIndex);
-                                }
-                            } else if (type === "rect") {
-                                const rect = new fabric.Rect(parseFigure);
-                                rect.selectable = false;
-                                rect.evented = false;
-                                canvas.add(rect);
-                                if (typeof rect.zIndex !== "undefined") {
-                                    canvas.moveTo(rect, rect.zIndex);
-                                }
+                    if (getObjectById(parseFigure.id, canvas) === false) {
+                        if (type === "circle") {
+                            const circle = new fabric.Circle(parseFigure);
+                            circle.selectable = false;
+                            circle.evented = false;
+                            canvas.add(circle);
+                            if (typeof circle.zIndex !== "undefined") {
+                                canvas.moveTo(circle, circle.zIndex);
+                            }
+                        } else if (type === "rect") {
+                            const rect = new fabric.Rect(parseFigure);
+                            rect.selectable = false;
+                            rect.evented = false;
+                            canvas.add(rect);
+                            if (typeof rect.zIndex !== "undefined") {
+                                canvas.moveTo(rect, rect.zIndex);
                             }
                         }
                     }
-                } else if (type === "text") {
-                    const options = drawElement.get("options").toArray()[0];
-                    if (options) {
-                        const parseFigure = JSON.parse(options);
-                        if (getObjectById(parseFigure.id, canvas) === false) {
-                            console.log("here");
-                            const textbox = new fabric.Textbox("", parseFigure);
-                            textbox.selectable = false;
-                            textbox.evented = false;
-                            canvas.add(textbox);
-                            if (typeof textbox.zIndex !== "undefined") {
-                                canvas.moveTo(textbox, textbox.zIndex);
-                            }
+                } else if (type === "textbox") {
+                    const parseFigure = JSON.parse(options);
+                    if (getObjectById(parseFigure.id, canvas) === false) {
+                        console.log("here");
+                        const textbox = new fabric.Textbox("", parseFigure);
+                        textbox.selectable = false;
+                        textbox.evented = false;
+                        canvas.add(textbox);
+                        if (typeof textbox.zIndex !== "undefined") {
+                            canvas.moveTo(textbox, textbox.zIndex);
                         }
                     }
                 } else if (type === "image") {
-                    const options = drawElement.get("options").toArray()[0];
-                    if (options) {
-                        const parseImage = JSON.parse(options);
-                        if (getObjectById(parseImage.id, canvas) === false) {
-                            let img = new Image();
-                            img.src = parseImage.src;
-                            img.onload = function () {
-                                let uploadedImg = new fabric.Image(img, {
-                                    width: parseImage.width,
-                                    height: parseImage.height,
-                                    angle: parseImage.angle,
-                                    top: parseImage.top,
-                                    left: parseImage.left,
-                                    scaleX: parseImage.scaleX,
-                                    scaleY: parseImage.scaleY
-                                });
-                                uploadedImg.id = parseImage.id;
-                                uploadedImg.selectable = false;
-                                uploadedImg.evented = false;
-                                if (!getObjectById(parseImage.id, canvas)) {
-                                    canvas.add(uploadedImg);
-                                }
-                                if (typeof uploadedImg.zIndex !== "undefined") {
-                                    canvas.moveTo(uploadedImg, uploadedImg.zIndex);
-                                }
-                            };
-                        }
-                    }
-                } else if (type === "drawing") {
-                    const options = drawElement.get("options").toArray()[0];
-                    if (options) {
-                        const parseOptions = JSON.parse(options);
-                        if (getObjectById(parseOptions.id, canvas) === false) {
-                            const paths = parseOptions.path;
-                            const drawing = new fabric.Path(paths, parseOptions);
-                            drawing.id = parseOptions.id;
-                            drawing.selectable = false;
-                            drawing.evented = false;
-                            canvas.add(drawing);
-                            if (typeof drawing.zIndex !== "undefined") {
-                                canvas.moveTo(drawing, drawing.zIndex);
+                    const parseImage = JSON.parse(options);
+                    if (getObjectById(parseImage.id, canvas) === false) {
+                        let img = new Image();
+                        img.src = parseImage.src;
+                        img.onload = function () {
+                            let uploadedImg = new fabric.Image(img, {
+                                width: parseImage.width,
+                                height: parseImage.height,
+                                angle: parseImage.angle,
+                                top: parseImage.top,
+                                left: parseImage.left,
+                                scaleX: parseImage.scaleX,
+                                scaleY: parseImage.scaleY
+                            });
+                            uploadedImg.id = parseImage.id;
+                            uploadedImg.selectable = false;
+                            uploadedImg.evented = false;
+                            if (!getObjectById(parseImage.id, canvas)) {
+                                canvas.add(uploadedImg);
                             }
+                            if (typeof uploadedImg.zIndex !== "undefined") {
+                                canvas.moveTo(uploadedImg, uploadedImg.zIndex);
+                            }
+                        };
+                    }
+                } else if (type === "path") {
+                    const parseOptions = JSON.parse(options);
+                    if (getObjectById(parseOptions.id, canvas) === false) {
+                        const paths = parseOptions.path;
+                        const drawing = new fabric.Path(paths, parseOptions);
+                        drawing.id = parseOptions.id;
+                        drawing.selectable = false;
+                        drawing.evented = false;
+                        canvas.add(drawing);
+                        if (typeof drawing.zIndex !== "undefined") {
+                            canvas.moveTo(drawing, drawing.zIndex);
                         }
                     }
                 }

@@ -14,6 +14,7 @@ export let originSuffix = null;
 export let connect = false;
 export let indexeddbPersistence = null;
 export let doc = new Y.Doc();
+doc.gc = true;
 let userDoc = new Y.Doc();
 export let activeUserList = userDoc.getMap("activeUserList");
 export let coordinate = userDoc.getArray("coordinate");
@@ -25,7 +26,6 @@ export const connectToRoom = async (suffix, Ydoc) => {
     // tmp room id
     const roomId = suffix;
     console.log(Ydoc);
-
     const restoreVersion = () => {
         const renderList = canvasRender();
         onCanvasUpdate(renderList, externalCanvas);
@@ -37,7 +37,15 @@ export const connectToRoom = async (suffix, Ydoc) => {
             try {
                 const persistedYdoc = await persistence.getYDoc("doc");
                 const ecodedUint8Arr = toUint8Array(Ydoc);
-                Y.applyUpdate(doc, ecodedUint8Arr);
+                const initYdoc = new Y.Doc();
+                Y.applyUpdate(initYdoc, ecodedUint8Arr);
+                initYdoc.getArray("").map(elem => {
+                    const drawElement = elem.clone();
+                    drawingContent.get().push([drawElement]);
+                });
+                // drawingContent.init(initYdoc.getArray("").clone());
+                // Y.applyUpdate(doc, ecodedUint8Arr);
+                console.log(Y.encodeStateAsUpdate(doc).byteLength);
             } catch (e) {
                 console.log("invalid ydoc");
             }
@@ -54,6 +62,11 @@ export const connectToRoom = async (suffix, Ydoc) => {
     socketClient.current.on("canvasEvent", req => {
         const docUint8Array = toUint8Array(req);
         Y.applyUpdate(doc, docUint8Array);
+        const ydoc = new Y.Doc();
+        Y.applyUpdate(ydoc, docUint8Array);
+        const stateVector = Y.encodeStateVector(doc);
+        const diff = Y.encodeStateAsUpdate(ydoc, stateVector);
+        Y.applyUpdate(doc, diff);
     });
 
     socketClient.current.on("objectEvent", req => {
@@ -68,7 +81,6 @@ export const connectToRoom = async (suffix, Ydoc) => {
             Y.applyUpdate(ydoc, docUint8Array);
             ydoc.getArray("").map(elem => {
                 const drawElement = elem.clone();
-                console.log(drawingContent.get().toArray());
                 drawingContent.get().push([drawElement]);
             });
         } catch (e) {
@@ -94,14 +106,12 @@ export const connectToRoom = async (suffix, Ydoc) => {
     });
 
     socketClient.current.on("peerDisconnectEvent", client => {
-        console.log(client);
         activeUserList.delete(client);
     });
 };
 
 doc.on("update", update => {
-    console.log("update");
-    drawingContent.init(doc.getArray(""));
+    console.log(doc.getArray("").toArray());
 });
 
 // Emit Changes to server (using socket-io)

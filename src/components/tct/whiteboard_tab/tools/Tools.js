@@ -25,34 +25,29 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
     let reader = new FileReader();
     reader.readAsDataURL(fileUploaded);
     reader.onload = function (e) {
-        let img = new Image();
-        img.src = e.target.result;
+        let image = new Image();
+        image.src = e.target.result;
         let id = new Date().getTime().toString();
-        img.onload = function () {
-            let uploadedImg = new fabric.Image(img);
-            uploadedImg.set({
+        fabric.Image.fromObject(image, img => {
+            img.set({
                 angle: 0,
                 scaleX: 0.1,
                 scaleY: 0.1
             });
-            uploadedImg.id = id;
-            externalCanvas.centerObject(uploadedImg);
-            externalCanvas.add(uploadedImg);
-            const jsonObject = JSON.stringify(uploadedImg);
-            const yArray = new Y.Array();
+            img.id = id;
+            externalCanvas.centerObject(img);
+            externalCanvas.add(img);
+            const jsonObject = JSON.stringify(img);
             const drawElement = new Y.Map();
-            yArray.push([jsonObject]);
-            drawElement.set("type", "image");
-            drawElement.set("options", yArray);
+            drawElement.set("options", jsonObject);
             shared.drawingContent.get().push([drawElement]);
             const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
             shared.emitYDoc(encodeDoc, "addObj");
             externalCanvas.renderAll();
-        };
+        });
     };
 };
 
-let sharedLine = null; //yarray
 let drawElement = null; //ymap
 let isDown = false;
 let origX;
@@ -64,15 +59,11 @@ let textbox;
 let currentType;
 
 export const mouseDown = (o, canvas) => {
-    sharedLine = new Y.Array();
     drawElement = new Y.Map();
     if (currentType === "drawing") {
         isDown = true;
         canvas.freeDrawingBrush.color = "#000";
         canvas.freeDrawingBrush.width = 4;
-        drawElement.set("type", "drawing");
-        drawElement.set("color", "#000");
-        drawElement.set("width", 4);
     } else if (currentType === "circle") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
@@ -92,7 +83,6 @@ export const mouseDown = (o, canvas) => {
         });
         circle.id = id;
         canvas.add(circle);
-        drawElement.set("type", "circle");
     } else if (currentType === "rect") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
@@ -112,7 +102,6 @@ export const mouseDown = (o, canvas) => {
         });
         rect.id = id;
         canvas.add(rect);
-        drawElement.set("type", "rect");
     } else if (currentType === "text") {
         isDown = true;
         let pointer = canvas.getPointer(o.e);
@@ -120,16 +109,15 @@ export const mouseDown = (o, canvas) => {
             left: pointer.x,
             top: pointer.y,
             width: 10,
-            fontSize: 12,
+            fontSize: 14,
             backgroundColor: "transparent",
             fontFamily: "Inconsolata"
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
         canvas.add(textbox);
-        drawElement.set("type", "text");
-        canvas.setActiveObject(textbox);
         textbox.enterEditing();
+        canvas.setActiveObject(textbox);
         canvas.renderAll();
     }
 };
@@ -162,6 +150,7 @@ export const mouseMove = (o, canvas) => {
 };
 
 const emitObject = drawElement => {
+    console.log("emit object");
     shared.drawingContent.get().push([drawElement]);
     const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
     shared.emitYDoc(encodeDoc, "addObj");
@@ -169,31 +158,25 @@ const emitObject = drawElement => {
 
 //http://jsfiddle.net/softvar/Nt8f7/
 const getObject = o => {
-    if (sharedLine !== null) {
-        if (currentType === "circle") {
-            const jsonObject = JSON.stringify(circle);
-            sharedLine.push([jsonObject]);
-            drawElement.set("options", sharedLine);
-            emitObject(drawElement);
-        } else if (currentType === "rect") {
-            const jsonObject = JSON.stringify(rect);
-            sharedLine.push([jsonObject]);
-            drawElement.set("options", sharedLine);
-            emitObject(drawElement);
-        } else if (currentType === "text") {
-            const jsonObject = JSON.stringify(textbox);
-            sharedLine.push([jsonObject]);
-            drawElement.set("options", sharedLine);
-            emitObject(drawElement);
-        } else if (currentType === "drawing") {
-            let id = new Date().getTime().toString();
-            const drawing = o.path;
-            drawing.id = id;
-            const jsonObject = JSON.stringify(drawing);
-            sharedLine.push([jsonObject]);
-            drawElement.set("options", sharedLine);
-            emitObject(drawElement);
-        }
+    if (currentType === "circle") {
+        const jsonObject = JSON.stringify(circle);
+        drawElement.set("options", jsonObject);
+        emitObject(drawElement);
+    } else if (currentType === "rect") {
+        const jsonObject = JSON.stringify(rect);
+        drawElement.set("options", jsonObject);
+        emitObject(drawElement);
+    } else if (currentType === "text") {
+        const jsonObject = JSON.stringify(textbox);
+        drawElement.set("options", jsonObject);
+        emitObject(drawElement);
+    } else if (currentType === "drawing") {
+        let id = new Date().getTime().toString();
+        const drawing = o.path;
+        drawing.id = id;
+        const jsonObject = JSON.stringify(drawing);
+        drawElement.set("options", jsonObject);
+        emitObject(drawElement);
     }
 };
 
@@ -255,15 +238,10 @@ export const afterObjectModified = o => {
     });
     if (actObj) {
         shared.drawingContent.get().map(drawElement => {
-            const options = drawElement.get("options").toArray()[0];
-            if (options) {
-                const parseObject = JSON.parse(options);
-                if (klass[parseObject.id]) {
-                    const newYarray = new Y.Array();
-                    const jsonModifiedObject = klass[parseObject.id];
-                    newYarray.push([jsonModifiedObject]);
-                    drawElement.set("options", newYarray);
-                }
+            const id = JSON.parse(drawElement.get("options")).id;
+            if (klass[id]) {
+                const jsonModifiedObject = klass[id];
+                drawElement.set("options", jsonModifiedObject);
             }
         });
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
