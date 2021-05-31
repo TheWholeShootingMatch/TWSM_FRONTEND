@@ -42,7 +42,8 @@
                 margin: 0 20px 20px 0;
                 font-weight: 600;
             }
-            input {
+            input,
+            textarea {
                 padding: 5px 12px;
                 font-size: 14px;
                 line-height: 20px;
@@ -51,6 +52,20 @@
                 border: 1px solid $--tct-color-white;
                 outline: none;
                 background-color: $--tct-input-color-white;
+            }
+
+            textarea {
+                display: block;
+                resize: none;
+                margin-top: 20px;
+                width: 500px;
+                height: 100px;
+            }
+
+            input[type="checkbox"],
+            input[type="radio"] {
+                margin: 0 10px;
+                vertical-align: bottom;
             }
         }
 
@@ -69,6 +84,9 @@
 
         .model_input {
             margin-bottom: 20px;
+            .unit {
+                margin-left: 10px;
+            }
         }
     }
 
