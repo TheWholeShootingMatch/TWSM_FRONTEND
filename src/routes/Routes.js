@@ -17,10 +17,10 @@ import NewPhotographer from "../components/photographer/new_photographer";
 import Pportfolio from "../components/photographer/photographer_portfolio";
 
 /* TCT pages */
-import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
-import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
-import TctModel from "../components/tct/model_tab/tct_model";
-import TctPhotographer from "../components/tct/photographer_tab/tct_photographer";
+// import TctWorkflow from "../components/tct/workflow_tab/TctWorkflow";
+// import WhiteBoard from "../components/tct/whiteboard_tab/Whiteboard";
+// import TctModel from "../components/tct/model_tab/tct_model";
+// import TctPhotographer from "../components/tct/photographer_tab/tct_photographer";
 
 /* my page (common) */
 import Overview from "../components/mypage/common/Overview";
@@ -117,7 +117,7 @@ function Routes() {
                         <Signup />
                     </Route>
 
-                    <Route path="/whiteboard/:TcTnum">
+                    {/* <Route path="/whiteboard/:TcTnum">
                         <WhiteBoard />
                     </Route>
                     <Route path="/TctWorkflow/:TcTnum">
@@ -128,7 +128,7 @@ function Routes() {
                     </Route>
                     <Route path="/TctPhotographer/:skip/:TcTnum">
                         <TctPhotographer />
-                    </Route>
+                    </Route> */}
 
                     <Route path="/model/Model/:skip/:sort">
                         <Model isLogin={isLogin} />
