@@ -25,26 +25,29 @@ export const uploadImage = (fileUploaded, externalCanvas) => {
     let reader = new FileReader();
     reader.readAsDataURL(fileUploaded);
     reader.onload = function (e) {
-        let image = new Image();
-        image.src = e.target.result;
+        let img = new Image();
+        img.src = e.target.result;
         let id = new Date().getTime().toString();
-        fabric.Image.fromObject(image, img => {
-            img.set({
+        img.onload = function () {
+            let uploadedImg = new fabric.Image(img);
+            uploadedImg.set({
                 angle: 0,
                 scaleX: 0.1,
                 scaleY: 0.1
             });
-            img.id = id;
-            externalCanvas.centerObject(img);
-            externalCanvas.add(img);
-            const jsonObject = JSON.stringify(img);
+            uploadedImg.id = id;
+            uploadedImg.type = "image";
+            uploadedImg.zIndex = 1;
+            externalCanvas.centerObject(uploadedImg);
+            externalCanvas.add(uploadedImg);
+            const jsonObject = JSON.stringify(uploadedImg);
             const drawElement = new Y.Map();
             drawElement.set("options", jsonObject);
             shared.drawingContent.get().push([drawElement]);
             const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
             shared.emitYDoc(encodeDoc, "addObj");
             externalCanvas.renderAll();
-        });
+        };
     };
 };
 
@@ -82,6 +85,7 @@ export const mouseDown = (o, canvas) => {
             evented: false
         });
         circle.id = id;
+        circle.zIndex = 1;
         canvas.add(circle);
     } else if (currentType === "rect") {
         isDown = true;
@@ -101,6 +105,7 @@ export const mouseDown = (o, canvas) => {
             height: 0
         });
         rect.id = id;
+        rect.zIndex = 1;
         canvas.add(rect);
     } else if (currentType === "text") {
         isDown = true;
@@ -115,6 +120,8 @@ export const mouseDown = (o, canvas) => {
         });
         let id = new Date().getTime().toString();
         textbox.id = id;
+        textbox.zIndex = 1;
+
         canvas.add(textbox);
         textbox.enterEditing();
         canvas.setActiveObject(textbox);
@@ -150,7 +157,6 @@ export const mouseMove = (o, canvas) => {
 };
 
 const emitObject = drawElement => {
-    console.log("emit object");
     shared.drawingContent.get().push([drawElement]);
     const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
     shared.emitYDoc(encodeDoc, "addObj");
@@ -174,6 +180,7 @@ const getObject = o => {
         let id = new Date().getTime().toString();
         const drawing = o.path;
         drawing.id = id;
+        drawing.zIndex = 1;
         const jsonObject = JSON.stringify(drawing);
         drawElement.set("options", jsonObject);
         emitObject(drawElement);
@@ -183,6 +190,7 @@ const getObject = o => {
 export const mouseUp = (o, canvas) => {
     if (o && isDown) {
         isDown = false;
+        wait = null;
         if (currentType === "text" || currentType === "circle" || currentType === "rect") {
             getObject(o);
         }
@@ -197,22 +205,12 @@ export const changeStatus = (value, canvas) => {
     canvas.renderAll();
 };
 
+let wait = null;
+
 export const objectModified = o => {
     if (o.target) {
         let actObj = o.target;
-        shared.coordinate.push([
-            {
-                id: actObj.id,
-                left: actObj.left,
-                top: actObj.top,
-                scaleX: actObj.scaleX,
-                scaleY: actObj.scaleY,
-                angle: actObj.angle,
-                text: actObj.text,
-                width: actObj.width,
-                height: actObj.height
-            }
-        ]);
+        externalCanvas.bringToFront(o.target);
         const modifiedInfo = {
             id: actObj.id,
             left: actObj.left,
@@ -222,26 +220,56 @@ export const objectModified = o => {
             angle: actObj.angle,
             text: actObj.text,
             width: actObj.width,
-            height: actObj.height
+            height: actObj.height,
+            zIndex: externalCanvas.getObjects().indexOf(actObj)
         };
-        shared.emitObject(JSON.stringify(modifiedInfo));
+        shared.coordinate.push([modifiedInfo]);
+
+        if (actObj.type === "textbox") {
+            shared.emitObject(JSON.stringify(modifiedInfo));
+        } else {
+            if (!wait) {
+                setTimeout(() => {
+                    wait = null;
+                    shared.emitObject(JSON.stringify(modifiedInfo));
+                }, 200);
+            }
+            wait = o;
+        }
     }
 };
 
 export const afterObjectModified = o => {
     let actObj = o.target;
-    externalCanvas.bringToFront(o.target);
     const klass = {};
     externalCanvas.getObjects().map((elem, index) => {
         elem.zIndex = externalCanvas.getObjects().indexOf(elem);
         klass[elem.id] = JSON.stringify(elem);
     });
+    wait = null;
+    const modifiedInfo = {
+        id: actObj.id,
+        left: actObj.left,
+        top: actObj.top,
+        scaleX: actObj.scaleX,
+        scaleY: actObj.scaleY,
+        angle: actObj.angle,
+        text: actObj.text,
+        width: actObj.width,
+        height: actObj.height,
+        zIndex: externalCanvas.getObjects().indexOf(actObj)
+    };
+
+    shared.emitObject(JSON.stringify(modifiedInfo));
+
     if (actObj) {
         shared.drawingContent.get().map(drawElement => {
             const id = JSON.parse(drawElement.get("options")).id;
             if (klass[id]) {
-                const jsonModifiedObject = klass[id];
-                drawElement.set("options", jsonModifiedObject);
+                if (klass[id] !== drawElement.get("options")) {
+                    const jsonModifiedObject = klass[id];
+                    drawElement.set("options", jsonModifiedObject);
+                }
             }
         });
         const encodeDoc = Y.encodeStateAsUpdate(shared.doc);
@@ -258,7 +286,7 @@ export const deleteObject = () => {
         shared.doc.transact(() => {
             actObjId.map(id => {
                 shared.drawingContent.get().forEach((drawElement, index) => {
-                    const options = drawElement.get("options").toArray()[0];
+                    const options = drawElement.get("options");
                     if (options) {
                         const parseObject = JSON.parse(options);
                         if (typeof parseObject !== "undefined") {

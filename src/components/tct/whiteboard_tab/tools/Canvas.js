@@ -3,6 +3,7 @@ import * as shared from "./SharedTypes";
 import * as Y from "yjs";
 import { fabric } from "fabric";
 import FabricProto from "../extension/FabricProto";
+import zIndex from "@material-ui/core/styles/zIndex";
 
 export let externalContextRef = null;
 export let externalCanvas = null;
@@ -99,6 +100,7 @@ export default function Canvas({ activeSlide }) {
             if (activeObj) {
                 if (activeObj.type === "textbox") {
                     activeObj.text = yaEvent.text;
+                    canvas.renderAll();
                 }
                 activeObj.animate(
                     {
@@ -106,12 +108,17 @@ export default function Canvas({ activeSlide }) {
                         top: yaEvent.top,
                         scaleX: yaEvent.scaleX,
                         scaleY: yaEvent.scaleY,
-                        angle: yaEvent.angle
+                        angle: yaEvent.angle,
+                        width: yaEvent.width,
+                        height: yaEvent.height,
+                        zIndex: yaEvent.zIndex
                     },
                     {
                         duration: 500,
                         onChange: function () {
                             activeObj.setCoords();
+
+                            canvas.moveTo(activeObj, yaEvent.zIndex);
                             canvas.renderAll();
                         }
                     }
@@ -143,8 +150,8 @@ export const onCanvasUpdate = (newObject, canvas) => {
                 const options = drawElement.get("options");
                 const parseFigure = JSON.parse(options);
                 const type = parseFigure.type;
-                if (type === "circle" || type === "rect") {
-                    if (getObjectById(parseFigure.id, canvas) === false) {
+                if (getObjectById(parseFigure.id, canvas) === false) {
+                    if (type === "circle" || type === "rect") {
                         if (type === "circle") {
                             const circle = new fabric.Circle(parseFigure);
                             circle.selectable = false;
@@ -162,56 +169,54 @@ export const onCanvasUpdate = (newObject, canvas) => {
                                 canvas.moveTo(rect, rect.zIndex);
                             }
                         }
-                    }
-                } else if (type === "textbox") {
-                    const parseFigure = JSON.parse(options);
-                    if (getObjectById(parseFigure.id, canvas) === false) {
-                        console.log("here");
-                        const textbox = new fabric.Textbox("", parseFigure);
-                        textbox.selectable = false;
-                        textbox.evented = false;
-                        canvas.add(textbox);
-                        if (typeof textbox.zIndex !== "undefined") {
-                            canvas.moveTo(textbox, textbox.zIndex);
+                    } else if (type === "textbox") {
+                        if (getObjectById(parseFigure.id, canvas) === false) {
+                            const textbox = new fabric.Textbox("", parseFigure);
+                            textbox.selectable = false;
+                            textbox.evented = false;
+                            canvas.add(textbox);
+                            if (typeof textbox.zIndex !== "undefined") {
+                                canvas.moveTo(textbox, textbox.zIndex);
+                            }
                         }
-                    }
-                } else if (type === "image") {
-                    const parseImage = JSON.parse(options);
-                    if (getObjectById(parseImage.id, canvas) === false) {
-                        let img = new Image();
-                        img.src = parseImage.src;
-                        img.onload = function () {
-                            let uploadedImg = new fabric.Image(img, {
-                                width: parseImage.width,
-                                height: parseImage.height,
-                                angle: parseImage.angle,
-                                top: parseImage.top,
-                                left: parseImage.left,
-                                scaleX: parseImage.scaleX,
-                                scaleY: parseImage.scaleY
-                            });
-                            uploadedImg.id = parseImage.id;
-                            uploadedImg.selectable = false;
-                            uploadedImg.evented = false;
-                            if (!getObjectById(parseImage.id, canvas)) {
-                                canvas.add(uploadedImg);
+                    } else if (type === "image") {
+                        if (getObjectById(parseFigure.id, canvas) === false) {
+                            let img = new Image();
+                            img.src = parseFigure.src;
+                            img.onload = function () {
+                                let uploadedImg = new fabric.Image(img, {
+                                    width: parseFigure.width,
+                                    height: parseFigure.height,
+                                    angle: parseFigure.angle,
+                                    top: parseFigure.top,
+                                    left: parseFigure.left,
+                                    scaleX: parseFigure.scaleX,
+                                    scaleY: parseFigure.scaleY,
+                                    zIndex: parseFigure.zIndex
+                                });
+                                uploadedImg.id = parseFigure.id;
+                                uploadedImg.selectable = false;
+                                uploadedImg.evented = false;
+                                if (!getObjectById(parseFigure.id, canvas)) {
+                                    canvas.add(uploadedImg);
+                                    if (typeof uploadedImg.zIndex !== "undefined") {
+                                        canvas.moveTo(uploadedImg, uploadedImg.zIndex);
+                                    }
+                                }
+                            };
+                        }
+                    } else if (type === "path") {
+                        const parseOptions = JSON.parse(options);
+                        if (getObjectById(parseOptions.id, canvas) === false) {
+                            const paths = parseOptions.path;
+                            const drawing = new fabric.Path(paths, parseOptions);
+                            drawing.id = parseOptions.id;
+                            drawing.selectable = false;
+                            drawing.evented = false;
+                            canvas.add(drawing);
+                            if (typeof drawing.zIndex !== "undefined") {
+                                canvas.moveTo(drawing, drawing.zIndex);
                             }
-                            if (typeof uploadedImg.zIndex !== "undefined") {
-                                canvas.moveTo(uploadedImg, uploadedImg.zIndex);
-                            }
-                        };
-                    }
-                } else if (type === "path") {
-                    const parseOptions = JSON.parse(options);
-                    if (getObjectById(parseOptions.id, canvas) === false) {
-                        const paths = parseOptions.path;
-                        const drawing = new fabric.Path(paths, parseOptions);
-                        drawing.id = parseOptions.id;
-                        drawing.selectable = false;
-                        drawing.evented = false;
-                        canvas.add(drawing);
-                        if (typeof drawing.zIndex !== "undefined") {
-                            canvas.moveTo(drawing, drawing.zIndex);
                         }
                     }
                 }
@@ -219,7 +224,7 @@ export const onCanvasUpdate = (newObject, canvas) => {
         } else if (drawElements.delete) {
             /* delete specific objects */
             const currentObjectIds = Array.from(shared.drawingContent.get()).map(drawElement => {
-                const options = drawElement.get("options").toArray()[0];
+                const options = drawElement.get("options");
                 const parseOptions = JSON.parse(options);
                 return parseOptions.id;
             });

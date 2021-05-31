@@ -39,6 +39,7 @@ export const connectToRoom = async (suffix, Ydoc) => {
                 const ecodedUint8Arr = toUint8Array(Ydoc);
                 const initYdoc = new Y.Doc();
                 Y.applyUpdate(initYdoc, ecodedUint8Arr);
+                console.log(initYdoc.getArray("").toArray());
                 initYdoc.getArray("").map(elem => {
                     const drawElement = elem.clone();
                     drawingContent.get().push([drawElement]);
