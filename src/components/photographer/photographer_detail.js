@@ -106,11 +106,11 @@ function Main({ photographerId, isLogin }) {
                 <article className="detail_section_right">
                     <div className="detail_box">
                         <h2>Slef Introduction</h2>
-                        <p>{photographer.self_introduction}</p>
+                        <pre>{photographer.self_introduction}</pre>
                     </div>
                     <div className="detail_box">
                         <h2>Career</h2>
-                        <p>{photographer.career}</p>
+                        <pre>{photographer.career}</pre>
                     </div>
                     <div className="detail_box">
                         <h2>Portfolio</h2>

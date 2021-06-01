@@ -260,7 +260,7 @@ function ProfileForm() {
               </div>
               <div className="model_input">
                   <label htmlFor="career">career</label>
-                  <input type="text" name="career" value={model.career} onChange={handleChange} />
+                  <textarea name="career" value={model.career} onChange={handleChange} />
               </div>
 
               <div className="model_input">

@@ -103,7 +103,7 @@ function Main({ modelId, isLogin }) {
                 <article className="detail_section_right">
                     <div className="detail_box">
                         <h2>Slef Introduction</h2>
-                        <p>{model.self_introduction}</p>
+                        <pre>{model.self_introduction}</pre>
                     </div>
                     <div className="detail_box body_info">
                         <p>
@@ -129,7 +129,7 @@ function Main({ modelId, isLogin }) {
                     </div>
                     <div className="detail_box">
                         <h2>Career</h2>
-                        <p>{model.career}</p>
+                        <pre>{model.career}</pre>
                     </div>
                     <div className="detail_box">
                         <h2>Portfolio</h2>

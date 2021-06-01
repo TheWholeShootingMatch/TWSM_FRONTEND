@@ -25,7 +25,7 @@ export function Like({id, isLogin}){
 
   useEffect(() => {
     fetchUrl();
-  }, []);
+  }, [id]);
 
   const handlePush = () => {
     axios
