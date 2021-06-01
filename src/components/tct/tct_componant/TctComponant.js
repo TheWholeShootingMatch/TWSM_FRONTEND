@@ -97,7 +97,7 @@ function AddUserMenu(props) {
         e.preventDefault();
         axios
             .post("/api/notification/invite", inputs)
-            .then(res => {})
+            .then(res => handleClose())
             .catch(err => {
                 console.error(err);
             });
