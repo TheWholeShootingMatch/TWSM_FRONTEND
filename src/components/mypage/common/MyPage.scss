@@ -41,13 +41,14 @@
 /* mypage - main */
 .mypage_wrapper main {
     width : 78%;
-    height: 720px;
+    height: 550px;
 
     padding : 2%;
     margin-top: 20px;
 
     border-radius: 25px;
     background: #ececec;
+    box-sizing: border-box;
 }
 
 .MyPage_h2 {
