@@ -131,30 +131,30 @@ function CollaborationForm({ isLogin }) {
                         <div className={isModel ? "model_form active" : "model_form"}>
                             <div className="model_input">
                                 <label htmlFor="gender">Gender</label>
-                                <label htmlFor="all">All</label>
                                 <input id="all" type="radio" name="gender" value="A" onChange={handleChange} />
-                                <label htmlFor="male">Male</label>
+                                <label htmlFor="all">All</label>
                                 <input id="male" type="radio" name="gender" value="M" onChange={handleChange} />
-                                <label htmlFor="female">Female</label>
+                                <label htmlFor="male">Male</label>
                                 <input id="female" type="radio" name="gender" value="F" onChange={handleChange} />
+                                <label htmlFor="female">Female</label>
                             </div>
                             <div className="model_input">
                                 <label htmlFor="age">Age</label>
                                 <input type="number" name="age_min" min="0" onChange={handleChange} /> -{" "}
                                 <input type="number" name="age_max" onChange={handleChange} />
-                                years
+                                <span className="unit">years</span>
                             </div>
                             <div className="model_input">
                                 <label htmlFor="height">Height</label>
                                 <input type="number" name="height_min" min="0" onChange={handleChange} /> -{" "}
                                 <input type="number" name="height_max" onChange={handleChange} />
-                                cm
+                                <span className="unit">cm</span>
                             </div>
                             <div className="model_input">
                                 <label htmlFor="weight">Weight</label>
                                 <input type="number" name="weight_min" min="0" onChange={handleChange} /> -{" "}
                                 <input type="number" name="weight_max" onChange={handleChange} />
-                                kg
+                                <span className="unit">kg</span>
                             </div>
                             <div className="model_input">
                                 <label htmlFor="busto">Busto</label>
