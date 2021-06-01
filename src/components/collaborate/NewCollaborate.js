@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import Header from "../common/header";
 import "./NewCollaboration.scss";
 import { BiPlusCircle } from "react-icons/bi";
+import { CountryOption } from "../common/country";
 
 function CollaborationForm({ isLogin }) {
     const [isModel, setModel] = useState(false);
@@ -111,6 +112,12 @@ function CollaborationForm({ isLogin }) {
                         <div className="overview_input">
                             <label htmlFor="about_project">Description</label>
                             <textarea type="text" name="about_project" onChange={handleChange} required />
+                        </div>
+                        <div className="overview_input">
+                            <label htmlFor="country">country</label>
+                            <select name="country" onChange={handleChange}>
+                              <CountryOption />
+                            </select>
                         </div>
                         <div className="overview_input">
                             <label htmlFor="location">Shooting Location</label>
