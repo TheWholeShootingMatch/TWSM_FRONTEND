@@ -52,6 +52,7 @@
                 border: 1px solid $--tct-color-white;
                 outline: none;
                 background-color: $--tct-input-color-white;
+                margin-bottom: 20px;
             }
 
             textarea {
@@ -66,6 +67,16 @@
             input[type="radio"] {
                 margin: 0 10px;
                 vertical-align: bottom;
+            }
+
+            select {
+                display: inline-block;
+                width: 200px;
+                height: 30px;
+                border: 1px solid black;
+                border-radius: 4px;
+                margin: 5px;
+                // padding: 10px;
             }
         }
 
