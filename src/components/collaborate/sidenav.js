@@ -50,25 +50,25 @@ function SideNav() {
     const [photographer, setPhotographer] = useState(false);
     const find = new URLSearchParams(location.search);
 
-    // const filterSelection = e => {
-    //     e.preventDefault();
-    //     const type = e.target.value;
-    //     //select category
-    //     if (type === "M") {
-    //         find.set("category", "M");
-    //         setModel(true);
-    //         setPhotographer(false);
-    //     } else if (type === "P") {
-    //         find.set("category", "P");
-    //         setModel(false);
-    //         setPhotographer(true);
-    //     } else {
-    //         find.set("category", "");
-    //         setModel(false);
-    //         setPhotographer(false);
-    //     }
-    //     history.push(`/collaboration/project/1/L?${find}`);
-    // };
+    const filterSelection = e => {
+        e.preventDefault();
+        const type = e.target.value;
+        //select category
+        if (type === "M") {
+            find.set("category", "M");
+            setModel(true);
+            setPhotographer(false);
+        } else if (type === "P") {
+            find.set("category", "P");
+            setModel(false);
+            setPhotographer(true);
+        } else {
+            find.set("category", "");
+            setModel(false);
+            setPhotographer(false);
+        }
+        history.push(`/collaboration/project/1/L?${find}`);
+    };
 
     const handleChange = e => {
         e.preventDefault();
@@ -90,7 +90,7 @@ function SideNav() {
                 <h3>Job Type</h3>
                 <FormControl variant="filled" className={classes.item}>
                     <InputLabel id="category">Job Type</InputLabel>
-                    <Select labelId="category" onChange={handleChange} name="category" value={find.get('category')}>
+                    <Select labelId="category" onChange={filterSelection} name="category" value={find.get("category")}>
                         <MenuItem value="A">All</MenuItem>
                         <MenuItem value="M">Model</MenuItem>
                         <MenuItem value="P">Photographer</MenuItem>
@@ -101,13 +101,15 @@ function SideNav() {
                 <h3>Country</h3>
                 <FormControl variant="filled" className={classes.item}>
                     <InputLabel id="country">Country</InputLabel>
-                    <Select labelId="country" onChange={handleChange} name="country" value={find.get('country')}>
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {countries.map((elem, index) => (
-                        <MenuItem value={elem.name} key={index}>{elem.name}</MenuItem>
-                      ))}
+                    <Select labelId="country" onChange={handleChange} name="country" value={find.get("country")}>
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        {countries.map((elem, index) => (
+                            <MenuItem value={elem.name} key={index}>
+                                {elem.name}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </div>
@@ -116,7 +118,7 @@ function SideNav() {
                     <h3>Gender</h3>
                     <FormControl variant="filled" className={classes.item}>
                         <InputLabel htmlFor="gender">Gender</InputLabel>
-                        <Select labelId="gender" onChange={handleChange} name="gender" value={find.get('gender')}>
+                        <Select labelId="gender" onChange={handleChange} name="gender" value={find.get("gender")}>
                             <MenuItem value="">Gender</MenuItem>
                             <MenuItem value="F">Female</MenuItem>
                             <MenuItem value="M">Male</MenuItem>
